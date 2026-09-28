@@ -43,7 +43,9 @@ html, body, [data-testid="stAppViewContainer"] {
     max-width: 1400px !important;
 }
 
-/* SIDEBAR */
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
 
 [data-testid="stSidebar"] {
     background: linear-gradient(180deg, #170d09 0%, #120906 55%, #0d0705 100%) !important;
@@ -101,7 +103,9 @@ html, body, [data-testid="stAppViewContainer"] {
     background: rgba(190,137,82,0.08) !important;
 }
 
-/* COMMON BUTTON */
+/* =========================================================
+   COMMON BUTTON
+   ========================================================= */
 
 div[data-testid="stButton"] > button {
     background: transparent !important;
@@ -119,7 +123,9 @@ div[data-testid="stButton"] > button:hover {
     color: #efd7b0 !important;
 }
 
-/* MAIN */
+/* =========================================================
+   MAIN
+   ========================================================= */
 
 .welcome-area {
     min-height: 82vh;
@@ -162,7 +168,9 @@ div[data-testid="stButton"] > button:hover {
     letter-spacing: 1px;
 }
 
-/* LETTER */
+/* =========================================================
+   LETTER
+   ========================================================= */
 
 .letter-wrap {
     min-height: 86vh;
@@ -225,7 +233,9 @@ div[data-testid="stButton"] > button:hover {
     margin-top: 45px;
 }
 
-/* CHOICE */
+/* =========================================================
+   CHOICE
+   ========================================================= */
 
 .section-area {
     min-height: 82vh;
@@ -264,7 +274,9 @@ div[data-testid="stButton"] > button:hover {
     box-shadow: 0 15px 35px rgba(0,0,0,0.25) !important;
 }
 
-/* LISTEN */
+/* =========================================================
+   LISTEN
+   ========================================================= */
 
 .listen-container {
     width: min(1100px, 90vw);
@@ -349,7 +361,7 @@ div[data-testid="stButton"] > button:hover {
 </style>
 """
 
-# CSS는 HTML 전용으로 렌더링
+# CSS 렌더링
 try:
     st.html(CSS)
 except Exception:
@@ -357,7 +369,7 @@ except Exception:
 
 
 # =========================================================
-# SESSION
+# SESSION STATE
 # =========================================================
 
 if "page" not in st.session_state:
@@ -377,6 +389,7 @@ if "search_results" not in st.session_state:
 
 
 def go(page):
+
     st.session_state.page = page
 
     if page != "main":
@@ -420,43 +433,75 @@ with st.sidebar:
 
 
 # =========================================================
-# APPLE API
+# APPLE iTUNES API
 # =========================================================
 
 @st.cache_data(ttl=600, show_spinner=False)
 def apple_search(params):
 
-    url = "https://itunes.apple.com/search?" + urllib.parse.urlencode(params)
+    url = (
+        "https://itunes.apple.com/search?"
+        + urllib.parse.urlencode(params)
+    )
 
     try:
+
         request = urllib.request.Request(
             url,
-            headers={"User-Agent": "record-room/1.0"}
+            headers={
+                "User-Agent": "record-room/1.0"
+            }
         )
 
-        with urllib.request.urlopen(request, timeout=12) as response:
-            return json.loads(response.read().decode("utf-8"))
+        with urllib.request.urlopen(
+            request,
+            timeout=12
+        ) as response:
+
+            return json.loads(
+                response.read().decode("utf-8")
+            )
 
     except Exception:
-        return {"resultCount": 0, "results": []}
+
+        return {
+            "resultCount": 0,
+            "results": []
+        }
 
 
 @st.cache_data(ttl=600, show_spinner=False)
 def apple_lookup(params):
 
-    url = "https://itunes.apple.com/lookup?" + urllib.parse.urlencode(params)
+    url = (
+        "https://itunes.apple.com/lookup?"
+        + urllib.parse.urlencode(params)
+    )
 
     try:
+
         request = urllib.request.Request(
             url,
-            headers={"User-Agent": "record-room/1.0"}
+            headers={
+                "User-Agent": "record-room/1.0"
+            }
         )
 
-        with urllib.request.urlopen(request, timeout=12) as response:
-            return json.loads(response.read().decode("utf-8"))
+        with urllib.request.urlopen(
+            request,
+            timeout=12
+        ) as response:
+
+            return json.loads(
+                response.read().decode("utf-8")
+            )
 
     except Exception:
-        return {"resultCount": 0, "results": []}
+
+        return {
+            "resultCount": 0,
+            "results": []
+        }
 
 
 def normalize(text):
@@ -474,6 +519,8 @@ def normalize(text):
 # =========================================================
 # ARTIST SEARCH
 # =========================================================
+# ★ 검색 오류 수정된 부분
+# =========================================================
 
 @st.cache_data(ttl=600, show_spinner=False)
 def find_artist_tracks(query):
@@ -485,11 +532,11 @@ def find_artist_tracks(query):
 
     nq = normalize(query)
 
-    countries = ["KR", "US"]
+    # Apple에서 검색된 아티스트 후보를 모두 모음
+    candidates = []
 
-    artist = None
-
-    for country in countries:
+    # 한국 + 미국 스토어 모두 확인
+    for country in ["KR", "US"]:
 
         data = apple_search({
             "term": query,
@@ -497,38 +544,172 @@ def find_artist_tracks(query):
             "media": "music",
             "entity": "musicArtist",
             "attribute": "artistTerm",
-            "limit": 25
+            "limit": 50
         })
 
-        artists = data.get("results", [])
+        for artist in data.get(
+            "results",
+            []
+        ):
 
-        exact = [
-            x for x in artists
-            if normalize(x.get("artistName", "")) == nq
-        ]
+            artist_id = artist.get(
+                "artistId"
+            )
 
-        if exact:
-            artist = exact[0]
-            break
+            artist_name = artist.get(
+                "artistName",
+                ""
+            )
 
-        partial = [
-            x for x in artists
-            if nq in normalize(x.get("artistName", ""))
-        ]
+            if not artist_id or not artist_name:
+                continue
 
-        if partial:
-            artist = partial[0]
-            break
+            # 중복 아티스트 제거
+            if not any(
+                x.get("artistId") == artist_id
+                for x in candidates
+            ):
+                candidates.append(artist)
 
-    if not artist:
+    if not candidates:
         return []
 
-    artist_id = artist.get("artistId")
+    # =====================================================
+    # 1순위
+    # 이름 완전 일치
+    # 예: zico → ZICO
+    #     아이유 → 아이유
+    # =====================================================
+
+    exact = [
+        artist
+        for artist in candidates
+        if normalize(
+            artist.get("artistName", "")
+        ) == nq
+    ]
+
+    if exact:
+
+        selected = exact[0]
+
+    else:
+
+        # =================================================
+        # 2순위
+        # 이름에 검색어 포함
+        # =================================================
+
+        contains = [
+            artist
+            for artist in candidates
+            if nq in normalize(
+                artist.get("artistName", "")
+            )
+        ]
+
+        if contains:
+
+            selected = contains[0]
+
+        else:
+
+            # =================================================
+            # 3순위
+            # 곡 검색에서 artistId를 다시 찾음
+            #
+            # 한글 이름 검색에서 아티스트 검색이
+            # 제대로 잡히지 않는 경우를 위한 fallback
+            # =================================================
+
+            song_candidates = []
+
+            for country in ["KR", "US"]:
+
+                data = apple_search({
+                    "term": query,
+                    "country": country,
+                    "media": "music",
+                    "entity": "song",
+                    "attribute": "artistTerm",
+                    "limit": 100
+                })
+
+                for song in data.get(
+                    "results",
+                    []
+                ):
+
+                    artist_id = song.get(
+                        "artistId"
+                    )
+
+                    artist_name = song.get(
+                        "artistName",
+                        ""
+                    )
+
+                    if not artist_id or not artist_name:
+                        continue
+
+                    if not any(
+                        x.get("artistId") == artist_id
+                        for x in song_candidates
+                    ):
+
+                        song_candidates.append({
+                            "artistId": artist_id,
+                            "artistName": artist_name
+                        })
+
+            if not song_candidates:
+                return []
+
+            # 곡 검색 결과에서도 이름 완전 일치 우선
+            song_exact = [
+                artist
+                for artist in song_candidates
+                if normalize(
+                    artist.get("artistName", "")
+                ) == nq
+            ]
+
+            if song_exact:
+
+                selected = song_exact[0]
+
+            else:
+
+                # 부분 일치
+                song_contains = [
+                    artist
+                    for artist in song_candidates
+                    if nq in normalize(
+                        artist.get("artistName", "")
+                    )
+                ]
+
+                if not song_contains:
+                    return []
+
+                selected = song_contains[0]
+
+    # =====================================================
+    # 선택된 아티스트의 Apple artistId
+    # =====================================================
+
+    artist_id = selected.get(
+        "artistId"
+    )
 
     if not artist_id:
         return []
 
-    for country in countries:
+    # =====================================================
+    # artistId를 이용해서 정확한 곡 목록 가져오기
+    # =====================================================
+
+    for country in ["KR", "US"]:
 
         data = apple_lookup({
             "id": artist_id,
@@ -538,11 +719,21 @@ def find_artist_tracks(query):
         })
 
         tracks = [
-            x for x in data.get("results", [])
-            if x.get("wrapperType") == "track"
+            item
+            for item in data.get(
+                "results",
+                []
+            )
+            if item.get(
+                "wrapperType"
+            ) == "track"
+            and item.get(
+                "kind"
+            ) == "song"
         ]
 
         if tracks:
+
             return tracks
 
     return []
@@ -550,6 +741,8 @@ def find_artist_tracks(query):
 
 # =========================================================
 # SONG SEARCH
+# =========================================================
+# ★ 검색 오류 수정된 부분
 # =========================================================
 
 @st.cache_data(ttl=600, show_spinner=False)
@@ -562,6 +755,9 @@ def find_song(query):
 
     nq = normalize(query)
 
+    all_results = []
+
+    # 한국 + 미국 스토어 모두 검색
     for country in ["KR", "US"]:
 
         data = apple_search({
@@ -570,48 +766,111 @@ def find_song(query):
             "media": "music",
             "entity": "song",
             "attribute": "songTerm",
-            "limit": 50
+            "limit": 100
         })
 
-        results = data.get("results", [])
+        for result in data.get(
+            "results",
+            []
+        ):
 
-        exact = [
-            x for x in results
-            if normalize(x.get("trackName", "")) == nq
-        ]
+            track_name = result.get(
+                "trackName",
+                ""
+            )
 
-        if exact:
-            return exact
+            if not track_name:
+                continue
 
-        partial = [
-            x for x in results
-            if nq in normalize(x.get("trackName", ""))
-        ]
+            track_id = result.get(
+                "trackId"
+            )
 
-        if partial:
-            return partial[:30]
+            # 중복 제거
+            if track_id and any(
+                x.get("trackId") == track_id
+                for x in all_results
+            ):
+                continue
 
-    return []
+            all_results.append(result)
 
+    if not all_results:
+        return []
 
-def search_music(query, mode):
+    # =====================================================
+    # 1순위: 제목 완전 일치
+    # =====================================================
 
-    if mode == "artist":
-        return find_artist_tracks(query)
+    exact = [
+        result
+        for result in all_results
+        if normalize(
+            result.get("trackName", "")
+        ) == nq
+    ]
 
-    if mode == "song":
-        return find_song(query)
+    if exact:
+        return exact
 
-    artist_results = find_artist_tracks(query)
+    # =====================================================
+    # 2순위: 제목 부분 일치
+    # =====================================================
 
-    if artist_results:
-        return artist_results
+    partial = [
+        result
+        for result in all_results
+        if nq in normalize(
+            result.get("trackName", "")
+        )
+    ]
 
-    return find_song(query)
+    return partial[:30]
 
 
 # =========================================================
-# RESULT
+# GENERAL SEARCH
+# =========================================================
+
+def search_music(query, mode):
+
+    query = query.strip()
+
+    if not query:
+        return []
+
+    # 사용자가 '가수' 선택
+    if mode == "artist":
+
+        return find_artist_tracks(
+            query
+        )
+
+    # 사용자가 '곡' 선택
+    if mode == "song":
+
+        return find_song(
+            query
+        )
+
+    # 자동 검색
+    # 먼저 가수로 검색
+    artist_results = find_artist_tracks(
+        query
+    )
+
+    if artist_results:
+
+        return artist_results
+
+    # 가수가 아니면 곡 검색
+    return find_song(
+        query
+    )
+
+
+# =========================================================
+# RESULT DISPLAY
 # =========================================================
 
 def display_results(results):
@@ -632,31 +891,56 @@ def display_results(results):
 
     for result in results[:30]:
 
-        artwork = result.get("artworkUrl100", "")
+        artwork = result.get(
+            "artworkUrl100",
+            ""
+        )
 
         track = escape(
-            result.get("trackName", "제목 없음")
+            result.get(
+                "trackName",
+                "제목 없음"
+            )
         )
 
         artist = escape(
-            result.get("artistName", "아티스트 없음")
+            result.get(
+                "artistName",
+                "아티스트 없음"
+            )
         )
 
         album = escape(
-            result.get("collectionName", "앨범 정보 없음")
+            result.get(
+                "collectionName",
+                "앨범 정보 없음"
+            )
         )
 
         date = escape(
-            (result.get("releaseDate", "") or "")[:10]
+            (
+                result.get(
+                    "releaseDate",
+                    ""
+                )
+                or ""
+            )[:10]
         )
 
-        apple_url = result.get("trackViewUrl", "")
+        apple_url = result.get(
+            "trackViewUrl",
+            ""
+        )
 
-        preview_url = result.get("previewUrl", "")
+        preview_url = result.get(
+            "previewUrl",
+            ""
+        )
 
         image_html = ""
 
         if artwork:
+
             image_html = (
                 '<img src="'
                 + escape(artwork)
@@ -666,6 +950,7 @@ def display_results(results):
         link_html = ""
 
         if apple_url:
+
             link_html = (
                 '<a href="'
                 + escape(apple_url)
@@ -701,14 +986,21 @@ def display_results(results):
         )
 
         if preview_url:
-            st.audio(preview_url)
+
+            st.audio(
+                preview_url
+            )
 
 
 # =========================================================
-# MAIN
+# MAIN PAGE
 # =========================================================
 
 if st.session_state.page == "main":
+
+    # -----------------------------------------------------
+    # 처음 MAIN
+    # -----------------------------------------------------
 
     if not st.session_state.main_entered:
 
@@ -717,7 +1009,9 @@ if st.session_state.page == "main":
             unsafe_allow_html=True
         )
 
-        left, center, right = st.columns([2, 1, 2])
+        left, center, right = st.columns(
+            [2, 1, 2]
+        )
 
         with center:
 
@@ -726,12 +1020,19 @@ if st.session_state.page == "main":
                 key="enter_room",
                 use_container_width=True
             ):
+
                 st.session_state.main_entered = True
+
                 st.rerun()
+
+    # -----------------------------------------------------
+    # 편지
+    # -----------------------------------------------------
 
     else:
 
-        # ★ 중요: HTML 전체를 한 줄 문자열로 작성
+        # HTML을 한 줄 문자열로 만들어
+        # 코드 블록으로 인식되는 문제 방지
         letter_html = (
             '<div class="letter-wrap">'
             '<div class="letter-paper">'
@@ -761,10 +1062,14 @@ if st.session_state.page == "main":
 
 
 # =========================================================
-# CHOICE
+# CHOICE PAGE
 # =========================================================
 
 elif st.session_state.page == "choice":
+
+    # -----------------------------------------------------
+    # CHOICE 선택 화면
+    # -----------------------------------------------------
 
     if st.session_state.choice_mode is None:
 
@@ -773,7 +1078,10 @@ elif st.session_state.page == "choice":
             unsafe_allow_html=True
         )
 
-        left, right = st.columns(2, gap="large")
+        left, right = st.columns(
+            2,
+            gap="large"
+        )
 
         with left:
 
@@ -782,7 +1090,9 @@ elif st.session_state.page == "choice":
                 key="listen_choice",
                 use_container_width=True
             ):
+
                 st.session_state.choice_mode = "listen"
+
                 st.rerun()
 
         with right:
@@ -792,8 +1102,14 @@ elif st.session_state.page == "choice":
                 key="recommend_choice",
                 use_container_width=True
             ):
+
                 st.session_state.choice_mode = "recommend"
+
                 st.rerun()
+
+    # -----------------------------------------------------
+    # LISTEN
+    # -----------------------------------------------------
 
     elif st.session_state.choice_mode == "listen":
 
@@ -802,7 +1118,9 @@ elif st.session_state.page == "choice":
             unsafe_allow_html=True
         )
 
-        search_col, button_col = st.columns([5, 1])
+        search_col, button_col = st.columns(
+            [5, 1]
+        )
 
         with search_col:
 
@@ -835,24 +1153,32 @@ elif st.session_state.page == "choice":
             "곡": "song"
         }
 
-        if search_clicked and query.strip():
+        if search_clicked:
 
-            st.session_state.search_text = query
+            if query.strip():
 
-            with st.spinner("record room에서 음악을 찾는 중..."):
+                st.session_state.search_text = query
 
-                st.session_state.search_results = search_music(
-                    query,
-                    type_map[search_type]
-                )
+                with st.spinner(
+                    "record room에서 음악을 찾는 중..."
+                ):
 
-            st.rerun()
+                    st.session_state.search_results = search_music(
+                        query,
+                        type_map[search_type]
+                    )
+
+                st.rerun()
 
         if st.session_state.search_text:
 
             display_results(
                 st.session_state.search_results
             )
+
+    # -----------------------------------------------------
+    # RECOMMEND
+    # -----------------------------------------------------
 
     else:
 
@@ -863,7 +1189,7 @@ elif st.session_state.page == "choice":
 
 
 # =========================================================
-# OTHER
+# OTHER PAGE
 # =========================================================
 
 else:
