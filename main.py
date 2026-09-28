@@ -780,10 +780,24 @@ def signup_user(email, password):
             return True, "CHECK-IN 완료"
         return True, "회원가입이 완료되었습니다. 이메일 인증 후 CHECK-IN 해주세요."
     except Exception as e:
-        message = str(e)
-        if "already registered" in message.lower():
+        message = str(e).strip()
+        lower_message = message.lower()
+
+        if "already registered" in lower_message or "user already registered" in lower_message:
             return False, "이미 가입된 이메일입니다."
-        return False, "회원가입에 실패했습니다. 입력 내용을 확인해 주세요."
+
+        if "email signups are disabled" in lower_message:
+            return False, "Supabase에서 이메일 회원가입이 비활성화되어 있습니다. Authentication → Providers → Email에서 활성화해 주세요."
+
+        if "invalid api key" in lower_message or "apikey" in lower_message and "invalid" in lower_message:
+            return False, "Supabase API KEY가 올바르지 않습니다. Streamlit Secrets의 SUPABASE_KEY를 확인해 주세요."
+
+        if "rate limit" in lower_message:
+            return False, f"이메일 발송 제한에 걸렸습니다. 잠시 후 다시 시도해 주세요.\n\n상세 오류: {message}"
+
+        # 원래는 실제 Supabase 오류를 숨겨서 원인을 알 수 없었기 때문에,
+        # 이제는 정확한 오류 내용을 화면에 표시합니다.
+        return False, f"회원가입 오류: {message}"
 
 def logout_user():
     if supabase is not None:
