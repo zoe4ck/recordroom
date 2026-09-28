@@ -4,12 +4,11 @@ import urllib.request
 import urllib.error
 import json
 import re
-from textwrap import dedent
 from html import escape
 
 
 # =========================================================
-# PAGE SETTING
+# 기본 설정
 # =========================================================
 
 st.set_page_config(
@@ -42,1063 +41,809 @@ if "search_results" not in st.session_state:
 if "search_type" not in st.session_state:
     st.session_state.search_type = ""
 
-if "search_artist" not in st.session_state:
-    st.session_state.search_artist = None
-
 if "search_error" not in st.session_state:
     st.session_state.search_error = ""
-
-
-# =========================================================
-# HTML RENDER FUNCTION
-# =========================================================
-# 핵심 수정:
-# dedent()를 사용해서 파이썬 들여쓰기가
-# Markdown 코드블록으로 인식되는 문제를 방지한다.
-# =========================================================
-
-def render_html(content):
-    st.markdown(
-        dedent(content).strip(),
-        unsafe_allow_html=True
-    )
 
 
 # =========================================================
 # CSS
 # =========================================================
 
-render_html(
-    """
-    <style>
-
-    html, body, [data-testid="stAppViewContainer"] {
-        background:
-            radial-gradient(
-                circle at 55% 35%,
-                #3b281d 0%,
-                #24160f 42%,
-                #120b08 78%,
-                #0b0705 100%
-            ) !important;
-    }
-
-    [data-testid="stAppViewContainer"] {
-        min-height: 100vh;
-    }
-
-    [data-testid="stHeader"] {
-        background: transparent !important;
-    }
-
-    [data-testid="stToolbar"] {
-        display: none !important;
-    }
-
-    /* =========================
-       SIDEBAR
-    ========================= */
-
-    [data-testid="stSidebar"] {
-        background:
-            linear-gradient(
-                180deg,
-                #170d09 0%,
-                #120906 50%,
-                #0d0705 100%
-            ) !important;
-
-        border-right:
-            1px solid rgba(190, 145, 92, 0.22);
-    }
-
-    [data-testid="stSidebar"] > div:first-child {
-        padding-top: 35px;
-    }
-
-    .sidebar-brand {
-        text-align: center;
-        margin-top: 5px;
-        margin-bottom: 65px;
-    }
-
-    .sidebar-brand-title {
-        color: #d9a96f;
-        font-family: Georgia, "Times New Roman", serif;
-        font-size: 24px;
-        letter-spacing: 5px;
-        font-weight: 500;
-    }
-
-    .sidebar-brand-sub {
-        color: #805c3d;
-        font-family: Georgia, "Times New Roman", serif;
-        font-size: 8px;
-        letter-spacing: 4px;
-        margin-top: 10px;
-    }
-
-    [data-testid="stSidebar"] .stButton {
-        width: 100%;
-    }
-
-    [data-testid="stSidebar"] .stButton > button {
-        background: transparent !important;
-        border: none !important;
-        border-radius: 0 !important;
-
-        color: #9b704c !important;
-
-        font-family:
-            Georgia,
-            "Times New Roman",
-            serif !important;
-
-        font-size: 13px !important;
-        letter-spacing: 4px !important;
-
-        text-align: left !important;
-
-        padding:
-            15px 12px 15px 12px !important;
-
-        box-shadow: none !important;
-
-        transition:
-            color 0.25s ease,
-            background 0.25s ease !important;
-    }
-
-    [data-testid="stSidebar"] .stButton > button:hover {
-        color: #e1b67c !important;
+st.markdown("""
+<style>
+
+/* =====================================================
+   전체 배경
+===================================================== */
+
+html,
+body,
+[data-testid="stAppViewContainer"] {
+    background:
+        radial-gradient(
+            circle at 55% 35%,
+            #3b281d 0%,
+            #24160f 42%,
+            #120b08 78%,
+            #0b0705 100%
+        ) !important;
+}
+
+[data-testid="stHeader"] {
+    background: transparent !important;
+}
+
+[data-testid="stToolbar"] {
+    display: none !important;
+}
+
+.main .block-container {
+    padding-top: 0 !important;
+    padding-bottom: 50px !important;
+    max-width: 1400px !important;
+}
+
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+[data-testid="stSidebar"] {
+    background:
+        linear-gradient(
+            180deg,
+            #170d09 0%,
+            #120906 55%,
+            #0d0705 100%
+        ) !important;
+
+    border-right:
+        1px solid rgba(190,145,92,0.22);
+}
+
+[data-testid="stSidebar"] > div:first-child {
+    padding-top: 35px;
+}
+
+.sidebar-title {
+    color: #d9a96f;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 23px;
+    letter-spacing: 5px;
+    text-align: center;
+    margin-top: 5px;
+}
+
+.sidebar-subtitle {
+    color: #805c3d;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 8px;
+    letter-spacing: 4px;
+    text-align: center;
+    margin-top: 9px;
+    margin-bottom: 62px;
+}
+
+.sidebar-divider {
+    width: 67px;
+    height: 1px;
+    background: rgba(168,115,69,0.18);
+    margin: 2px 0 22px 20px;
+}
+
+[data-testid="stSidebar"] .stButton {
+    width: 100%;
+}
+
+[data-testid="stSidebar"] .stButton > button {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+
+    color: #9b704c !important;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif !important;
+
+    font-size: 13px !important;
+    letter-spacing: 4px !important;
 
-        background:
-            linear-gradient(
-                90deg,
-                rgba(190, 137, 82, 0.10),
-                transparent
-            ) !important;
-    }
+    text-align: left !important;
 
-    .sidebar-line {
-        height: 1px;
-        width: 67px;
+    padding:
+        15px 12px !important;
+}
 
-        background:
-            rgba(168, 115, 69, 0.18);
+[data-testid="stSidebar"] .stButton > button:hover {
+    color: #e1b67c !important;
 
-        margin:
-            2px 0 22px 20px;
-    }
+    background:
+        linear-gradient(
+            90deg,
+            rgba(190,137,82,0.10),
+            transparent
+        ) !important;
+}
 
 
-    /* =========================
-       MAIN
-    ========================= */
+/* =====================================================
+   MAIN 첫 화면
+===================================================== */
 
-    .main .block-container {
-        padding-top: 0 !important;
-        padding-bottom: 60px !important;
+.welcome-area {
+    min-height: 88vh;
 
-        max-width: 1400px !important;
-    }
+    display: flex;
+    flex-direction: column;
 
+    justify-content: center;
+    align-items: center;
 
-    /* =========================
-       WELCOME
-    ========================= */
+    text-align: center;
+}
 
-    .welcome-wrap {
-        min-height: 92vh;
+.welcome-small {
+    color: #a6784c;
 
-        display: flex;
-        flex-direction: column;
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
 
-        justify-content: center;
-        align-items: center;
+    font-size: 13px;
+    letter-spacing: 5px;
 
-        text-align: center;
-    }
+    margin-bottom: 20px;
+}
 
-    .welcome-small {
-        color: #a6784c;
+.welcome-title {
+    color: #dcae73;
 
-        font-family:
-            Georgia,
-            "Times New Roman",
-            serif;
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
 
-        font-size: 13px;
-        letter-spacing: 5px;
+    font-size:
+        clamp(58px, 7vw, 100px);
 
-        margin-bottom: 22px;
-    }
+    font-weight: 400;
 
-    .welcome-title {
-        color: #dcae73;
+    letter-spacing: 8px;
 
-        font-family:
-            Georgia,
-            "Times New Roman",
-            serif;
+    line-height: 1.05;
 
-        font-size:
-            clamp(58px, 7vw, 100px);
+    text-shadow:
+        0 2px 18px rgba(0,0,0,0.45);
+}
 
-        letter-spacing: 8px;
-        font-weight: 400;
+.welcome-line {
+    width: 110px;
+    height: 1px;
 
-        line-height: 1.05;
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #9c7047,
+            transparent
+        );
 
-        text-shadow:
-            0 2px 18px rgba(0, 0, 0, 0.45);
-    }
+    margin: 27px auto;
+}
 
-    .welcome-line {
-        width: 110px;
-        height: 1px;
+.welcome-description {
+    color: #bda087;
 
-        background:
-            linear-gradient(
-                90deg,
-                transparent,
-                #9c7047,
-                transparent
-            );
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
 
-        margin: 28px auto;
-    }
+    font-size: 15px;
 
-    .welcome-description {
-        color: #bda087;
+    line-height: 2;
 
-        font-family:
-            Georgia,
-            "Times New Roman",
-            serif;
+    letter-spacing: 1px;
+}
 
-        font-size: 15px;
+.enter-holder {
+    display: flex;
+    justify-content: center;
 
-        line-height: 2;
+    margin-top: -120px;
 
-        letter-spacing: 1px;
-    }
+    position: relative;
+    z-index: 10;
+}
 
+.enter-holder .stButton > button {
+    min-width: 190px !important;
+    height: 52px !important;
 
-    /* =========================
-       ENTER ROOM
-    ========================= */
+    background: transparent !important;
 
-    .enter-button-wrap {
-        display: flex;
-        justify-content: center;
+    border:
+        1px solid #936b45 !important;
 
-        margin-top:
-            -170px;
+    color:
+        #d6aa75 !important;
 
-        position: relative;
-        z-index: 5;
-    }
+    border-radius: 0 !important;
 
-    .enter-button-wrap .stButton > button {
-        min-width: 190px !important;
-        height: 52px !important;
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif !important;
 
-        background: transparent !important;
+    letter-spacing: 4px !important;
+}
 
-        border:
-            1px solid #936b45 !important;
+.enter-holder .stButton > button:hover {
+    background:
+        rgba(197,145,88,0.10) !important;
 
-        color: #d6aa75 !important;
+    border-color:
+        #d5a66c !important;
 
-        font-family:
-            Georgia,
-            "Times New Roman",
-            serif !important;
+    color:
+        #efd0a0 !important;
+}
 
-        letter-spacing: 4px !important;
 
-        border-radius: 0 !important;
+/* =====================================================
+   LETTER
+===================================================== */
 
-        transition: all 0.25s ease !important;
-    }
+.letter-area {
+    min-height: 92vh;
 
-    .enter-button-wrap .stButton > button:hover {
-        background:
-            rgba(197, 145, 88, 0.10) !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-        border-color:
-            #d5a66c !important;
+    padding: 35px 20px;
+}
 
-        color:
-            #efd0a0 !important;
+.letter-paper {
+    width: min(1080px, 90vw);
+    min-height: 650px;
 
-        box-shadow:
-            0 0 25px
-            rgba(172, 116, 59, 0.15);
-    }
+    box-sizing: border-box;
 
+    padding:
+        72px 90px;
 
-    /* =========================
-       LETTER
-    ========================= */
+    background:
+        radial-gradient(
+            ellipse at center,
+            #f7eedb 0%,
+            #eee0c4 62%,
+            #e2cfac 100%
+        );
 
-    .letter-wrap {
-        min-height: 92vh;
+    border:
+        1px solid rgba(115,76,39,0.45);
 
-        display: flex;
+    box-shadow:
+        0 30px 70px rgba(0,0,0,0.45),
+        inset 0 0 45px rgba(99,62,27,0.08);
 
-        justify-content: center;
-        align-items: center;
+    position: relative;
+}
 
-        padding:
-            35px 20px;
-    }
+.letter-paper::before {
+    content: "";
 
-    .letter {
-        width:
-            min(1080px, 90vw);
+    position: absolute;
+    inset: 15px;
 
-        min-height:
-            650px;
+    border:
+        1px solid rgba(117,80,42,0.18);
 
-        box-sizing:
-            border-box;
+    pointer-events: none;
+}
 
-        padding:
-            72px 90px
-            70px 90px;
+.letter-date {
+    color: #856344;
 
-        position:
-            relative;
+    text-align: right;
 
-        background:
-            radial-gradient(
-                ellipse at center,
-                #f7eedb 0%,
-                #eee0c4 62%,
-                #e2cfac 100%
-            );
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
 
-        border:
-            1px solid
-            rgba(115, 76, 39, 0.45);
+    font-size: 13px;
 
-        box-shadow:
-            0 30px 70px
-            rgba(0, 0, 0, 0.45),
-            inset 0 0 45px
-            rgba(99, 62, 27, 0.08);
+    letter-spacing: 1px;
 
-        transform:
-            rotate(-0.25deg);
-    }
+    margin-bottom: 55px;
+}
 
-    .letter::before {
-        content: "";
+.letter-title {
+    color: #49301f;
 
-        position:
-            absolute;
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
 
-        inset:
-            15px;
+    font-size: 31px;
 
-        border:
-            1px solid
-            rgba(117, 80, 42, 0.18);
+    letter-spacing: 3px;
 
-        pointer-events:
-            none;
-    }
+    margin-bottom: 42px;
+}
 
-    .letter-date {
-        text-align: right;
+.letter-body {
+    color: #49382c;
 
-        color:
-            #856344;
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
 
-        font-family:
-            Georgia,
-            "Times New Roman",
-            serif;
+    font-size: 17px;
 
-        font-size:
-            13px;
+    line-height: 2.35;
 
-        letter-spacing:
-            1px;
+    letter-spacing: 0.4px;
+}
 
-        margin-bottom:
-            55px;
-    }
+.letter-sign {
+    color: #604531;
 
-    .letter-title {
-        color:
-            #49301f;
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
 
-        font-family:
-            Georgia,
-            "Times New Roman",
-            serif;
+    text-align: right;
 
-        font-size:
-            31px;
+    font-size: 16px;
 
-        letter-spacing:
-            3px;
+    line-height: 1.9;
 
-        margin-bottom:
-            42px;
+    margin-top: 55px;
+}
+
+
+/* =====================================================
+   CHOICE
+===================================================== */
+
+.choice-area {
+    min-height: 90vh;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+}
+
+.choice-title {
+    color: #d5a56d;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 44px;
+
+    letter-spacing: 6px;
+
+    margin-bottom: 14px;
+}
+
+.choice-subtitle {
+    color: #96765d;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 14px;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 45px;
+}
+
+.choice-buttons .stButton > button {
+    min-height: 95px !important;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            #fbf3e3 0%,
+            #ead9b9 100%
+        ) !important;
+
+    color: #4c3424 !important;
+
+    border:
+        1px solid rgba(111,75,42,0.45)
+        !important;
+
+    border-radius: 2px !important;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif !important;
+
+    font-size: 20px !important;
+
+    letter-spacing: 3px !important;
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,0.25),
+        inset 0 0 20px rgba(104,67,32,0.08)
+        !important;
+}
+
+.choice-buttons .stButton > button:hover {
+    transform: translateY(-4px);
+
+    border-color:
+        #a77a4e !important;
+}
+
+
+/* =====================================================
+   LISTEN
+===================================================== */
+
+.listen-container {
+    width: min(1100px, 90vw);
+
+    margin:
+        65px auto 30px auto;
+}
+
+.listen-title {
+    color: #d5a56d;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 42px;
+
+    letter-spacing: 5px;
+
+    text-align: center;
+}
+
+.listen-subtitle {
+    color: #9d8069;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 14px;
+
+    letter-spacing: 1px;
+
+    text-align: center;
+
+    margin-top: 12px;
+
+    margin-bottom: 38px;
+}
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+div[data-testid="stTextInput"] input {
+    background:
+        #f7eedb !important;
+
+    color:
+        #493528 !important;
+
+    border:
+        1px solid #8d6746 !important;
+
+    border-radius:
+        2px !important;
+
+    height:
+        52px !important;
+
+    font-family:
+        "Malgun Gothic",
+        Arial,
+        sans-serif !important;
+
+    font-size:
+        15px !important;
+}
+
+.search-button .stButton > button {
+    height: 52px !important;
+    width: 100% !important;
+
+    background:
+        #25160f !important;
+
+    color:
+        #d8aa73 !important;
+
+    border:
+        1px solid #946b45 !important;
+
+    border-radius:
+        2px !important;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif !important;
+
+    letter-spacing:
+        3px !important;
+}
+
+
+/* =====================================================
+   SEARCH RESULT
+===================================================== */
+
+.result-title {
+    color: #cda072;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 19px;
+
+    letter-spacing: 2px;
+
+    border-bottom:
+        1px solid rgba(180,130,79,0.20);
+
+    padding-bottom: 14px;
+
+    margin-top: 50px;
+    margin-bottom: 22px;
+}
+
+.song-info {
+    background:
+        linear-gradient(
+            135deg,
+            #f8efdd,
+            #e5d2b2
+        );
+
+    border:
+        1px solid rgba(116,79,44,0.40);
+
+    padding:
+        20px;
+
+    min-height:
+        130px;
+
+    box-shadow:
+        0 12px 30px rgba(0,0,0,0.20);
+}
+
+.song-title {
+    color: #392519;
+
+    font-family:
+        "Malgun Gothic",
+        Arial,
+        sans-serif;
+
+    font-size: 20px;
+
+    font-weight: 600;
+
+    margin-bottom: 8px;
+}
+
+.song-artist {
+    color: #705039;
+
+    font-size: 14px;
+
+    margin-bottom: 5px;
+}
+
+.song-album {
+    color: #876b53;
+
+    font-size: 13px;
+}
+
+.song-release {
+    color: #987b60;
+
+    font-size: 11px;
+
+    margin-top: 9px;
+}
+
+.song-link {
+    color: #765238 !important;
+
+    font-size: 12px;
+
+    text-decoration: none !important;
+
+    display: inline-block;
+
+    margin-top: 12px;
+}
+
+.no-result {
+    color: #b89b80;
+
+    text-align: center;
+
+    border:
+        1px solid rgba(157,112,72,0.35);
+
+    padding: 30px;
+
+    margin-top: 35px;
+
+    line-height: 1.9;
+}
+
+
+/* =====================================================
+   COMING
+===================================================== */
+
+.coming-area {
+    min-height: 80vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+}
+
+.coming-title {
+    color: #d5a56d;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 46px;
+
+    letter-spacing: 7px;
+}
+
+.coming-subtitle {
+    color: #8d715d;
+
+    margin-top: 18px;
+
+    letter-spacing: 2px;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 800px) {
+
+    .letter-paper {
+        padding: 50px 35px;
     }
 
     .letter-body {
-        color:
-            #49382c;
-
-        font-family:
-            Georgia,
-            "Times New Roman",
-            serif;
-
-        font-size:
-            17px;
-
-        line-height:
-            2.35;
-
-        letter-spacing:
-            0.4px;
+        font-size: 15px;
     }
 
-    .letter-body p {
-        margin-bottom:
-            25px;
+    .choice-title {
+        font-size: 36px;
     }
 
-    .letter-sign {
-        margin-top:
-            65px;
+}
 
-        text-align:
-            right;
-
-        color:
-            #604531;
-
-        font-family:
-            Georgia,
-            "Times New Roman",
-            serif;
-
-        font-size:
-            16px;
-
-        line-height:
-            1.9;
-    }
-
-
-    /* =========================
-       CHOICE
-    ========================= */
-
-    .choice-wrap {
-        min-height: 92vh;
-
-        display: flex;
-
-        flex-direction:
-            column;
-
-        align-items:
-            center;
-
-        justify-content:
-            center;
-
-        text-align:
-            center;
-    }
-
-    .choice-heading {
-        color:
-            #d5a56d;
-
-        font-family:
-            Georgia,
-            "Times New Roman",
-            serif;
-
-        font-size:
-            44px;
-
-        letter-spacing:
-            6px;
-
-        margin-bottom:
-            15px;
-    }
-
-    .choice-subheading {
-        color:
-            #96765d;
-
-        font-family:
-            Georgia,
-            "Times New Roman",
-            serif;
-
-        font-size:
-            14px;
-
-        letter-spacing:
-            2px;
-
-        margin-bottom:
-            48px;
-    }
-
-
-    /* =========================
-       CHOICE BUTTON
-    ========================= */
-
-    .paper-button-row {
-        display:
-            flex;
-
-        justify-content:
-            center;
-
-        gap:
-            30px;
-
-        width:
-            100%;
-    }
-
-    .paper-button-row .stButton > button {
-        min-width:
-            245px !important;
-
-        min-height:
-            95px !important;
-
-        padding:
-            18px 30px !important;
-
-        border-radius:
-            2px !important;
-
-        border:
-            1px solid
-            rgba(111, 75, 42, 0.45)
-            !important;
-
-        background:
-            radial-gradient(
-                ellipse at center,
-                #fbf3e3 0%,
-                #ead9b9 100%
-            )
-            !important;
-
-        color:
-            #4c3424 !important;
-
-        font-family:
-            Georgia,
-            "Times New Roman",
-            serif !important;
-
-        font-size:
-            21px !important;
-
-        letter-spacing:
-            3px !important;
-
-        box-shadow:
-            0 15px 35px
-            rgba(0, 0, 0, 0.25),
-            inset 0 0 20px
-            rgba(104, 67, 32, 0.08)
-            !important;
-
-        transition:
-            all 0.25s ease !important;
-    }
-
-    .paper-button-row .stButton > button:hover {
-        transform:
-            translateY(-4px);
-
-        box-shadow:
-            0 20px 40px
-            rgba(0, 0, 0, 0.32),
-            0 0 25px
-            rgba(190, 137, 82, 0.10)
-            !important;
-
-        border-color:
-            #a77a4e !important;
-    }
-
-
-    /* =========================
-       LISTEN
-    ========================= */
-
-    .listen-wrap {
-        width:
-            min(1100px, 90vw);
-
-        margin:
-            70px auto 20px auto;
-    }
-
-    .listen-heading {
-        color:
-            #d5a56d;
-
-        font-family:
-            Georgia,
-            "Times New Roman",
-            serif;
-
-        font-size:
-            42px;
-
-        letter-spacing:
-            5px;
-
-        text-align:
-            center;
-
-        margin-bottom:
-            12px;
-    }
-
-    .listen-description {
-        color:
-            #9d8069;
-
-        text-align:
-            center;
-
-        font-family:
-            Georgia,
-            "Times New Roman",
-            serif;
-
-        font-size:
-            14px;
-
-        letter-spacing:
-            1px;
-
-        margin-bottom:
-            38px;
-    }
-
-
-    /* =========================
-       SEARCH INPUT
-    ========================= */
-
-    div[data-testid="stTextInput"] input {
-        background:
-            rgba(247, 238, 219, 0.96)
-            !important;
-
-        color:
-            #493528
-            !important;
-
-        border:
-            1px solid #8d6746
-            !important;
-
-        border-radius:
-            2px
-            !important;
-
-        height:
-            52px
-            !important;
-
-        font-family:
-            "Malgun Gothic",
-            Arial,
-            sans-serif
-            !important;
-
-        font-size:
-            15px
-            !important;
-
-        box-shadow:
-            inset 0 0 15px
-            rgba(90, 55, 27, 0.08)
-            !important;
-    }
-
-    div[data-testid="stTextInput"] input:focus {
-        border-color:
-            #c09668
-            !important;
-
-        box-shadow:
-            0 0 0 1px #c09668
-            !important;
-    }
-
-
-    /* =========================
-       SEARCH BUTTON
-    ========================= */
-
-    .search-button-wrap .stButton > button {
-        height:
-            52px !important;
-
-        width:
-            100% !important;
-
-        border-radius:
-            2px !important;
-
-        border:
-            1px solid #946b45
-            !important;
-
-        background:
-            #25160f
-            !important;
-
-        color:
-            #d8aa73
-            !important;
-
-        font-family:
-            Georgia,
-            "Times New Roman",
-            serif
-            !important;
-
-        letter-spacing:
-            3px
-            !important;
-    }
-
-    .search-button-wrap .stButton > button:hover {
-        background:
-            #392319
-            !important;
-
-        border-color:
-            #c39461
-            !important;
-    }
-
-
-    /* =========================
-       RESULT TITLE
-    ========================= */
-
-    .result-heading {
-        margin-top:
-            55px;
-
-        color:
-            #cda072;
-
-        font-family:
-            Georgia,
-            "Times New Roman",
-            serif;
-
-        font-size:
-            19px;
-
-        letter-spacing:
-            2px;
-
-        border-bottom:
-            1px solid
-            rgba(180, 130, 79, 0.20);
-
-        padding-bottom:
-            14px;
-
-        margin-bottom:
-            22px;
-    }
-
-
-    /* =========================
-       SONG CARD
-    ========================= */
-
-    .song-card {
-        background:
-            linear-gradient(
-                135deg,
-                rgba(248, 239, 221, 0.98),
-                rgba(229, 210, 178, 0.98)
-            );
-
-        border:
-            1px solid
-            rgba(116, 79, 44, 0.40);
-
-        padding:
-            22px;
-
-        margin-bottom:
-            18px;
-
-        box-shadow:
-            0 12px 30px
-            rgba(0, 0, 0, 0.20);
-
-        min-height:
-            145px;
-    }
-
-    .song-name {
-        color:
-            #392519;
-
-        font-family:
-            "Malgun Gothic",
-            Arial,
-            sans-serif;
-
-        font-size:
-            20px;
-
-        font-weight:
-            600;
-
-        margin-bottom:
-            7px;
-    }
-
-    .song-artist {
-        color:
-            #705039;
-
-        font-size:
-            14px;
-
-        margin-bottom:
-            5px;
-    }
-
-    .song-album {
-        color:
-            #876b53;
-
-        font-size:
-            13px;
-    }
-
-    .song-meta {
-        color:
-            #987b60;
-
-        font-size:
-            11px;
-
-        margin-top:
-            9px;
-    }
-
-    .apple-link {
-        display:
-            inline-block;
-
-        margin-top:
-            12px;
-
-        color:
-            #765238 !important;
-
-        text-decoration:
-            none !important;
-
-        border-bottom:
-            1px solid
-            rgba(118, 82, 56, 0.35);
-
-        padding-bottom:
-            2px;
-
-        font-size:
-            12px;
-    }
-
-    .apple-link:hover {
-        color:
-            #4c301e !important;
-    }
-
-
-    /* =========================
-       NOTICE
-    ========================= */
-
-    .notice-box {
-        margin-top:
-            30px;
-
-        padding:
-            28px;
-
-        border:
-            1px solid
-            rgba(157, 112, 72, 0.35);
-
-        background:
-            rgba(239, 221, 190, 0.06);
-
-        color:
-            #b89b80;
-
-        text-align:
-            center;
-
-        line-height:
-            1.9;
-    }
-
-
-    /* =========================
-       COMING SOON
-    ========================= */
-
-    .coming-wrap {
-        min-height:
-            80vh;
-
-        display:
-            flex;
-
-        justify-content:
-            center;
-
-        align-items:
-            center;
-
-        flex-direction:
-            column;
-    }
-
-    .coming-title {
-        color:
-            #d5a56d;
-
-        font-family:
-            Georgia,
-            "Times New Roman",
-            serif;
-
-        font-size:
-            46px;
-
-        letter-spacing:
-            7px;
-    }
-
-    .coming-text {
-        color:
-            #8d715d;
-
-        font-family:
-            Georgia,
-            "Times New Roman",
-            serif;
-
-        margin-top:
-            18px;
-
-        letter-spacing:
-            2px;
-    }
-
-
-    /* =========================
-       MOBILE
-    ========================= */
-
-    @media (max-width: 800px) {
-
-        .paper-button-row {
-            flex-direction:
-                column;
-
-            align-items:
-                center;
-        }
-
-        .letter {
-            padding:
-                55px 40px
-                50px 40px;
-
-            min-height:
-                600px;
-        }
-
-        .letter-body {
-            font-size:
-                15px;
-        }
-
-        .welcome-title {
-            letter-spacing:
-                5px;
-        }
-
-    }
-
-    </style>
-    """
-)
+</style>
+""")
 
 
 # =========================================================
 # APPLE API
 # =========================================================
 
-ITUNES_SEARCH_URL = "https://itunes.apple.com/search"
-ITUNES_LOOKUP_URL = "https://itunes.apple.com/lookup"
+SEARCH_URL = "https://itunes.apple.com/search"
 
 
-def normalize_text(text):
+def apple_request(params):
     """
-    검색 비교용 정규화
+    Apple iTunes Search API 호출
     """
+
+    url = SEARCH_URL + "?" + urllib.parse.urlencode(params)
+
+    request = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent":
+                "Mozilla/5.0"
+        }
+    )
+
+    try:
+        with urllib.request.urlopen(
+            request,
+            timeout=15
+        ) as response:
+
+            data = response.read().decode(
+                "utf-8"
+            )
+
+            return json.loads(data)
+
+    except urllib.error.HTTPError as e:
+
+        raise Exception(
+            f"Apple API 오류: HTTP {e.code}"
+        )
+
+    except urllib.error.URLError:
+
+        raise Exception(
+            "Apple 음악 검색 서버에 연결하지 못했습니다."
+        )
+
+    except json.JSONDecodeError:
+
+        raise Exception(
+            "Apple에서 올바른 검색 데이터를 받지 못했습니다."
+        )
+
+
+# =========================================================
+# 문자열 정리
+# =========================================================
+
+def normalize(text):
 
     if not text:
         return ""
 
     text = str(text).lower()
 
-    text = re.sub(
-        r"\([^)]*\)",
-        "",
-        text
+    text = text.replace(
+        " ",
+        ""
     )
 
     text = re.sub(
-        r"\s+",
-        "",
-        text
-    )
-
-    text = re.sub(
-        r"[^0-9a-z가-힣ぁ-んァ-ン一-龥]",
+        r"[^0-9a-z가-힣]",
         "",
         text
     )
@@ -1106,170 +851,129 @@ def normalize_text(text):
     return text
 
 
-def apple_api_request(url, params):
-
-    query = urllib.parse.urlencode(params)
-
-    full_url = (
-        url
-        + "?"
-        + query
-    )
-
-    request = urllib.request.Request(
-        full_url,
-        headers={
-            "User-Agent":
-                "Mozilla/5.0 record-room"
-        }
-    )
-
-    try:
-
-        with urllib.request.urlopen(
-            request,
-            timeout=12
-        ) as response:
-
-            raw = response.read()
-
-            return json.loads(
-                raw.decode("utf-8")
-            )
-
-    except urllib.error.HTTPError as e:
-
-        raise Exception(
-            f"Apple API 오류 ({e.code})"
-        )
-
-    except urllib.error.URLError:
-
-        raise Exception(
-            "Apple 서버에 연결하지 못했습니다."
-        )
-
-    except Exception as e:
-
-        raise Exception(
-            f"검색 중 오류가 발생했습니다: {e}"
-        )
-
-
 # =========================================================
-# EXACT ARTIST SEARCH
+# 가수 검색
 # =========================================================
 
 @st.cache_data(
     ttl=600,
     show_spinner=False
 )
-def find_exact_artist(query):
+def search_artist(query):
 
-    data = apple_api_request(
-        ITUNES_SEARCH_URL,
+    data = apple_request(
         {
             "term": query,
             "country": "KR",
             "media": "music",
-            "entity": "musicArtist",
-            "limit": 50,
-            "lang": "ko_kr"
+            "entity": "song",
+            "attribute": "artistTerm",
+            "limit": 50
         }
     )
 
-    artists = data.get(
+    results = data.get(
         "results",
         []
     )
 
-    normalized_query = normalize_text(
+    query_normalized = normalize(
         query
     )
 
-    # 오직 완전 일치만 인정
-    for artist in artists:
+    # ---------------------------------------------
+    # 1. 아티스트 이름 완전 일치
+    # ---------------------------------------------
 
-        artist_name = artist.get(
+    exact = []
+
+    for item in results:
+
+        artist = item.get(
             "artistName",
             ""
         )
 
-        if normalize_text(
-            artist_name
-        ) == normalized_query:
+        if normalize(
+            artist
+        ) == query_normalized:
 
-            return artist
+            exact.append(item)
 
-    return None
+    if exact:
+        return exact
 
 
-# =========================================================
-# ARTIST SONGS
-# =========================================================
+    # ---------------------------------------------
+    # 2. Apple이 반환한 가장 가까운 artist
+    # ---------------------------------------------
 
-@st.cache_data(
-    ttl=600,
-    show_spinner=False
-)
-def get_artist_songs(artist_id):
+    artists = []
 
-    data = apple_api_request(
-        ITUNES_LOOKUP_URL,
-        {
-            "id": artist_id,
-            "entity": "song",
-            "country": "KR",
-            "limit": 50,
-            "sort": "recent"
-        }
-    )
-
-    results = data.get(
-        "results",
-        []
-    )
-
-    songs = []
+    seen_artists = set()
 
     for item in results:
 
-        if item.get(
-            "wrapperType"
-        ) != "track":
+        artist = item.get(
+            "artistName",
+            ""
+        )
 
+        artist_key = normalize(
+            artist
+        )
+
+        if not artist_key:
             continue
 
-        if item.get(
-            "kind"
-        ) != "song":
-
+        if artist_key in seen_artists:
             continue
 
-        songs.append(item)
+        seen_artists.add(
+            artist_key
+        )
 
-    return songs
+        # 검색어가 artist 이름 안에 포함되는 경우
+        if query_normalized in artist_key:
+
+            artists.append(
+                artist
+            )
+
+    if len(artists) == 1:
+
+        target = artists[0]
+
+        return [
+            item
+            for item in results
+            if item.get(
+                "artistName",
+                ""
+            ) == target
+        ]
+
+    return []
 
 
 # =========================================================
-# SONG SEARCH
+# 곡 제목 검색
 # =========================================================
 
 @st.cache_data(
     ttl=600,
     show_spinner=False
 )
-def find_song_results(query):
+def search_song(query):
 
-    data = apple_api_request(
-        ITUNES_SEARCH_URL,
+    data = apple_request(
         {
             "term": query,
             "country": "KR",
             "media": "music",
             "entity": "song",
-            "limit": 50,
-            "lang": "ko_kr"
+            "attribute": "songTerm",
+            "limit": 50
         }
     )
 
@@ -1278,53 +982,49 @@ def find_song_results(query):
         []
     )
 
-    normalized_query = normalize_text(
+    query_normalized = normalize(
         query
     )
 
-    exact_matches = []
-    partial_matches = []
+    exact = []
+    partial = []
 
-    for song in results:
+    for item in results:
 
-        if song.get(
+        if item.get(
             "kind"
         ) != "song":
 
             continue
 
-        track_name = song.get(
+        track_name = item.get(
             "trackName",
             ""
         )
 
-        normalized_track = normalize_text(
+        track_normalized = normalize(
             track_name
         )
 
-        if not normalized_track:
+        if not track_normalized:
             continue
 
-        # 제목 완전 일치
-        if normalized_track == normalized_query:
+        if track_normalized == query_normalized:
 
-            exact_matches.append(song)
+            exact.append(item)
 
-        # 제목 일부 일치
-        elif normalized_query in normalized_track:
+        elif query_normalized in track_normalized:
 
-            partial_matches.append(song)
+            partial.append(item)
 
-    # 완전 일치가 하나라도 존재한다면
-    # 완전 일치 위주로 보여준다.
-    if exact_matches:
-        return exact_matches[:30]
+    if exact:
+        return exact[:30]
 
-    return partial_matches[:30]
+    return partial[:30]
 
 
 # =========================================================
-# MAIN SEARCH
+# 전체 음악 검색
 # =========================================================
 
 @st.cache_data(
@@ -1339,48 +1039,37 @@ def search_music(query):
 
         return {
             "type": "",
-            "artist": None,
-            "songs": []
+            "results": []
         }
 
-    # -----------------------------------------------------
-    # 1. 가수 이름 완전 일치 확인
-    # -----------------------------------------------------
 
-    artist = find_exact_artist(
+    # ---------------------------------------------
+    # 먼저 가수 검색
+    # ---------------------------------------------
+
+    artist_results = search_artist(
         query
     )
 
-    if artist:
+    if artist_results:
 
-        artist_id = artist.get(
-            "artistId"
-        )
+        return {
+            "type": "artist",
+            "results": artist_results
+        }
 
-        if artist_id:
 
-            songs = get_artist_songs(
-                artist_id
-            )
+    # ---------------------------------------------
+    # 가수가 아니면 곡 제목 검색
+    # ---------------------------------------------
 
-            return {
-                "type": "artist",
-                "artist": artist,
-                "songs": songs
-            }
-
-    # -----------------------------------------------------
-    # 2. 가수가 아니면 곡 제목 검색
-    # -----------------------------------------------------
-
-    songs = find_song_results(
+    song_results = search_song(
         query
     )
 
     return {
         "type": "song",
-        "artist": None,
-        "songs": songs
+        "results": song_results
     }
 
 
@@ -1390,110 +1079,100 @@ def search_music(query):
 
 with st.sidebar:
 
-    render_html(
-        """
-        <div class="sidebar-brand">
-
-            <div class="sidebar-brand-title">
-                RECORD ROOM
-            </div>
-
-            <div class="sidebar-brand-sub">
-                A ROOM FOR MUSIC
-            </div>
-
-        </div>
-        """
+    # HTML을 전혀 중첩하지 않고 한 줄로 출력
+    st.markdown(
+        '<div class="sidebar-title">RECORD ROOM</div>',
+        unsafe_allow_html=True
     )
+
+    st.markdown(
+        '<div class="sidebar-subtitle">A ROOM FOR MUSIC</div>',
+        unsafe_allow_html=True
+    )
+
 
     if st.button(
         "MAIN",
-        key="sidebar_main"
+        key="side_main"
     ):
 
         st.session_state.page = "main"
+
         st.session_state.main_entered = False
+
         st.session_state.choice_mode = "select"
 
         st.rerun()
 
-    render_html(
-        """
-        <div class="sidebar-line"></div>
-        """
+
+    st.markdown(
+        '<div class="sidebar-divider"></div>',
+        unsafe_allow_html=True
     )
+
 
     if st.button(
         "CHOICE",
-        key="sidebar_choice"
+        key="side_choice"
     ):
 
         st.session_state.page = "choice"
+
         st.session_state.choice_mode = "select"
 
         st.rerun()
 
-    render_html(
-        """
-        <div class="sidebar-line"></div>
-        """
+
+    st.markdown(
+        '<div class="sidebar-divider"></div>',
+        unsafe_allow_html=True
     )
+
 
     if st.button(
         "—",
-        key="sidebar_empty"
+        key="side_empty"
     ):
 
         st.session_state.page = "unknown"
 
         st.rerun()
 
-    render_html(
-        """
-        <div class="sidebar-line"></div>
-        """
+
+    st.markdown(
+        '<div class="sidebar-divider"></div>',
+        unsafe_allow_html=True
     )
 
 
 # =========================================================
-# MAIN PAGE
+# MAIN
 # =========================================================
 
 if st.session_state.page == "main":
 
     # -----------------------------------------------------
-    # INITIAL MAIN
+    # MAIN 첫 화면
     # -----------------------------------------------------
 
     if not st.session_state.main_entered:
 
-        render_html(
-            """
-            <div class="welcome-wrap">
-
-                <div class="welcome-small">
-                    WELCOME TO
-                </div>
-
-                <div class="welcome-title">
-                    record room
-                </div>
-
-                <div class="welcome-line"></div>
-
-                <div class="welcome-description">
-                    음악을 듣고, 발견하고,<br>
-                    잠시 머무는 작은 방
-                </div>
-
-            </div>
-            """
+        st.markdown(
+            '<div class="welcome-area">'
+            '<div class="welcome-small">WELCOME TO</div>'
+            '<div class="welcome-title">record room</div>'
+            '<div class="welcome-line"></div>'
+            '<div class="welcome-description">'
+            '음악을 듣고, 발견하고,<br>'
+            '잠시 머무는 작은 방'
+            '</div>'
+            '</div>',
+            unsafe_allow_html=True
         )
 
-        render_html(
-            """
-            <div class="enter-button-wrap">
-            """
+        st.markdown(
+            '<div class="enter-holder">',
+            unsafe_allow_html=True
         )
 
         if st.button(
@@ -1505,11 +1184,11 @@ if st.session_state.page == "main":
 
             st.rerun()
 
-        render_html(
-            """
-            </div>
-            """
+        st.markdown(
+            '</div>',
+            unsafe_allow_html=True
         )
+
 
     # -----------------------------------------------------
     # LETTER
@@ -1517,93 +1196,66 @@ if st.session_state.page == "main":
 
     else:
 
-        render_html(
-            """
-            <div class="letter-wrap">
-
-                <div class="letter">
-
-                    <div class="letter-date">
-                        RECORD ROOM
-                    </div>
-
-                    <div class="letter-title">
-                        Dear visitor,
-                    </div>
-
-                    <div class="letter-body">
-
-                        <p>
-                            이곳에 들어온 것을 환영합니다.
-                        </p>
-
-                        <p>
-                            이 방에는 수많은 음악이 있습니다.
-                            누군가에게는 오래된 기억이고,
-                            누군가에게는 아직 만나지 못한
-                            새로운 장면일지도 모릅니다.
-                        </p>
-
-                        <p>
-                            오늘 어떤 음악을 듣게 될지는
-                            아직 아무도 알 수 없습니다.
-                        </p>
-
-                        <p>
-                            천천히 둘러보세요.
-                            듣고 싶은 음악을 찾아도 좋고,
-                            우연히 새로운 음악을 발견해도 좋습니다.
-                        </p>
-
-                        <p>
-                            이곳에서 잠시,
-                            당신만의 음악을 찾아가길 바랍니다.
-                        </p>
-
-                    </div>
-
-                    <div class="letter-sign">
-                        from,<br>
-                        record room
-                    </div>
-
-                </div>
-
-            </div>
-            """
+        st.markdown(
+            '<div class="letter-area">'
+            '<div class="letter-paper">'
+            '<div class="letter-date">RECORD ROOM</div>'
+            '<div class="letter-title">Dear visitor,</div>'
+            '<div class="letter-body">'
+            '<p>이곳에 들어온 것을 환영합니다.</p>'
+            '<p>'
+            '이 방에는 수많은 음악이 있습니다. '
+            '누군가에게는 오래된 기억이고, '
+            '누군가에게는 아직 만나지 못한 새로운 장면일지도 모릅니다.'
+            '</p>'
+            '<p>'
+            '오늘 어떤 음악을 듣게 될지는 '
+            '아직 아무도 알 수 없습니다.'
+            '</p>'
+            '<p>'
+            '천천히 둘러보세요. '
+            '듣고 싶은 음악을 찾아도 좋고, '
+            '우연히 새로운 음악을 발견해도 좋습니다.'
+            '</p>'
+            '<p>'
+            '이곳에서 잠시, '
+            '당신만의 음악을 찾아가길 바랍니다.'
+            '</p>'
+            '</div>'
+            '<div class="letter-sign">'
+            'from,<br>'
+            'record room'
+            '</div>'
+            '</div>'
+            '</div>',
+            unsafe_allow_html=True
         )
 
 
 # =========================================================
-# CHOICE PAGE
+# CHOICE
 # =========================================================
 
 elif st.session_state.page == "choice":
 
-    # =====================================================
-    # CHOICE SELECT
-    # =====================================================
+    # -----------------------------------------------------
+    # CHOICE MENU
+    # -----------------------------------------------------
 
     if st.session_state.choice_mode == "select":
 
-        render_html(
-            """
-            <div class="choice-wrap">
-
-                <div class="choice-heading">
-                    CHOICE
-                </div>
-
-                <div class="choice-subheading">
-                    WHAT WOULD YOU LIKE TO DO?
-                </div>
-
-            </div>
-            """
+        st.markdown(
+            '<div class="choice-area">'
+            '<div class="choice-title">CHOICE</div>'
+            '<div class="choice-subtitle">'
+            'WHAT WOULD YOU LIKE TO DO?'
+            '</div>'
+            '</div>',
+            unsafe_allow_html=True
         )
 
         st.markdown(
-            "<div class='paper-button-row'>",
+            '<div class="choice-buttons">',
             unsafe_allow_html=True
         )
 
@@ -1616,7 +1268,8 @@ elif st.session_state.page == "choice":
 
             if st.button(
                 "노래 듣기",
-                key="listen_button"
+                key="listen_button",
+                use_container_width=True
             ):
 
                 st.session_state.choice_mode = "listen"
@@ -1627,7 +1280,8 @@ elif st.session_state.page == "choice":
 
             if st.button(
                 "추천받기",
-                key="recommend_button"
+                key="recommend_button",
+                use_container_width=True
             ):
 
                 st.session_state.choice_mode = "recommend"
@@ -1635,7 +1289,7 @@ elif st.session_state.page == "choice":
                 st.rerun()
 
         st.markdown(
-            "</div>",
+            '</div>',
             unsafe_allow_html=True
         )
 
@@ -1646,74 +1300,72 @@ elif st.session_state.page == "choice":
 
     elif st.session_state.choice_mode == "listen":
 
-        render_html(
-            """
-            <div class="listen-wrap">
-
-                <div class="listen-heading">
-                    LISTEN
-                </div>
-
-                <div class="listen-description">
-                    가수 이름 또는 곡 제목을 검색해보세요.
-                </div>
-
-            </div>
-            """
+        st.markdown(
+            '<div class="listen-container">'
+            '<div class="listen-title">LISTEN</div>'
+            '<div class="listen-subtitle">'
+            '가수 이름 또는 곡 제목을 검색해보세요.'
+            '</div>'
+            '</div>',
+            unsafe_allow_html=True
         )
 
-        search_col1, search_col2 = st.columns(
+
+        # ---------------------------------------------
+        # 검색창
+        # ---------------------------------------------
+
+        col1, col2 = st.columns(
             [5, 1],
             gap="medium"
         )
 
-        with search_col1:
+
+        with col1:
 
             query = st.text_input(
-                "검색",
+                "music search",
                 placeholder=
                     "가수 이름 또는 곡 제목을 입력하세요",
                 label_visibility="collapsed",
-                key="music_search_input"
+                key="music_input"
             )
 
-        with search_col2:
 
-            render_html(
-                """
-                <div class="search-button-wrap">
-                """
+        with col2:
+
+            st.markdown(
+                '<div class="search-button">',
+                unsafe_allow_html=True
             )
 
             search_clicked = st.button(
                 "SEARCH",
-                key="music_search_button"
+                key="search_button",
+                use_container_width=True
             )
 
-            render_html(
-                """
-                </div>
-                """
+            st.markdown(
+                '</div>',
+                unsafe_allow_html=True
             )
 
 
-        # -------------------------------------------------
-        # SEARCH
-        # -------------------------------------------------
+        # ---------------------------------------------
+        # 검색 실행
+        # ---------------------------------------------
 
         if search_clicked:
 
-            clean_query = query.strip()
+            query = query.strip()
 
-            if not clean_query:
+            if not query:
 
                 st.session_state.search_results = []
 
-                st.session_state.search_type = ""
-
                 st.session_state.search_query = ""
 
-                st.session_state.search_artist = None
+                st.session_state.search_type = ""
 
                 st.session_state.search_error = (
                     "검색어를 입력해주세요."
@@ -1724,27 +1376,23 @@ elif st.session_state.page == "choice":
                 try:
 
                     with st.spinner(
-                        "record room에서 음악을 찾는 중..."
+                        "음악을 찾는 중..."
                     ):
 
                         result = search_music(
-                            clean_query
+                            query
                         )
 
                     st.session_state.search_results = (
-                        result["songs"]
+                        result["results"]
                     )
 
                     st.session_state.search_type = (
                         result["type"]
                     )
 
-                    st.session_state.search_artist = (
-                        result["artist"]
-                    )
-
                     st.session_state.search_query = (
-                        clean_query
+                        query
                     )
 
                     st.session_state.search_error = ""
@@ -1753,80 +1401,80 @@ elif st.session_state.page == "choice":
 
                     st.session_state.search_results = []
 
-                    st.session_state.search_error = (
-                        str(e)
-                    )
+                    st.session_state.search_query = query
+
+                    st.session_state.search_type = ""
+
+                    st.session_state.search_error = str(e)
 
 
-        # -------------------------------------------------
-        # ERROR
-        # -------------------------------------------------
+        # ---------------------------------------------
+        # 오류
+        # ---------------------------------------------
 
         if st.session_state.search_error:
 
-            render_html(
-                f"""
-                <div class="notice-box">
-                    {escape(st.session_state.search_error)}
-                </div>
-                """
+            st.markdown(
+                '<div class="no-result">'
+                + escape(
+                    st.session_state.search_error
+                )
+                + '</div>',
+                unsafe_allow_html=True
             )
 
 
-        # -------------------------------------------------
-        # RESULTS
-        # -------------------------------------------------
+        # ---------------------------------------------
+        # 결과
+        # ---------------------------------------------
 
         results = st.session_state.search_results
 
         if results:
 
-            search_type = (
-                st.session_state.search_type
-            )
-
             searched = (
                 st.session_state.search_query
             )
 
+            search_type = (
+                st.session_state.search_type
+            )
+
+
             if search_type == "artist":
 
-                artist = (
-                    st.session_state.search_artist
+                # 첫 번째 결과의 artistName을
+                # 실제 표시 제목으로 사용
+                artist_name = results[0].get(
+                    "artistName",
+                    searched
                 )
 
-                artist_name = (
-                    artist.get(
-                        "artistName",
-                        searched
-                    )
-                    if artist
-                    else searched
-                )
-
-                render_html(
-                    f"""
-                    <div class="result-heading">
-                        {escape(artist_name)} — SONGS
-                    </div>
-                    """
+                title_text = (
+                    escape(artist_name)
+                    + " — SONGS"
                 )
 
             else:
 
-                render_html(
-                    f"""
-                    <div class="result-heading">
-                        SEARCH RESULTS FOR
-                        "{escape(searched)}"
-                    </div>
-                    """
+                title_text = (
+                    'SEARCH RESULTS FOR "'
+                    + escape(searched)
+                    + '"'
                 )
 
 
-            # -------------------------------------------------
-            # SONG CARDS
-            # -------------------------------------------------
+            st.markdown(
+                '<div class="result-title">'
+                + title_text
+                + '</div>',
+                unsafe_allow_html=True
+            )
+
+
+            # -----------------------------------------
+            # 곡 표시
+            # -----------------------------------------
 
             for song in results:
 
@@ -1851,11 +1499,6 @@ elif st.session_state.page == "choice":
                     )
                 )
 
-                artwork = song.get(
-                    "artworkUrl100",
-                    ""
-                )
-
                 release_date = song.get(
                     "releaseDate",
                     ""
@@ -1866,9 +1509,16 @@ elif st.session_state.page == "choice":
                     release_date = escape(
                         release_date[:10]
                     )
+
                 else:
 
                     release_date = "-"
+
+
+                artwork = song.get(
+                    "artworkUrl100",
+                    ""
+                )
 
                 track_url = song.get(
                     "trackViewUrl",
@@ -1881,27 +1531,25 @@ elif st.session_state.page == "choice":
                 )
 
 
-                result_col1, result_col2 = st.columns(
+                image_col, info_col = st.columns(
                     [1, 6],
                     gap="medium"
                 )
 
 
-                # ARTWORK
-                with result_col1:
+                with image_col:
 
                     if artwork:
 
                         st.image(
                             artwork,
-                            width=120
+                            width=110
                         )
 
 
-                # INFO
-                with result_col2:
+                with info_col:
 
-                    apple_link = ""
+                    link_html = ""
 
                     if track_url:
 
@@ -1910,40 +1558,38 @@ elif st.session_state.page == "choice":
                             quote=True
                         )
 
-                        apple_link = (
-                            f'<a '
-                            f'class="apple-link" '
-                            f'href="{safe_url}" '
-                            f'target="_blank">'
-                            f'OPEN IN APPLE MUSIC / ITUNES ↗'
-                            f'</a>'
+                        link_html = (
+                            '<a '
+                            'class="song-link" '
+                            'href="'
+                            + safe_url
+                            + '" '
+                            'target="_blank">'
+                            'OPEN IN APPLE MUSIC / ITUNES ↗'
+                            '</a>'
                         )
 
-                    render_html(
-                        f"""
-                        <div class="song-card">
 
-                            <div class="song-name">
-                                {track_name}
-                            </div>
-
-                            <div class="song-artist">
-                                {artist_name}
-                            </div>
-
-                            <div class="song-album">
-                                {album_name}
-                            </div>
-
-                            <div class="song-meta">
-                                RELEASE · {release_date}
-                            </div>
-
-                            {apple_link}
-
-                        </div>
-                        """
+                    st.markdown(
+                        '<div class="song-info">'
+                        '<div class="song-title">'
+                        + track_name
+                        + '</div>'
+                        '<div class="song-artist">'
+                        + artist_name
+                        + '</div>'
+                        '<div class="song-album">'
+                        + album_name
+                        + '</div>'
+                        '<div class="song-release">'
+                        'RELEASE · '
+                        + release_date
+                        + '</div>'
+                        + link_html
+                        + '</div>',
+                        unsafe_allow_html=True
                     )
+
 
                     if preview_url:
 
@@ -1951,43 +1597,35 @@ elif st.session_state.page == "choice":
                             preview_url
                         )
 
-                render_html(
-                    """
-                    <div
-                        style="
-                            height:14px;
-                        "
-                    ></div>
-                    """
+
+                st.markdown(
+                    '<div style="height:18px;"></div>',
+                    unsafe_allow_html=True
                 )
 
 
-        # -------------------------------------------------
-        # NO RESULTS
-        # -------------------------------------------------
+        # ---------------------------------------------
+        # 결과 없음
+        # ---------------------------------------------
 
         elif (
             st.session_state.search_query
             and not st.session_state.search_error
         ):
 
-            render_html(
-                f"""
-                <div class="notice-box">
-
-                    "{escape(
-                        st.session_state.search_query
-                    )}"
-
-                    에 해당하는 음악을 찾지 못했습니다.
-
-                    <br><br>
-
-                    정확한 가수 이름이나
-                    곡 제목을 입력해보세요.
-
-                </div>
-                """
+            st.markdown(
+                '<div class="no-result">'
+                '"'
+                + escape(
+                    st.session_state.search_query
+                )
+                + '"'
+                '<br>'
+                '에 해당하는 음악을 Apple에서 찾지 못했습니다.'
+                '<br><br>'
+                '가수 이름이나 곡 제목을 정확하게 입력해보세요.'
+                '</div>',
+                unsafe_allow_html=True
             )
 
 
@@ -1997,37 +1635,28 @@ elif st.session_state.page == "choice":
 
     elif st.session_state.choice_mode == "recommend":
 
-        render_html(
-            """
-            <div class="coming-wrap">
-
-                <div class="coming-title">
-                    COMING SOON
-                </div>
-
-                <div class="coming-text">
-                    YOUR NEXT SONG IS WAITING
-                </div>
-
-            </div>
-            """
+        st.markdown(
+            '<div class="coming-area">'
+            '<div class="coming-title">'
+            'COMING SOON'
+            '</div>'
+            '<div class="coming-subtitle">'
+            'YOUR NEXT SONG IS WAITING'
+            '</div>'
+            '</div>',
+            unsafe_allow_html=True
         )
 
 
 # =========================================================
-# UNKNOWN PAGE
+# EMPTY PAGE
 # =========================================================
 
 else:
 
-    render_html(
-        """
-        <div class="coming-wrap">
-
-            <div class="coming-title">
-                —
-            </div>
-
-        </div>
-        """
+    st.markdown(
+        '<div class="coming-area">'
+        '<div class="coming-title">—</div>'
+        '</div>',
+        unsafe_allow_html=True
     )
