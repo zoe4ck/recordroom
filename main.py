@@ -3,7 +3,6 @@ import streamlit as st
 
 # =========================================================
 # RECORD ROOM
-# Main Page / Onboarding
 # =========================================================
 
 st.set_page_config(
@@ -21,144 +20,186 @@ st.set_page_config(
 if "page" not in st.session_state:
     st.session_state.page = "main"
 
-if "entered" not in st.session_state:
-    st.session_state.entered = False
+if "entered_room" not in st.session_state:
+    st.session_state.entered_room = False
 
 
 # =========================================================
-# STYLE
+# GLOBAL STYLE
 # =========================================================
 
 st.markdown(
     """
     <style>
 
-    /* ------------------------------
-       전체 화면
-    ------------------------------ */
+    /* =========================================
+       전체 웹
+    ========================================= */
 
     .stApp {
         background:
             radial-gradient(
-                circle at 50% 35%,
-                rgba(91, 63, 42, 0.18) 0%,
-                rgba(20, 15, 12, 0.0) 45%
-            ),
-            linear-gradient(
-                135deg,
-                #17110d 0%,
-                #241810 25%,
-                #342318 50%,
-                #21160f 75%,
-                #120d09 100%
+                circle at 55% 40%,
+                #3b271b 0%,
+                #2b1c13 35%,
+                #1a100b 75%,
+                #100a07 100%
             );
 
-        color: #e9dcc9;
+        color: #e5d0b1;
+    }
+
+    .main .block-container {
+        max-width: 1400px;
+        padding-top: 0rem;
+        padding-bottom: 3rem;
     }
 
 
-    /* ------------------------------
+    /* =========================================
        사이드바
-    ------------------------------ */
+    ========================================= */
 
     section[data-testid="stSidebar"] {
         background:
             linear-gradient(
                 180deg,
-                #17100c 0%,
-                #21150e 50%,
-                #130d09 100%
+                #160d09 0%,
+                #1b100b 50%,
+                #100906 100%
             );
 
-        border-right: 1px solid rgba(191, 151, 102, 0.18);
+        border-right: 1px solid rgba(188, 142, 91, 0.22);
     }
 
     section[data-testid="stSidebar"] > div {
-        padding-top: 2rem;
+        padding-top: 3.5rem;
     }
 
     .sidebar-logo {
-        font-family: Georgia, "Times New Roman", serif;
-        color: #d4b28a;
-        font-size: 22px;
-        letter-spacing: 4px;
-        margin-bottom: 45px;
         text-align: center;
-    }
 
-    .sidebar-subtitle {
-        color: #75604d;
-        font-size: 9px;
-        letter-spacing: 3px;
-        text-align: center;
-        margin-top: -35px;
-        margin-bottom: 35px;
-    }
-
-    /* 사이드바 버튼 */
-
-    section[data-testid="stSidebar"] .stButton > button {
-        width: 100%;
-        background: transparent;
-        border: none;
-        border-bottom: 1px solid rgba(180, 140, 94, 0.10);
-        border-radius: 0;
-
-        color: #897360;
-
-        font-family: Georgia, "Times New Roman", serif;
-        font-size: 13px;
-        letter-spacing: 2px;
-
-        text-align: left;
-        padding: 14px 12px;
-
-        transition:
-            color 0.25s ease,
-            padding-left 0.25s ease,
-            background 0.25s ease;
-    }
-
-    section[data-testid="stSidebar"] .stButton > button:hover {
-        color: #dfc39e;
-        background: rgba(157, 111, 68, 0.08);
-        padding-left: 18px;
-    }
-
-
-    /* ------------------------------
-       메인 영역
-    ------------------------------ */
-
-    .main-container {
-        min-height: 82vh;
-
-        display: flex;
-        flex-direction: column;
-
-        align-items: center;
-        justify-content: center;
-
-        text-align: center;
-    }
-
-    .small-label {
-        color: #94785c;
-        font-family: Georgia, "Times New Roman", serif;
-        font-size: 10px;
-        letter-spacing: 6px;
-        margin-bottom: 22px;
-    }
-
-    .main-title {
-        color: #dfc29b;
+        color: #d8b17f;
 
         font-family:
             Georgia,
             "Times New Roman",
             serif;
 
-        font-size: clamp(58px, 8vw, 104px);
+        font-size: 21px;
+
+        letter-spacing: 4px;
+
+        margin-bottom: 8px;
+    }
+
+    .sidebar-subtitle {
+        text-align: center;
+
+        color: #765b43;
+
+        font-family:
+            Georgia,
+            "Times New Roman",
+            serif;
+
+        font-size: 8px;
+
+        letter-spacing: 3px;
+
+        margin-bottom: 60px;
+    }
+
+
+    /* 사이드바 버튼 */
+
+    section[data-testid="stSidebar"] .stButton {
+        margin-bottom: 4px;
+    }
+
+    section[data-testid="stSidebar"] .stButton > button {
+        width: 100%;
+
+        background: transparent;
+
+        border: none;
+        border-bottom: 1px solid rgba(176, 128, 78, 0.12);
+
+        border-radius: 0;
+
+        color: #82664b;
+
+        font-family:
+            Georgia,
+            "Times New Roman",
+            serif;
+
+        font-size: 12px;
+
+        letter-spacing: 3px;
+
+        text-align: left;
+
+        padding: 15px 12px;
+
+        transition: all 0.25s ease;
+    }
+
+    section[data-testid="stSidebar"] .stButton > button:hover {
+        color: #d8b17f;
+
+        background: rgba(150, 105, 61, 0.08);
+
+        padding-left: 20px;
+
+        border-bottom-color: rgba(202, 158, 105, 0.3);
+    }
+
+
+    /* =========================================
+       MAIN ONBOARDING
+    ========================================= */
+
+    .welcome-area {
+        min-height: 88vh;
+
+        display: flex;
+
+        flex-direction: column;
+
+        justify-content: center;
+
+        align-items: center;
+
+        text-align: center;
+
+        padding-top: 30px;
+    }
+
+    .welcome-small {
+        color: #9d7955;
+
+        font-family:
+            Georgia,
+            "Times New Roman",
+            serif;
+
+        font-size: 10px;
+
+        letter-spacing: 7px;
+
+        margin-bottom: 22px;
+    }
+
+    .welcome-title {
+        color: #e0bd8d;
+
+        font-family:
+            Georgia,
+            "Times New Roman",
+            serif;
+
+        font-size: clamp(55px, 7vw, 100px);
 
         font-weight: normal;
 
@@ -169,60 +210,78 @@ st.markdown(
         margin: 0;
 
         text-shadow:
-            0 2px 20px rgba(0,0,0,0.45);
+            0 4px 25px rgba(0, 0, 0, 0.5);
     }
 
-    .main-line {
-        width: 70px;
+    .welcome-line {
+        width: 65px;
+
         height: 1px;
 
-        background: #967553;
+        background: #9b7652;
 
-        margin: 28px auto 22px;
+        margin: 30px auto 24px;
 
-        opacity: 0.65;
+        opacity: 0.7;
     }
 
-    .main-description {
-        color: #9d8975;
+    .welcome-description {
+        color: #a68d75;
 
         font-family:
-            Georgia,
-            "Times New Roman",
+            "Noto Serif KR",
+            "Malgun Gothic",
             serif;
 
         font-size: 14px;
 
-        letter-spacing: 1.8px;
+        letter-spacing: 1px;
 
-        line-height: 1.9;
+        line-height: 2;
 
         margin-bottom: 38px;
     }
 
 
-    /* ------------------------------
-       ENTER ROOM 버튼
-    ------------------------------ */
+    /* =========================================
+       ENTER ROOM BUTTON
+    ========================================= */
 
-    .enter-wrapper {
+    .enter-button-area {
         display: flex;
+
         justify-content: center;
+
+        width: 100%;
     }
 
-    div[data-testid="stButton"] > button {
+    .enter-button-area .stButton {
+        display: flex;
+
+        justify-content: center;
+
+        width: 100%;
+    }
+
+    .enter-button-area .stButton > button {
+        width: auto;
+
+        min-width: 170px;
+
+        height: 48px;
+
         background:
             linear-gradient(
-                145deg,
-                #8a6545,
-                #60452f
+                135deg,
+                #8a6343,
+                #65462e
             );
 
-        border: 1px solid rgba(210, 174, 132, 0.35);
-
-        color: #f1e3d1;
+        border: 1px solid rgba(220, 179, 129, 0.45);
 
         border-radius: 1px;
+
+        color: #f3e3ce;
 
         font-family:
             Georgia,
@@ -233,78 +292,93 @@ st.markdown(
 
         letter-spacing: 4px;
 
-        padding: 12px 30px;
-
-        transition:
-            all 0.3s ease;
-
         box-shadow:
-            0 5px 20px rgba(0,0,0,0.25);
+            0 8px 25px rgba(0, 0, 0, 0.35);
+
+        transition: all 0.3s ease;
     }
 
-    div[data-testid="stButton"] > button:hover {
+    .enter-button-area .stButton > button:hover {
         background:
             linear-gradient(
-                145deg,
-                #a27b55,
-                #765538
+                135deg,
+                #a27851,
+                #795638
             );
 
-        color: #fff5e7;
+        color: #fff6e9;
 
-        border-color: rgba(225, 194, 157, 0.55);
+        border-color: rgba(230, 198, 160, 0.7);
 
         transform: translateY(-2px);
 
         box-shadow:
-            0 8px 25px rgba(0,0,0,0.35);
+            0 12px 30px rgba(0, 0, 0, 0.45);
     }
 
 
-    /* ------------------------------
-       미스터리 INTRO CARD
-    ------------------------------ */
+    /* =========================================
+       INTRODUCTION PAPER
+    ========================================= */
 
-    .intro-paper {
+    .paper-area {
+        min-height: 88vh;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        padding: 60px 30px;
+    }
+
+    .mystery-paper {
+        position: relative;
+
         width: min(720px, 90%);
 
-        margin: 35px auto 0;
-
-        padding: 58px 65px;
+        padding: 65px 75px;
 
         background:
             radial-gradient(
                 ellipse at center,
-                rgba(255, 252, 235, 0.96),
-                rgba(228, 218, 194, 0.96)
+                #f4edda 0%,
+                #e7dcc0 65%,
+                #d9cbaa 100%
             );
 
-        color: #33281f;
+        color: #35281d;
 
-        border: 1px solid rgba(105, 81, 59, 0.45);
+        border: 1px solid rgba(82, 60, 41, 0.45);
 
         box-shadow:
-            0 20px 55px rgba(0,0,0,0.45),
-            inset 0 0 45px rgba(88, 61, 36, 0.08);
+            0 25px 60px rgba(0, 0, 0, 0.55),
+            inset 0 0 45px rgba(91, 66, 40, 0.12);
 
-        position: relative;
-
-        transform: rotate(-0.3deg);
+        transform: rotate(-0.4deg);
     }
 
-    .intro-paper::before {
+    .mystery-paper::before {
         content: "";
 
         position: absolute;
 
-        inset: 12px;
+        top: 13px;
+        left: 13px;
+        right: 13px;
+        bottom: 13px;
 
-        border: 1px solid rgba(99, 76, 53, 0.20);
+        border: 1px solid rgba(88, 64, 42, 0.22);
 
         pointer-events: none;
     }
 
-    .paper-label {
+    .paper-top {
+        text-align: center;
+
+        color: #806b53;
+
         font-family:
             Georgia,
             "Times New Roman",
@@ -312,31 +386,33 @@ st.markdown(
 
         font-size: 9px;
 
-        letter-spacing: 4px;
-
-        color: #7c6854;
+        letter-spacing: 5px;
 
         margin-bottom: 25px;
     }
 
     .paper-title {
+        text-align: center;
+
+        color: #38291e;
+
         font-family:
             Georgia,
             "Times New Roman",
             serif;
 
-        font-size: 27px;
+        font-size: 28px;
 
         font-weight: normal;
 
         letter-spacing: 3px;
 
-        color: #30251d;
-
-        margin-bottom: 25px;
+        margin-bottom: 35px;
     }
 
     .paper-text {
+        color: #4b3a2b;
+
         font-family:
             "Palatino Linotype",
             "Book Antiqua",
@@ -347,15 +423,31 @@ st.markdown(
 
         line-height: 2.15;
 
-        letter-spacing: 0.5px;
-
-        color: #4a3b2e;
+        letter-spacing: 0.4px;
 
         text-align: left;
     }
 
+    .paper-text em {
+        color: #634b36;
+
+        font-style: italic;
+    }
+
+    .paper-divider {
+        width: 45px;
+
+        height: 1px;
+
+        background: #80654b;
+
+        margin: 32px auto;
+    }
+
     .paper-signature {
-        margin-top: 35px;
+        text-align: right;
+
+        color: #513c2b;
 
         font-family:
             "Brush Script MT",
@@ -364,60 +456,73 @@ st.markdown(
 
         font-size: 22px;
 
-        color: #49382b;
-
-        text-align: right;
+        margin-top: 32px;
     }
 
 
-    /* ------------------------------
-       CHOICE / OTHER PAGE
-    ------------------------------ */
+    /* =========================================
+       OTHER PAGES
+    ========================================= */
 
-    .page-title {
-        font-family: Georgia, "Times New Roman", serif;
+    .other-page {
+        min-height: 88vh;
 
-        font-size: 48px;
+        padding-top: 80px;
+
+        text-align: left;
+    }
+
+    .other-title {
+        color: #d7b486;
+
+        font-family:
+            Georgia,
+            "Times New Roman",
+            serif;
+
+        font-size: 52px;
 
         font-weight: normal;
 
-        color: #d5b58d;
-
-        letter-spacing: 5px;
-
-        margin-top: 40px;
+        letter-spacing: 6px;
     }
 
-    .page-description {
-        color: #897564;
+    .other-subtitle {
+        color: #80664e;
 
-        font-family: Georgia, "Times New Roman", serif;
-
-        font-size: 13px;
-
-        letter-spacing: 1.5px;
-
-        margin-top: 10px;
-    }
-
-    .coming-soon {
-        margin-top: 100px;
-
-        text-align: center;
-
-        color: #6f5b49;
-
-        font-family: Georgia, "Times New Roman", serif;
+        font-family:
+            Georgia,
+            "Times New Roman",
+            serif;
 
         font-size: 12px;
 
-        letter-spacing: 4px;
+        letter-spacing: 3px;
+
+        margin-top: 12px;
+    }
+
+    .coming-soon {
+        margin-top: 120px;
+
+        text-align: center;
+
+        color: #67503d;
+
+        font-family:
+            Georgia,
+            "Times New Roman",
+            serif;
+
+        font-size: 11px;
+
+        letter-spacing: 5px;
     }
 
 
-    /* ------------------------------
-       Streamlit 기본 요소 숨기기
-    ------------------------------ */
+    /* =========================================
+       STREAMLIT UI 정리
+    ========================================= */
 
     #MainMenu {
         visibility: hidden;
@@ -438,7 +543,7 @@ st.markdown(
 
 
 # =========================================================
-# SIDEBAR NAVIGATION
+# SIDEBAR
 # =========================================================
 
 with st.sidebar:
@@ -453,18 +558,16 @@ with st.sidebar:
         unsafe_allow_html=True
     )
 
-    st.write("")
-
-    if st.button("MAIN", key="nav_main"):
+    if st.button("MAIN", key="main_navigation"):
         st.session_state.page = "main"
-        st.session_state.entered = False
+        st.session_state.entered_room = False
         st.rerun()
 
-    if st.button("CHOICE", key="nav_choice"):
+    if st.button("CHOICE", key="choice_navigation"):
         st.session_state.page = "choice"
         st.rerun()
 
-    if st.button("—", key="nav_unknown"):
+    if st.button("—", key="unknown_navigation"):
         st.session_state.page = "unknown"
         st.rerun()
 
@@ -475,83 +578,114 @@ with st.sidebar:
 
 if st.session_state.page == "main":
 
-    st.markdown(
-        '<div class="main-container">',
-        unsafe_allow_html=True
-    )
+    # ---------------------------------------------
+    # ENTER ROOM 전
+    # ---------------------------------------------
 
-    st.markdown(
-        '<div class="small-label">WELCOME TO</div>',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        '<h1 class="main-title">record room</h1>',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        '<div class="main-line"></div>',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        """
-        <div class="main-description">
-            음악을 고르고, 발견하고, 잠시 머무는 작은 방
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    if st.button("ENTER ROOM", key="enter_room"):
-
-        st.session_state.entered = True
-
-        st.rerun()
-
-    st.markdown(
-        '</div>',
-        unsafe_allow_html=True
-    )
-
-
-    # -----------------------------------------------------
-    # ENTER ROOM 이후
-    # -----------------------------------------------------
-
-    if st.session_state.entered:
+    if not st.session_state.entered_room:
 
         st.markdown(
             """
-            <div class="intro-paper">
+            <div class="welcome-area">
 
-                <div class="paper-label">
-                    RECORD ROOM · PRIVATE NOTE
+                <div class="welcome-small">
+                    WELCOME TO
                 </div>
 
-                <div class="paper-title">
-                    당신의 음악을 위한 방
+                <div class="welcome-title">
+                    record room
                 </div>
 
-                <div class="paper-text">
-                    이곳은 음악을 조금 더 천천히 만나는 공간입니다.
-                    <br><br>
-                    오늘 듣고 싶은 음악을 직접 찾아도 좋고,
-                    지금의 기분과 취향을 이야기하며
-                    새로운 음악을 발견해도 좋습니다.
-                    <br><br>
-                    수많은 곡들 사이에서 우연히 한 곡을 발견하는 순간,
-                    오래된 레코드 한 장을 꺼내어 바늘을 올리는 순간처럼
-                    이 방에서의 시간이 조금 특별해지기를 바랍니다.
-                    <br><br>
-                    조용히 음악을 듣고 싶은 날에도,
-                    무엇을 들어야 할지 모르겠는 날에도,
-                    이곳의 문은 열려 있습니다.
+                <div class="welcome-line"></div>
+
+                <div class="welcome-description">
+                    음악을 듣고, 발견하고,<br>
+                    잠시 머무는 작은 방
                 </div>
 
-                <div class="paper-signature">
-                    — record room
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        st.markdown(
+            '<div class="enter-button-area">',
+            unsafe_allow_html=True
+        )
+
+        if st.button("ENTER ROOM", key="enter_room_button"):
+            st.session_state.entered_room = True
+            st.rerun()
+
+        st.markdown(
+            '</div>',
+            unsafe_allow_html=True
+        )
+
+
+    # ---------------------------------------------
+    # ENTER ROOM 후
+    # ---------------------------------------------
+
+    else:
+
+        st.markdown(
+            """
+            <div class="paper-area">
+
+                <div class="mystery-paper">
+
+                    <div class="paper-top">
+                        RECORD ROOM · PRIVATE NOTE
+                    </div>
+
+                    <div class="paper-title">
+                        이 방에 들어온 당신에게
+                    </div>
+
+                    <div class="paper-text">
+
+                        음악을 찾는 일은
+                        어쩌면 기억을 찾는 일과 비슷합니다.
+                        <br><br>
+
+                        어떤 날에는 오래전부터 알고 있던 한 곡이
+                        이상하리만큼 선명하게 들리고,
+                        또 어떤 날에는 이름조차 들어본 적 없는 노래가
+                        당신의 하루에 흔적을 남기기도 합니다.
+                        <br><br>
+
+                        <em>
+                        record room은 그런 우연을 위한 작은 방입니다.
+                        </em>
+                        <br><br>
+
+                        듣고 싶은 음악이 있다면 천천히 골라도 좋고,
+                        무엇을 들어야 할지 모르겠다면
+                        지금의 당신에게 어울리는 음악을 찾아도 좋습니다.
+                        <br><br>
+
+                        이곳에서 재생되는 것은 단순한 노래가 아니라,
+                        어쩌면 오늘의 당신만이 알아볼 수 있는
+                        하나의 장면일지도 모릅니다.
+
+                    </div>
+
+                    <div class="paper-divider"></div>
+
+                    <div class="paper-text">
+
+                        그러니 잠시만 머물러 주세요.
+                        <br>
+                        바늘이 레코드에 닿는 순간처럼,
+                        이 방의 이야기도 천천히 시작될 테니까요.
+
+                    </div>
+
+                    <div class="paper-signature">
+                        — record room
+                    </div>
+
                 </div>
 
             </div>
@@ -567,25 +701,23 @@ if st.session_state.page == "main":
 elif st.session_state.page == "choice":
 
     st.markdown(
-        '<div class="page-title">choice</div>',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
         """
-        <div class="page-description">
-            choose how you want to spend your time
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+        <div class="other-page">
 
-    st.markdown(
-        """
-        <div class="coming-soon">
-            LISTEN · RECOMMEND
-            <br><br>
-            COMING SOON
+            <div class="other-title">
+                choice
+            </div>
+
+            <div class="other-subtitle">
+                CHOOSE YOUR WAY INTO MUSIC
+            </div>
+
+            <div class="coming-soon">
+                LISTEN · RECOMMEND
+                <br><br>
+                THIS ROOM IS WAITING
+            </div>
+
         </div>
         """,
         unsafe_allow_html=True
@@ -599,23 +731,21 @@ elif st.session_state.page == "choice":
 elif st.session_state.page == "unknown":
 
     st.markdown(
-        '<div class="page-title">—</div>',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
         """
-        <div class="page-description">
-            another room is waiting to be opened
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+        <div class="other-page">
 
-    st.markdown(
-        """
-        <div class="coming-soon">
-            THIS ROOM HAS NOT BEEN NAMED YET
+            <div class="other-title">
+                —
+            </div>
+
+            <div class="other-subtitle">
+                ANOTHER ROOM
+            </div>
+
+            <div class="coming-soon">
+                THIS ROOM HAS NOT BEEN NAMED YET
+            </div>
+
         </div>
         """,
         unsafe_allow_html=True
