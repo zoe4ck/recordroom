@@ -4,10 +4,12 @@ import urllib.request
 import urllib.error
 import json
 import re
+from textwrap import dedent
+from html import escape
 
 
 # =========================================================
-# 기본 설정
+# PAGE SETTING
 # =========================================================
 
 st.set_page_config(
@@ -19,7 +21,7 @@ st.set_page_config(
 
 
 # =========================================================
-# Session State
+# SESSION STATE
 # =========================================================
 
 if "page" not in st.session_state:
@@ -40,21 +42,35 @@ if "search_results" not in st.session_state:
 if "search_type" not in st.session_state:
     st.session_state.search_type = ""
 
+if "search_artist" not in st.session_state:
+    st.session_state.search_artist = None
+
 if "search_error" not in st.session_state:
     st.session_state.search_error = ""
+
+
+# =========================================================
+# HTML RENDER FUNCTION
+# =========================================================
+# 핵심 수정:
+# dedent()를 사용해서 파이썬 들여쓰기가
+# Markdown 코드블록으로 인식되는 문제를 방지한다.
+# =========================================================
+
+def render_html(content):
+    st.markdown(
+        dedent(content).strip(),
+        unsafe_allow_html=True
+    )
 
 
 # =========================================================
 # CSS
 # =========================================================
 
-st.markdown(
+render_html(
     """
     <style>
-
-    /* -----------------------------------------------------
-       전체 화면
-    ----------------------------------------------------- */
 
     html, body, [data-testid="stAppViewContainer"] {
         background:
@@ -79,9 +95,9 @@ st.markdown(
         display: none !important;
     }
 
-    /* -----------------------------------------------------
-       Sidebar
-    ----------------------------------------------------- */
+    /* =========================
+       SIDEBAR
+    ========================= */
 
     [data-testid="stSidebar"] {
         background:
@@ -92,7 +108,8 @@ st.markdown(
                 #0d0705 100%
             ) !important;
 
-        border-right: 1px solid rgba(190, 145, 92, 0.22);
+        border-right:
+            1px solid rgba(190, 145, 92, 0.22);
     }
 
     [data-testid="stSidebar"] > div:first-child {
@@ -121,11 +138,8 @@ st.markdown(
         margin-top: 10px;
     }
 
-    /* Sidebar buttons */
-
     [data-testid="stSidebar"] .stButton {
         width: 100%;
-        margin: 0;
     }
 
     [data-testid="stSidebar"] .stButton > button {
@@ -169,23 +183,30 @@ st.markdown(
     .sidebar-line {
         height: 1px;
         width: 67px;
-        background: rgba(168, 115, 69, 0.18);
-        margin: 2px 0 22px 20px;
+
+        background:
+            rgba(168, 115, 69, 0.18);
+
+        margin:
+            2px 0 22px 20px;
     }
 
-    /* -----------------------------------------------------
-       Main 영역
-    ----------------------------------------------------- */
+
+    /* =========================
+       MAIN
+    ========================= */
 
     .main .block-container {
         padding-top: 0 !important;
         padding-bottom: 60px !important;
+
         max-width: 1400px !important;
     }
 
-    /* -----------------------------------------------------
-       MAIN 첫 화면
-    ----------------------------------------------------- */
+
+    /* =========================
+       WELCOME
+    ========================= */
 
     .welcome-wrap {
         min-height: 92vh;
@@ -221,7 +242,8 @@ st.markdown(
             "Times New Roman",
             serif;
 
-        font-size: clamp(58px, 7vw, 100px);
+        font-size:
+            clamp(58px, 7vw, 100px);
 
         letter-spacing: 8px;
         font-weight: 400;
@@ -260,27 +282,32 @@ st.markdown(
         line-height: 2;
 
         letter-spacing: 1px;
-
-        margin-bottom: 40px;
     }
 
-    /* -----------------------------------------------------
-       ENTER ROOM
-    ----------------------------------------------------- */
 
-    .enter-space {
+    /* =========================
+       ENTER ROOM
+    ========================= */
+
+    .enter-button-wrap {
         display: flex;
         justify-content: center;
-        margin-top: 10px;
+
+        margin-top:
+            -170px;
+
+        position: relative;
+        z-index: 5;
     }
 
-    .enter-space .stButton > button {
+    .enter-button-wrap .stButton > button {
         min-width: 190px !important;
         height: 52px !important;
 
         background: transparent !important;
 
-        border: 1px solid #936b45 !important;
+        border:
+            1px solid #936b45 !important;
 
         color: #d6aa75 !important;
 
@@ -293,24 +320,28 @@ st.markdown(
 
         border-radius: 0 !important;
 
-        transition:
-            all 0.25s ease !important;
+        transition: all 0.25s ease !important;
     }
 
-    .enter-space .stButton > button:hover {
-        background: rgba(197, 145, 88, 0.10) !important;
+    .enter-button-wrap .stButton > button:hover {
+        background:
+            rgba(197, 145, 88, 0.10) !important;
 
-        border-color: #d5a66c !important;
+        border-color:
+            #d5a66c !important;
 
-        color: #efd0a0 !important;
+        color:
+            #efd0a0 !important;
 
         box-shadow:
-            0 0 25px rgba(172, 116, 59, 0.15);
+            0 0 25px
+            rgba(172, 116, 59, 0.15);
     }
 
-    /* -----------------------------------------------------
-       편지
-    ----------------------------------------------------- */
+
+    /* =========================
+       LETTER
+    ========================= */
 
     .letter-wrap {
         min-height: 92vh;
@@ -320,21 +351,26 @@ st.markdown(
         justify-content: center;
         align-items: center;
 
-        padding: 35px 20px;
+        padding:
+            35px 20px;
     }
 
     .letter {
-        width: min(1080px, 90vw);
+        width:
+            min(1080px, 90vw);
 
-        min-height: 650px;
+        min-height:
+            650px;
 
-        box-sizing: border-box;
+        box-sizing:
+            border-box;
 
         padding:
             72px 90px
             70px 90px;
 
-        position: relative;
+        position:
+            relative;
 
         background:
             radial-gradient(
@@ -345,165 +381,218 @@ st.markdown(
             );
 
         border:
-            1px solid rgba(115, 76, 39, 0.45);
+            1px solid
+            rgba(115, 76, 39, 0.45);
 
         box-shadow:
-            0 30px 70px rgba(0, 0, 0, 0.45),
-            inset 0 0 45px rgba(99, 62, 27, 0.08);
+            0 30px 70px
+            rgba(0, 0, 0, 0.45),
+            inset 0 0 45px
+            rgba(99, 62, 27, 0.08);
 
-        transform: rotate(-0.25deg);
+        transform:
+            rotate(-0.25deg);
     }
 
     .letter::before {
         content: "";
 
-        position: absolute;
+        position:
+            absolute;
 
-        inset: 15px;
+        inset:
+            15px;
 
         border:
-            1px solid rgba(117, 80, 42, 0.18);
+            1px solid
+            rgba(117, 80, 42, 0.18);
 
-        pointer-events: none;
+        pointer-events:
+            none;
     }
 
     .letter-date {
         text-align: right;
 
-        color: #856344;
+        color:
+            #856344;
 
         font-family:
             Georgia,
             "Times New Roman",
             serif;
 
-        font-size: 13px;
+        font-size:
+            13px;
 
-        letter-spacing: 1px;
+        letter-spacing:
+            1px;
 
-        margin-bottom: 55px;
+        margin-bottom:
+            55px;
     }
 
     .letter-title {
-        color: #49301f;
+        color:
+            #49301f;
 
         font-family:
             Georgia,
             "Times New Roman",
             serif;
 
-        font-size: 31px;
+        font-size:
+            31px;
 
-        letter-spacing: 3px;
+        letter-spacing:
+            3px;
 
-        margin-bottom: 42px;
+        margin-bottom:
+            42px;
     }
 
     .letter-body {
-        color: #49382c;
+        color:
+            #49382c;
 
         font-family:
             Georgia,
             "Times New Roman",
             serif;
 
-        font-size: 17px;
+        font-size:
+            17px;
 
-        line-height: 2.35;
+        line-height:
+            2.35;
 
-        letter-spacing: 0.4px;
+        letter-spacing:
+            0.4px;
     }
 
     .letter-body p {
-        margin-bottom: 25px;
+        margin-bottom:
+            25px;
     }
 
     .letter-sign {
-        margin-top: 65px;
+        margin-top:
+            65px;
 
-        text-align: right;
+        text-align:
+            right;
 
-        color: #604531;
+        color:
+            #604531;
 
         font-family:
             Georgia,
             "Times New Roman",
             serif;
 
-        font-size: 16px;
+        font-size:
+            16px;
 
-        line-height: 1.9;
+        line-height:
+            1.9;
     }
 
-    /* -----------------------------------------------------
+
+    /* =========================
        CHOICE
-    ----------------------------------------------------- */
+    ========================= */
 
     .choice-wrap {
         min-height: 92vh;
 
         display: flex;
 
-        flex-direction: column;
+        flex-direction:
+            column;
 
-        align-items: center;
+        align-items:
+            center;
 
-        justify-content: center;
+        justify-content:
+            center;
 
-        text-align: center;
+        text-align:
+            center;
     }
 
     .choice-heading {
-        color: #d5a56d;
+        color:
+            #d5a56d;
 
         font-family:
             Georgia,
             "Times New Roman",
             serif;
 
-        font-size: 44px;
+        font-size:
+            44px;
 
-        letter-spacing: 6px;
+        letter-spacing:
+            6px;
 
-        margin-bottom: 15px;
+        margin-bottom:
+            15px;
     }
 
     .choice-subheading {
-        color: #96765d;
+        color:
+            #96765d;
 
         font-family:
             Georgia,
             "Times New Roman",
             serif;
 
-        font-size: 14px;
+        font-size:
+            14px;
 
-        letter-spacing: 2px;
+        letter-spacing:
+            2px;
 
-        margin-bottom: 48px;
+        margin-bottom:
+            48px;
     }
 
-    .paper-button-area {
-        display: flex;
 
-        justify-content: center;
+    /* =========================
+       CHOICE BUTTON
+    ========================= */
 
-        gap: 30px;
+    .paper-button-row {
+        display:
+            flex;
 
-        width: 100%;
+        justify-content:
+            center;
+
+        gap:
+            30px;
+
+        width:
+            100%;
     }
 
-    .paper-button-area .stButton > button {
-        min-width: 245px !important;
+    .paper-button-row .stButton > button {
+        min-width:
+            245px !important;
 
-        min-height: 95px !important;
+        min-height:
+            95px !important;
 
-        padding: 18px 30px !important;
+        padding:
+            18px 30px !important;
 
-        border-radius: 2px !important;
+        border-radius:
+            2px !important;
 
         border:
-            1px solid rgba(111, 75, 42, 0.45)
+            1px solid
+            rgba(111, 75, 42, 0.45)
             !important;
 
         background:
@@ -514,185 +603,241 @@ st.markdown(
             )
             !important;
 
-        color: #4c3424 !important;
+        color:
+            #4c3424 !important;
 
         font-family:
             Georgia,
             "Times New Roman",
             serif !important;
 
-        font-size: 21px !important;
+        font-size:
+            21px !important;
 
-        letter-spacing: 3px !important;
+        letter-spacing:
+            3px !important;
 
         box-shadow:
-            0 15px 35px rgba(0, 0, 0, 0.25),
-            inset 0 0 20px rgba(104, 67, 32, 0.08) !important;
+            0 15px 35px
+            rgba(0, 0, 0, 0.25),
+            inset 0 0 20px
+            rgba(104, 67, 32, 0.08)
+            !important;
 
         transition:
             all 0.25s ease !important;
     }
 
-    .paper-button-area .stButton > button:hover {
-        transform: translateY(-4px);
+    .paper-button-row .stButton > button:hover {
+        transform:
+            translateY(-4px);
 
         box-shadow:
-            0 20px 40px rgba(0, 0, 0, 0.32),
-            0 0 25px rgba(190, 137, 82, 0.10) !important;
+            0 20px 40px
+            rgba(0, 0, 0, 0.32),
+            0 0 25px
+            rgba(190, 137, 82, 0.10)
+            !important;
 
-        border-color: #a77a4e !important;
+        border-color:
+            #a77a4e !important;
     }
 
-    /* -----------------------------------------------------
-       검색 화면
-    ----------------------------------------------------- */
+
+    /* =========================
+       LISTEN
+    ========================= */
 
     .listen-wrap {
-        width: min(1100px, 90vw);
+        width:
+            min(1100px, 90vw);
 
         margin:
-            70px auto
-            60px auto;
+            70px auto 20px auto;
     }
 
     .listen-heading {
-        color: #d5a56d;
+        color:
+            #d5a56d;
 
         font-family:
             Georgia,
             "Times New Roman",
             serif;
 
-        font-size: 42px;
+        font-size:
+            42px;
 
-        letter-spacing: 5px;
+        letter-spacing:
+            5px;
 
-        text-align: center;
+        text-align:
+            center;
 
-        margin-bottom: 12px;
+        margin-bottom:
+            12px;
     }
 
     .listen-description {
-        color: #9d8069;
+        color:
+            #9d8069;
 
-        text-align: center;
-
-        font-family:
-            Georgia,
-            "Times New Roman",
-            serif;
-
-        font-size: 14px;
-
-        letter-spacing: 1px;
-
-        margin-bottom: 38px;
-    }
-
-    /* Search box */
-
-    .search-label {
-        color: #c7a27f;
+        text-align:
+            center;
 
         font-family:
             Georgia,
             "Times New Roman",
             serif;
 
-        font-size: 13px;
+        font-size:
+            14px;
 
-        letter-spacing: 2px;
+        letter-spacing:
+            1px;
 
-        margin-bottom: 8px;
+        margin-bottom:
+            38px;
     }
+
+
+    /* =========================
+       SEARCH INPUT
+    ========================= */
 
     div[data-testid="stTextInput"] input {
         background:
-            rgba(247, 238, 219, 0.96) !important;
+            rgba(247, 238, 219, 0.96)
+            !important;
 
-        color: #493528 !important;
+        color:
+            #493528
+            !important;
 
         border:
-            1px solid #8d6746 !important;
+            1px solid #8d6746
+            !important;
 
-        border-radius: 2px !important;
+        border-radius:
+            2px
+            !important;
 
-        height: 52px !important;
+        height:
+            52px
+            !important;
 
         font-family:
-            Georgia,
             "Malgun Gothic",
-            sans-serif !important;
+            Arial,
+            sans-serif
+            !important;
 
-        font-size: 15px !important;
+        font-size:
+            15px
+            !important;
 
         box-shadow:
-            inset 0 0 15px rgba(90, 55, 27, 0.08) !important;
+            inset 0 0 15px
+            rgba(90, 55, 27, 0.08)
+            !important;
     }
 
     div[data-testid="stTextInput"] input:focus {
-        border-color: #c09668 !important;
+        border-color:
+            #c09668
+            !important;
 
         box-shadow:
-            0 0 0 1px #c09668 !important;
+            0 0 0 1px #c09668
+            !important;
     }
 
-    /* Search button */
 
-    .search-button .stButton > button {
-        height: 52px !important;
+    /* =========================
+       SEARCH BUTTON
+    ========================= */
 
-        width: 100% !important;
+    .search-button-wrap .stButton > button {
+        height:
+            52px !important;
 
-        border-radius: 2px !important;
+        width:
+            100% !important;
 
-        border: 1px solid #946b45 !important;
+        border-radius:
+            2px !important;
 
-        background: #25160f !important;
+        border:
+            1px solid #946b45
+            !important;
 
-        color: #d8aa73 !important;
+        background:
+            #25160f
+            !important;
+
+        color:
+            #d8aa73
+            !important;
 
         font-family:
             Georgia,
             "Times New Roman",
-            serif !important;
+            serif
+            !important;
 
-        letter-spacing: 3px !important;
-
-        transition: all 0.25s ease !important;
+        letter-spacing:
+            3px
+            !important;
     }
 
-    .search-button .stButton > button:hover {
-        background: #392319 !important;
+    .search-button-wrap .stButton > button:hover {
+        background:
+            #392319
+            !important;
 
-        border-color: #c39461 !important;
+        border-color:
+            #c39461
+            !important;
     }
 
-    /* -----------------------------------------------------
-       검색 결과
-    ----------------------------------------------------- */
+
+    /* =========================
+       RESULT TITLE
+    ========================= */
 
     .result-heading {
-        margin-top: 55px;
+        margin-top:
+            55px;
 
-        color: #cda072;
+        color:
+            #cda072;
 
         font-family:
             Georgia,
             "Times New Roman",
             serif;
 
-        font-size: 19px;
+        font-size:
+            19px;
 
-        letter-spacing: 2px;
+        letter-spacing:
+            2px;
 
         border-bottom:
-            1px solid rgba(180, 130, 79, 0.20);
+            1px solid
+            rgba(180, 130, 79, 0.20);
 
-        padding-bottom: 14px;
+        padding-bottom:
+            14px;
 
-        margin-bottom: 22px;
+        margin-bottom:
+            22px;
     }
+
+
+    /* =========================
+       SONG CARD
+    ========================= */
 
     .song-card {
         background:
@@ -703,163 +848,197 @@ st.markdown(
             );
 
         border:
-            1px solid rgba(116, 79, 44, 0.40);
+            1px solid
+            rgba(116, 79, 44, 0.40);
 
-        padding: 20px;
+        padding:
+            22px;
 
-        margin-bottom: 16px;
+        margin-bottom:
+            18px;
 
         box-shadow:
-            0 12px 30px rgba(0, 0, 0, 0.20);
+            0 12px 30px
+            rgba(0, 0, 0, 0.20);
+
+        min-height:
+            145px;
     }
 
     .song-name {
-        color: #392519;
+        color:
+            #392519;
 
         font-family:
-            Georgia,
             "Malgun Gothic",
+            Arial,
             sans-serif;
 
-        font-size: 20px;
+        font-size:
+            20px;
 
-        font-weight: 600;
+        font-weight:
+            600;
 
-        margin-bottom: 7px;
+        margin-bottom:
+            7px;
     }
 
     .song-artist {
-        color: #705039;
+        color:
+            #705039;
 
-        font-family:
-            Georgia,
-            "Malgun Gothic",
-            sans-serif;
+        font-size:
+            14px;
 
-        font-size: 14px;
-
-        margin-bottom: 5px;
+        margin-bottom:
+            5px;
     }
 
     .song-album {
-        color: #876b53;
+        color:
+            #876b53;
 
-        font-family:
-            Georgia,
-            "Malgun Gothic",
-            sans-serif;
-
-        font-size: 13px;
+        font-size:
+            13px;
     }
 
     .song-meta {
-        color: #987b60;
+        color:
+            #987b60;
 
-        font-size: 11px;
+        font-size:
+            11px;
 
-        margin-top: 9px;
+        margin-top:
+            9px;
     }
 
     .apple-link {
-        display: inline-block;
+        display:
+            inline-block;
 
-        margin-top: 12px;
+        margin-top:
+            12px;
 
-        color: #765238 !important;
+        color:
+            #765238 !important;
 
-        text-decoration: none !important;
+        text-decoration:
+            none !important;
 
         border-bottom:
-            1px solid rgba(118, 82, 56, 0.35);
+            1px solid
+            rgba(118, 82, 56, 0.35);
 
-        padding-bottom: 2px;
+        padding-bottom:
+            2px;
 
-        font-size: 12px;
+        font-size:
+            12px;
     }
 
     .apple-link:hover {
-        color: #4c301e !important;
+        color:
+            #4c301e !important;
     }
 
-    /* -----------------------------------------------------
-       검색 결과 없음 / 오류
-    ----------------------------------------------------- */
+
+    /* =========================
+       NOTICE
+    ========================= */
 
     .notice-box {
-        margin-top: 30px;
+        margin-top:
+            30px;
 
-        padding: 28px;
+        padding:
+            28px;
 
         border:
-            1px solid rgba(157, 112, 72, 0.35);
+            1px solid
+            rgba(157, 112, 72, 0.35);
 
         background:
             rgba(239, 221, 190, 0.06);
 
-        color: #b89b80;
+        color:
+            #b89b80;
 
-        text-align: center;
+        text-align:
+            center;
 
-        font-family:
-            Georgia,
-            "Malgun Gothic",
-            sans-serif;
-
-        line-height: 1.9;
+        line-height:
+            1.9;
     }
 
-    /* -----------------------------------------------------
-       추천 placeholder
-    ----------------------------------------------------- */
+
+    /* =========================
+       COMING SOON
+    ========================= */
 
     .coming-wrap {
-        min-height: 80vh;
+        min-height:
+            80vh;
 
-        display: flex;
+        display:
+            flex;
 
-        justify-content: center;
+        justify-content:
+            center;
 
-        align-items: center;
+        align-items:
+            center;
 
-        flex-direction: column;
+        flex-direction:
+            column;
     }
 
     .coming-title {
-        color: #d5a56d;
+        color:
+            #d5a56d;
 
         font-family:
             Georgia,
             "Times New Roman",
             serif;
 
-        font-size: 46px;
+        font-size:
+            46px;
 
-        letter-spacing: 7px;
+        letter-spacing:
+            7px;
     }
 
     .coming-text {
-        color: #8d715d;
+        color:
+            #8d715d;
 
         font-family:
             Georgia,
             "Times New Roman",
             serif;
 
-        margin-top: 18px;
+        margin-top:
+            18px;
 
-        letter-spacing: 2px;
+        letter-spacing:
+            2px;
     }
 
-    /* -----------------------------------------------------
-       모바일
-    ----------------------------------------------------- */
+
+    /* =========================
+       MOBILE
+    ========================= */
 
     @media (max-width: 800px) {
 
-        .paper-button-area {
-            flex-direction: column;
+        .paper-button-row {
+            flex-direction:
+                column;
 
-            align-items: center;
+            align-items:
+                center;
         }
 
         .letter {
@@ -867,26 +1046,29 @@ st.markdown(
                 55px 40px
                 50px 40px;
 
-            min-height: 600px;
+            min-height:
+                600px;
         }
 
         .letter-body {
-            font-size: 15px;
+            font-size:
+                15px;
         }
 
         .welcome-title {
-            letter-spacing: 5px;
+            letter-spacing:
+                5px;
         }
+
     }
 
     </style>
-    """,
-    unsafe_allow_html=True
+    """
 )
 
 
 # =========================================================
-# Apple iTunes Search API
+# APPLE API
 # =========================================================
 
 ITUNES_SEARCH_URL = "https://itunes.apple.com/search"
@@ -895,8 +1077,7 @@ ITUNES_LOOKUP_URL = "https://itunes.apple.com/lookup"
 
 def normalize_text(text):
     """
-    검색 비교용 정규화.
-    대소문자, 공백, 일부 특수문자를 제거해서 비교한다.
+    검색 비교용 정규화
     """
 
     if not text:
@@ -904,13 +1085,18 @@ def normalize_text(text):
 
     text = str(text).lower()
 
-    # 괄호 안의 일부 부가 정보 제거에 도움
-    text = re.sub(r"\([^)]*\)", "", text)
+    text = re.sub(
+        r"\([^)]*\)",
+        "",
+        text
+    )
 
-    # 공백 제거
-    text = re.sub(r"\s+", "", text)
+    text = re.sub(
+        r"\s+",
+        "",
+        text
+    )
 
-    # 특수문자 제거
     text = re.sub(
         r"[^0-9a-z가-힣ぁ-んァ-ン一-龥]",
         "",
@@ -921,21 +1107,20 @@ def normalize_text(text):
 
 
 def apple_api_request(url, params):
-    """
-    Apple API 요청.
-    requests 라이브러리를 사용하지 않고
-    Python 기본 urllib만 사용.
-    """
 
     query = urllib.parse.urlencode(params)
 
-    full_url = url + "?" + query
+    full_url = (
+        url
+        + "?"
+        + query
+    )
 
     request = urllib.request.Request(
         full_url,
         headers={
             "User-Agent":
-                "Mozilla/5.0 record-room-streamlit-app"
+                "Mozilla/5.0 record-room"
         }
     )
 
@@ -948,36 +1133,37 @@ def apple_api_request(url, params):
 
             raw = response.read()
 
-            data = json.loads(
+            return json.loads(
                 raw.decode("utf-8")
             )
-
-            return data
 
     except urllib.error.HTTPError as e:
 
         raise Exception(
-            f"Apple API HTTP 오류: {e.code}"
+            f"Apple API 오류 ({e.code})"
         )
 
     except urllib.error.URLError:
 
         raise Exception(
-            "Apple Music/iTunes 서버에 연결할 수 없습니다."
+            "Apple 서버에 연결하지 못했습니다."
         )
 
     except Exception as e:
 
         raise Exception(
-            f"검색 데이터를 불러오지 못했습니다: {e}"
+            f"검색 중 오류가 발생했습니다: {e}"
         )
 
 
 # =========================================================
-# 정확한 아티스트 검색
+# EXACT ARTIST SEARCH
 # =========================================================
 
-@st.cache_data(ttl=600, show_spinner=False)
+@st.cache_data(
+    ttl=600,
+    show_spinner=False
+)
 def find_exact_artist(query):
 
     data = apple_api_request(
@@ -987,7 +1173,7 @@ def find_exact_artist(query):
             "country": "KR",
             "media": "music",
             "entity": "musicArtist",
-            "limit": 20,
+            "limit": 50,
             "lang": "ko_kr"
         }
     )
@@ -997,12 +1183,11 @@ def find_exact_artist(query):
         []
     )
 
-    normalized_query = normalize_text(query)
+    normalized_query = normalize_text(
+        query
+    )
 
-    # -----------------------------------------------------
-    # 1순위: 아티스트 이름 완전 일치
-    # -----------------------------------------------------
-
+    # 오직 완전 일치만 인정
     for artist in artists:
 
         artist_name = artist.get(
@@ -1016,41 +1201,17 @@ def find_exact_artist(query):
 
             return artist
 
-    # -----------------------------------------------------
-    # 2순위: 아주 가까운 경우
-    # -----------------------------------------------------
-
-    for artist in artists:
-
-        artist_name = artist.get(
-            "artistName",
-            ""
-        )
-
-        normalized_artist = normalize_text(
-            artist_name
-        )
-
-        if (
-            normalized_query
-            and normalized_artist
-            and (
-                normalized_query
-                in normalized_artist
-                or normalized_artist
-                in normalized_query
-            )
-        ):
-            return artist
-
     return None
 
 
 # =========================================================
-# 아티스트의 곡 가져오기
+# ARTIST SONGS
 # =========================================================
 
-@st.cache_data(ttl=600, show_spinner=False)
+@st.cache_data(
+    ttl=600,
+    show_spinner=False
+)
 def get_artist_songs(artist_id):
 
     data = apple_api_request(
@@ -1073,11 +1234,16 @@ def get_artist_songs(artist_id):
 
     for item in results:
 
-        # artist 자체 정보는 제외
-        if item.get("wrapperType") != "track":
+        if item.get(
+            "wrapperType"
+        ) != "track":
+
             continue
 
-        if item.get("kind") != "song":
+        if item.get(
+            "kind"
+        ) != "song":
+
             continue
 
         songs.append(item)
@@ -1086,10 +1252,13 @@ def get_artist_songs(artist_id):
 
 
 # =========================================================
-# 정확한 곡 제목 검색
+# SONG SEARCH
 # =========================================================
 
-@st.cache_data(ttl=600, show_spinner=False)
+@st.cache_data(
+    ttl=600,
+    show_spinner=False
+)
 def find_song_results(query):
 
     data = apple_api_request(
@@ -1109,13 +1278,19 @@ def find_song_results(query):
         []
     )
 
-    normalized_query = normalize_text(query)
+    normalized_query = normalize_text(
+        query
+    )
 
-    scored = []
+    exact_matches = []
+    partial_matches = []
 
     for song in results:
 
-        if song.get("kind") != "song":
+        if song.get(
+            "kind"
+        ) != "song":
+
             continue
 
         track_name = song.get(
@@ -1130,70 +1305,38 @@ def find_song_results(query):
         if not normalized_track:
             continue
 
-        # -------------------------------------------------
-        # 검색 정확도 점수
-        # -------------------------------------------------
-
-        score = 0
-
         # 제목 완전 일치
         if normalized_track == normalized_query:
-            score += 1000
 
-        # 제목이 검색어로 시작
-        elif normalized_track.startswith(
-            normalized_query
-        ):
-            score += 500
+            exact_matches.append(song)
 
-        # 제목에 검색어 포함
+        # 제목 일부 일치
         elif normalized_query in normalized_track:
-            score += 250
 
-        else:
-            # 제목이 완전히 무관하면 제외
-            continue
+            partial_matches.append(song)
 
-        # 같은 제목이면 아티스트 이름도 비교
-        artist_name = song.get(
-            "artistName",
-            ""
-        )
+    # 완전 일치가 하나라도 존재한다면
+    # 완전 일치 위주로 보여준다.
+    if exact_matches:
+        return exact_matches[:30]
 
-        if normalize_text(
-            artist_name
-        ) == normalized_query:
-            score += 20
-
-        scored.append(
-            (
-                score,
-                song
-            )
-        )
-
-    # 정확도가 높은 순서
-    scored.sort(
-        key=lambda x: x[0],
-        reverse=True
-    )
-
-    return [
-        song
-        for score, song in scored
-    ][:30]
+    return partial_matches[:30]
 
 
 # =========================================================
-# 검색 메인 함수
+# MAIN SEARCH
 # =========================================================
 
-@st.cache_data(ttl=600, show_spinner=False)
+@st.cache_data(
+    ttl=600,
+    show_spinner=False
+)
 def search_music(query):
 
     query = query.strip()
 
     if not query:
+
         return {
             "type": "",
             "artist": None,
@@ -1201,11 +1344,12 @@ def search_music(query):
         }
 
     # -----------------------------------------------------
-    # STEP 1
-    # 검색어가 정확한 아티스트인지 먼저 확인
+    # 1. 가수 이름 완전 일치 확인
     # -----------------------------------------------------
 
-    artist = find_exact_artist(query)
+    artist = find_exact_artist(
+        query
+    )
 
     if artist:
 
@@ -1226,11 +1370,12 @@ def search_music(query):
             }
 
     # -----------------------------------------------------
-    # STEP 2
-    # 정확한 아티스트가 아니라면 곡 제목 검색
+    # 2. 가수가 아니면 곡 제목 검색
     # -----------------------------------------------------
 
-    songs = find_song_results(query)
+    songs = find_song_results(
+        query
+    )
 
     return {
         "type": "song",
@@ -1240,12 +1385,12 @@ def search_music(query):
 
 
 # =========================================================
-# Sidebar
+# SIDEBAR
 # =========================================================
 
 with st.sidebar:
 
-    st.markdown(
+    render_html(
         """
         <div class="sidebar-brand">
 
@@ -1258,8 +1403,7 @@ with st.sidebar:
             </div>
 
         </div>
-        """,
-        unsafe_allow_html=True
+        """
     )
 
     if st.button(
@@ -1268,16 +1412,15 @@ with st.sidebar:
     ):
 
         st.session_state.page = "main"
-
         st.session_state.main_entered = False
-
         st.session_state.choice_mode = "select"
 
         st.rerun()
 
-    st.markdown(
-        '<div class="sidebar-line"></div>',
-        unsafe_allow_html=True
+    render_html(
+        """
+        <div class="sidebar-line"></div>
+        """
     )
 
     if st.button(
@@ -1286,14 +1429,14 @@ with st.sidebar:
     ):
 
         st.session_state.page = "choice"
-
         st.session_state.choice_mode = "select"
 
         st.rerun()
 
-    st.markdown(
-        '<div class="sidebar-line"></div>',
-        unsafe_allow_html=True
+    render_html(
+        """
+        <div class="sidebar-line"></div>
+        """
     )
 
     if st.button(
@@ -1305,9 +1448,10 @@ with st.sidebar:
 
         st.rerun()
 
-    st.markdown(
-        '<div class="sidebar-line"></div>',
-        unsafe_allow_html=True
+    render_html(
+        """
+        <div class="sidebar-line"></div>
+        """
     )
 
 
@@ -1318,12 +1462,12 @@ with st.sidebar:
 if st.session_state.page == "main":
 
     # -----------------------------------------------------
-    # 처음 MAIN 화면
+    # INITIAL MAIN
     # -----------------------------------------------------
 
     if not st.session_state.main_entered:
 
-        st.markdown(
+        render_html(
             """
             <div class="welcome-wrap">
 
@@ -1343,13 +1487,13 @@ if st.session_state.page == "main":
                 </div>
 
             </div>
-            """,
-            unsafe_allow_html=True
+            """
         )
 
-        st.markdown(
-            '<div class="enter-space">',
-            unsafe_allow_html=True
+        render_html(
+            """
+            <div class="enter-button-wrap">
+            """
         )
 
         if st.button(
@@ -1361,18 +1505,19 @@ if st.session_state.page == "main":
 
             st.rerun()
 
-        st.markdown(
-            '</div>',
-            unsafe_allow_html=True
+        render_html(
+            """
+            </div>
+            """
         )
 
     # -----------------------------------------------------
-    # ENTER ROOM 이후 편지
+    # LETTER
     # -----------------------------------------------------
 
     else:
 
-        st.markdown(
+        render_html(
             """
             <div class="letter-wrap">
 
@@ -1395,7 +1540,8 @@ if st.session_state.page == "main":
                         <p>
                             이 방에는 수많은 음악이 있습니다.
                             누군가에게는 오래된 기억이고,
-                            누군가에게는 아직 만나지 못한 새로운 장면일지도 모릅니다.
+                            누군가에게는 아직 만나지 못한
+                            새로운 장면일지도 모릅니다.
                         </p>
 
                         <p>
@@ -1424,8 +1570,7 @@ if st.session_state.page == "main":
                 </div>
 
             </div>
-            """,
-            unsafe_allow_html=True
+            """
         )
 
 
@@ -1436,12 +1581,12 @@ if st.session_state.page == "main":
 elif st.session_state.page == "choice":
 
     # =====================================================
-    # CHOICE 선택 화면
+    # CHOICE SELECT
     # =====================================================
 
     if st.session_state.choice_mode == "select":
 
-        st.markdown(
+        render_html(
             """
             <div class="choice-wrap">
 
@@ -1454,12 +1599,11 @@ elif st.session_state.page == "choice":
                 </div>
 
             </div>
-            """,
-            unsafe_allow_html=True
+            """
         )
 
         st.markdown(
-            '<div class="paper-button-area">',
+            "<div class='paper-button-row'>",
             unsafe_allow_html=True
         )
 
@@ -1491,18 +1635,18 @@ elif st.session_state.page == "choice":
                 st.rerun()
 
         st.markdown(
-            '</div>',
+            "</div>",
             unsafe_allow_html=True
         )
 
 
     # =====================================================
-    # 노래 듣기
+    # LISTEN
     # =====================================================
 
     elif st.session_state.choice_mode == "listen":
 
-        st.markdown(
+        render_html(
             """
             <div class="listen-wrap">
 
@@ -1515,13 +1659,8 @@ elif st.session_state.page == "choice":
                 </div>
 
             </div>
-            """,
-            unsafe_allow_html=True
+            """
         )
-
-        # -------------------------------------------------
-        # 검색 영역
-        # -------------------------------------------------
 
         search_col1, search_col2 = st.columns(
             [5, 1],
@@ -1532,16 +1671,18 @@ elif st.session_state.page == "choice":
 
             query = st.text_input(
                 "검색",
-                placeholder="가수 이름 또는 곡 제목을 입력하세요",
+                placeholder=
+                    "가수 이름 또는 곡 제목을 입력하세요",
                 label_visibility="collapsed",
                 key="music_search_input"
             )
 
         with search_col2:
 
-            st.markdown(
-                '<div class="search-button">',
-                unsafe_allow_html=True
+            render_html(
+                """
+                <div class="search-button-wrap">
+                """
             )
 
             search_clicked = st.button(
@@ -1549,14 +1690,15 @@ elif st.session_state.page == "choice":
                 key="music_search_button"
             )
 
-            st.markdown(
-                '</div>',
-                unsafe_allow_html=True
+            render_html(
+                """
+                </div>
+                """
             )
 
 
         # -------------------------------------------------
-        # 검색 실행
+        # SEARCH
         # -------------------------------------------------
 
         if search_clicked:
@@ -1568,6 +1710,10 @@ elif st.session_state.page == "choice":
                 st.session_state.search_results = []
 
                 st.session_state.search_type = ""
+
+                st.session_state.search_query = ""
+
+                st.session_state.search_artist = None
 
                 st.session_state.search_error = (
                     "검색어를 입력해주세요."
@@ -1581,20 +1727,20 @@ elif st.session_state.page == "choice":
                         "record room에서 음악을 찾는 중..."
                     ):
 
-                        search_data = search_music(
+                        result = search_music(
                             clean_query
                         )
 
                     st.session_state.search_results = (
-                        search_data["songs"]
+                        result["songs"]
                     )
 
                     st.session_state.search_type = (
-                        search_data["type"]
+                        result["type"]
                     )
 
                     st.session_state.search_artist = (
-                        search_data["artist"]
+                        result["artist"]
                     )
 
                     st.session_state.search_query = (
@@ -1607,27 +1753,28 @@ elif st.session_state.page == "choice":
 
                     st.session_state.search_results = []
 
-                    st.session_state.search_error = str(e)
+                    st.session_state.search_error = (
+                        str(e)
+                    )
 
 
         # -------------------------------------------------
-        # 검색 오류
+        # ERROR
         # -------------------------------------------------
 
         if st.session_state.search_error:
 
-            st.markdown(
+            render_html(
                 f"""
                 <div class="notice-box">
-                    {st.session_state.search_error}
+                    {escape(st.session_state.search_error)}
                 </div>
-                """,
-                unsafe_allow_html=True
+                """
             )
 
 
         # -------------------------------------------------
-        # 검색 결과
+        # RESULTS
         # -------------------------------------------------
 
         results = st.session_state.search_results
@@ -1642,15 +1789,10 @@ elif st.session_state.page == "choice":
                 st.session_state.search_query
             )
 
-            # -------------------------------------------------
-            # 아티스트 검색 결과
-            # -------------------------------------------------
-
             if search_type == "artist":
 
-                artist = st.session_state.get(
-                    "search_artist",
-                    None
+                artist = (
+                    st.session_state.search_artist
                 )
 
                 artist_name = (
@@ -1662,50 +1804,51 @@ elif st.session_state.page == "choice":
                     else searched
                 )
 
-                st.markdown(
+                render_html(
                     f"""
                     <div class="result-heading">
-                        {artist_name} — SONGS
+                        {escape(artist_name)} — SONGS
                     </div>
-                    """,
-                    unsafe_allow_html=True
+                    """
                 )
-
-            # -------------------------------------------------
-            # 곡 검색 결과
-            # -------------------------------------------------
 
             else:
 
-                st.markdown(
+                render_html(
                     f"""
                     <div class="result-heading">
-                        SEARCH RESULTS FOR "{searched}"
+                        SEARCH RESULTS FOR
+                        "{escape(searched)}"
                     </div>
-                    """,
-                    unsafe_allow_html=True
+                    """
                 )
 
 
             # -------------------------------------------------
-            # 곡 카드
+            # SONG CARDS
             # -------------------------------------------------
 
             for song in results:
 
-                track_name = song.get(
-                    "trackName",
-                    "Unknown Song"
+                track_name = escape(
+                    song.get(
+                        "trackName",
+                        "Unknown Song"
+                    )
                 )
 
-                artist_name = song.get(
-                    "artistName",
-                    "Unknown Artist"
+                artist_name = escape(
+                    song.get(
+                        "artistName",
+                        "Unknown Artist"
+                    )
                 )
 
-                album_name = song.get(
-                    "collectionName",
-                    "Unknown Album"
+                album_name = escape(
+                    song.get(
+                        "collectionName",
+                        "Unknown Album"
+                    )
                 )
 
                 artwork = song.get(
@@ -1720,9 +1863,12 @@ elif st.session_state.page == "choice":
 
                 if release_date:
 
-                    release_date = (
+                    release_date = escape(
                         release_date[:10]
                     )
+                else:
+
+                    release_date = "-"
 
                 track_url = song.get(
                     "trackViewUrl",
@@ -1735,25 +1881,45 @@ elif st.session_state.page == "choice":
                 )
 
 
-                # 카드 시작
-
-                card_col1, card_col2 = st.columns(
-                    [1, 5],
+                result_col1, result_col2 = st.columns(
+                    [1, 6],
                     gap="medium"
                 )
 
-                with card_col1:
+
+                # ARTWORK
+                with result_col1:
 
                     if artwork:
 
                         st.image(
                             artwork,
-                            width=100
+                            width=120
                         )
 
-                with card_col2:
 
-                    st.markdown(
+                # INFO
+                with result_col2:
+
+                    apple_link = ""
+
+                    if track_url:
+
+                        safe_url = escape(
+                            track_url,
+                            quote=True
+                        )
+
+                        apple_link = (
+                            f'<a '
+                            f'class="apple-link" '
+                            f'href="{safe_url}" '
+                            f'target="_blank">'
+                            f'OPEN IN APPLE MUSIC / ITUNES ↗'
+                            f'</a>'
+                        )
+
+                    render_html(
                         f"""
                         <div class="song-card">
 
@@ -1773,32 +1939,31 @@ elif st.session_state.page == "choice":
                                 RELEASE · {release_date}
                             </div>
 
-                            {
-                                f'<a class="apple-link" href="{track_url}" target="_blank">OPEN IN APPLE MUSIC / ITUNES ↗</a>'
-                                if track_url
-                                else ""
-                            }
+                            {apple_link}
 
                         </div>
-                        """,
-                        unsafe_allow_html=True
+                        """
                     )
 
-                    # Apple의 30초 preview
                     if preview_url:
 
                         st.audio(
                             preview_url
                         )
 
-                st.markdown(
-                    "<div style='height:10px'></div>",
-                    unsafe_allow_html=True
+                render_html(
+                    """
+                    <div
+                        style="
+                            height:14px;
+                        "
+                    ></div>
+                    """
                 )
 
 
         # -------------------------------------------------
-        # 검색 결과 없음
+        # NO RESULTS
         # -------------------------------------------------
 
         elif (
@@ -1806,31 +1971,33 @@ elif st.session_state.page == "choice":
             and not st.session_state.search_error
         ):
 
-            st.markdown(
+            render_html(
                 f"""
                 <div class="notice-box">
 
-                    "{st.session_state.search_query}"에
-                    정확히 일치하거나 관련된 음악을 찾지 못했습니다.
+                    "{escape(
+                        st.session_state.search_query
+                    )}"
+
+                    에 해당하는 음악을 찾지 못했습니다.
 
                     <br><br>
 
-                    가수 이름이나 곡 제목을
-                    조금 더 정확하게 입력해보세요.
+                    정확한 가수 이름이나
+                    곡 제목을 입력해보세요.
 
                 </div>
-                """,
-                unsafe_allow_html=True
+                """
             )
 
 
     # =====================================================
-    # 추천받기
+    # RECOMMEND
     # =====================================================
 
     elif st.session_state.choice_mode == "recommend":
 
-        st.markdown(
+        render_html(
             """
             <div class="coming-wrap">
 
@@ -1843,18 +2010,17 @@ elif st.session_state.page == "choice":
                 </div>
 
             </div>
-            """,
-            unsafe_allow_html=True
+            """
         )
 
 
 # =========================================================
-# 기타 페이지
+# UNKNOWN PAGE
 # =========================================================
 
 else:
 
-    st.markdown(
+    render_html(
         """
         <div class="coming-wrap">
 
@@ -1863,6 +2029,5 @@ else:
             </div>
 
         </div>
-        """,
-        unsafe_allow_html=True
+        """
     )
