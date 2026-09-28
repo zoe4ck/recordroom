@@ -275,29 +275,259 @@ div[data-testid="stButton"] > button:hover {
 }
 
 /* =========================================================
-   LISTEN
+   ROOM SERVICE
    ========================================================= */
 
-.listen-container {
+.room-service-container {
     width: min(1100px, 90vw);
-    margin: 60px auto 0 auto;
+    margin: 0 auto;
+    padding-top: 45px;
 }
 
-.listen-title {
+.room-service-title {
     color: #d5a56d;
     font-family: "Cormorant Garamond", Georgia, serif;
     font-size: 48px;
-    letter-spacing: 5px;
+    letter-spacing: 6px;
     text-align: center;
 }
 
-.listen-subtitle {
-    color: #9d8069;
+.room-service-subtitle {
+    color: #96765d;
     font-family: "Noto Serif KR", serif;
     font-size: 14px;
     text-align: center;
-    margin-top: 12px;
-    margin-bottom: 35px;
+    margin-top: 8px;
+}
+
+/* =========================================================
+   RECORD PLAYER
+   ========================================================= */
+
+.record-stage {
+    min-height: 470px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.record-player {
+    width: 370px;
+    height: 370px;
+    border-radius: 50%;
+    background:
+        repeating-radial-gradient(
+            circle,
+            #17110e 0px,
+            #17110e 3px,
+            #211813 4px,
+            #211813 6px
+        );
+    box-shadow:
+        0 0 0 10px rgba(47,31,22,0.75),
+        0 25px 55px rgba(0,0,0,0.6);
+    position: relative;
+}
+
+.record-player:before {
+    content: "";
+    position: absolute;
+    inset: 28px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+
+.record-label {
+    width: 125px;
+    height: 125px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background:
+        radial-gradient(
+            circle,
+            #b98555 0%,
+            #8f5e3b 48%,
+            #6c412a 100%
+        );
+    box-shadow: 0 0 15px rgba(0,0,0,0.45);
+}
+
+.record-hole {
+    width: 12px;
+    height: 12px;
+    background: #17110e;
+    border-radius: 50%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.record-ring {
+    position: absolute;
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgba(240,204,160,0.3);
+}
+
+.record-label-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 31px;
+    color: #ead1af;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+}
+
+.record-caption {
+    text-align: center;
+    color: #b99676;
+    font-family: "Noto Serif KR", serif;
+    margin-top: 15px;
+}
+
+/* =========================================================
+   FIREPLACE
+   ========================================================= */
+
+.fireplace-container {
+    width: min(1100px, 90vw);
+    margin: 0 auto;
+    padding-top: 40px;
+}
+
+.fireplace-title {
+    color: #d5a56d;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 48px;
+    letter-spacing: 6px;
+    text-align: center;
+}
+
+.fireplace-subtitle {
+    color: #96765d;
+    font-family: "Noto Serif KR", serif;
+    text-align: center;
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+.fireplace {
+    width: min(720px, 80vw);
+    height: 350px;
+    margin: 55px auto 25px auto;
+    background:
+        radial-gradient(
+            ellipse at 50% 100%,
+            #8a4424 0%,
+            #542617 28%,
+            #27130d 58%,
+            #110a07 100%
+        );
+    border: 16px solid #3b261a;
+    box-shadow:
+        inset 0 0 40px rgba(0,0,0,0.7),
+        0 25px 60px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+.fire {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    width: 130px;
+    height: 190px;
+    transform: translateX(-50%);
+    background:
+        radial-gradient(
+            ellipse at center bottom,
+            #f2a34d 0%,
+            #d8642f 35%,
+            #7b2f1b 62%,
+            transparent 72%
+        );
+    border-radius: 50% 50% 35% 35%;
+    filter: blur(1px);
+    animation: flame 1.4s infinite alternate ease-in-out;
+}
+
+.fire-small {
+    position: absolute;
+    bottom: 35px;
+    left: 50%;
+    width: 65px;
+    height: 110px;
+    transform: translateX(-50%);
+    background:
+        radial-gradient(
+            ellipse at center bottom,
+            #ffe0a3 0%,
+            #f19a43 40%,
+            #bd4825 70%,
+            transparent 75%
+        );
+    border-radius: 50% 50% 35% 35%;
+    animation: flameSmall 0.9s infinite alternate ease-in-out;
+}
+
+.wood {
+    position: absolute;
+    bottom: 27px;
+    left: 50%;
+    width: 210px;
+    height: 22px;
+    background: #24140e;
+    transform: translateX(-50%) rotate(4deg);
+    border-radius: 8px;
+}
+
+.wood.two {
+    transform: translateX(-50%) rotate(-7deg);
+}
+
+@keyframes flame {
+    from {
+        transform: translateX(-50%) scaleY(0.95) rotate(-2deg);
+    }
+    to {
+        transform: translateX(-50%) scaleY(1.08) rotate(2deg);
+    }
+}
+
+@keyframes flameSmall {
+    from {
+        transform: translateX(-50%) scaleY(0.9);
+    }
+    to {
+        transform: translateX(-50%) scaleY(1.1);
+    }
+}
+
+.fireplace-note {
+    text-align: center;
+    color: #a17f63;
+    font-family: "Noto Serif KR", serif;
+    line-height: 2;
+}
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.listen-search {
+    width: min(1000px, 90vw);
+    margin: 30px auto 0 auto;
 }
 
 .result-title {
@@ -358,10 +588,17 @@ div[data-testid="stButton"] > button:hover {
 [data-testid="stRadio"] label {
     color: #a98a70 !important;
 }
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.back-button {
+    margin-top: 20px;
+}
 </style>
 """
 
-# CSS 렌더링
 try:
     st.html(CSS)
 except Exception:
@@ -381,6 +618,9 @@ if "main_entered" not in st.session_state:
 if "choice_mode" not in st.session_state:
     st.session_state.choice_mode = None
 
+if "room_service_step" not in st.session_state:
+    st.session_state.room_service_step = "record"
+
 if "search_text" not in st.session_state:
     st.session_state.search_text = ""
 
@@ -398,6 +638,9 @@ def go(page):
     if page != "choice":
         st.session_state.choice_mode = None
 
+    if page != "choice":
+        st.session_state.room_service_step = "record"
+
     st.rerun()
 
 
@@ -408,12 +651,12 @@ def go(page):
 with st.sidebar:
 
     st.markdown(
-        '<div class="sidebar-title">RECORD ROOM</div>',
+        '<div class="sidebar-title">MYSTERY HOTEL</div>',
         unsafe_allow_html=True
     )
 
     st.markdown(
-        '<div class="sidebar-subtitle">A ROOM FOR MUSIC</div>',
+        '<div class="sidebar-subtitle">A QUIET PLACE FOR MUSIC</div>',
         unsafe_allow_html=True
     )
 
@@ -425,15 +668,15 @@ with st.sidebar:
     if st.button("MAIN", key="nav_main"):
         go("main")
 
-    if st.button("CHOICE", key="nav_choice"):
+    if st.button("ROOM SERVICE", key="nav_choice"):
         go("choice")
 
-    if st.button("—", key="nav_unknown"):
+    if st.button("MY ROOM", key="nav_unknown"):
         go("unknown")
 
 
 # =========================================================
-# APPLE iTUNES API
+# APPLE API
 # =========================================================
 
 @st.cache_data(ttl=600, show_spinner=False)
@@ -517,9 +760,34 @@ def normalize(text):
 
 
 # =========================================================
-# ARTIST SEARCH
+# KOREAN / ENGLISH ARTIST ALIASES
 # =========================================================
-# ★ 검색 오류 수정된 부분
+
+ARTIST_ALIASES = {
+    "아이유": ["IU"],
+    "iu": ["아이유"],
+    "지코": ["ZICO", "Zico"],
+    "zico": ["지코"],
+    "뉴진스": ["NewJeans"],
+    "newjeans": ["뉴진스"],
+    "방탄소년단": ["BTS"],
+    "bts": ["방탄소년단"],
+    "블랙핑크": ["BLACKPINK"],
+    "blackpink": ["블랙핑크"],
+    "에스파": ["aespa"],
+    "aespa": ["에스파"],
+    "아이브": ["IVE"],
+    "ive": ["아이브"],
+    "세븐틴": ["SEVENTEEN"],
+    "seventeen": ["세븐틴"],
+    "르세라핌": ["LE SSERAFIM"],
+    "le sserafim": ["르세라핌"],
+    "르세라핌": ["LE SSERAFIM"],
+}
+
+
+# =========================================================
+# ARTIST SEARCH
 # =========================================================
 
 @st.cache_data(ttl=600, show_spinner=False)
@@ -532,102 +800,78 @@ def find_artist_tracks(query):
 
     nq = normalize(query)
 
-    # Apple에서 검색된 아티스트 후보를 모두 모음
+    # -----------------------------------------------------
+    # 검색할 후보 단어
+    # -----------------------------------------------------
+
+    search_terms = [query]
+
+    for alias in ARTIST_ALIASES.get(
+        query.lower(),
+        []
+    ):
+
+        if alias not in search_terms:
+            search_terms.append(alias)
+
     candidates = []
 
-    # 한국 + 미국 스토어 모두 확인
-    for country in ["KR", "US"]:
+    # -----------------------------------------------------
+    # Apple Music Artist 검색
+    # -----------------------------------------------------
 
-        data = apple_search({
-            "term": query,
-            "country": country,
-            "media": "music",
-            "entity": "musicArtist",
-            "attribute": "artistTerm",
-            "limit": 50
-        })
+    for search_term in search_terms:
 
-        for artist in data.get(
-            "results",
-            []
-        ):
+        for country in ["KR", "US"]:
 
-            artist_id = artist.get(
-                "artistId"
-            )
+            data = apple_search({
+                "term": search_term,
+                "country": country,
+                "media": "music",
+                "entity": "musicArtist",
+                "attribute": "artistTerm",
+                "limit": 50
+            })
 
-            artist_name = artist.get(
-                "artistName",
-                ""
-            )
-
-            if not artist_id or not artist_name:
-                continue
-
-            # 중복 아티스트 제거
-            if not any(
-                x.get("artistId") == artist_id
-                for x in candidates
+            for artist in data.get(
+                "results",
+                []
             ):
-                candidates.append(artist)
+
+                artist_id = artist.get(
+                    "artistId"
+                )
+
+                artist_name = artist.get(
+                    "artistName",
+                    ""
+                )
+
+                if not artist_id or not artist_name:
+                    continue
+
+                if not any(
+                    x.get("artistId") == artist_id
+                    for x in candidates
+                ):
+
+                    candidates.append(
+                        artist
+                    )
 
     if not candidates:
-        return []
 
-    # =====================================================
-    # 1순위
-    # 이름 완전 일치
-    # 예: zico → ZICO
-    #     아이유 → 아이유
-    # =====================================================
+        # -------------------------------------------------
+        # Artist 검색이 안 될 경우
+        # Song + artistTerm으로 다시 검색
+        # -------------------------------------------------
 
-    exact = [
-        artist
-        for artist in candidates
-        if normalize(
-            artist.get("artistName", "")
-        ) == nq
-    ]
-
-    if exact:
-
-        selected = exact[0]
-
-    else:
-
-        # =================================================
-        # 2순위
-        # 이름에 검색어 포함
-        # =================================================
-
-        contains = [
-            artist
-            for artist in candidates
-            if nq in normalize(
-                artist.get("artistName", "")
-            )
-        ]
-
-        if contains:
-
-            selected = contains[0]
-
-        else:
-
-            # =================================================
-            # 3순위
-            # 곡 검색에서 artistId를 다시 찾음
-            #
-            # 한글 이름 검색에서 아티스트 검색이
-            # 제대로 잡히지 않는 경우를 위한 fallback
-            # =================================================
-
-            song_candidates = []
+        for search_term in search_terms:
 
             for country in ["KR", "US"]:
 
                 data = apple_search({
-                    "term": query,
+                    "term": search_term,
                     "country": country,
                     "media": "music",
                     "entity": "song",
@@ -654,49 +898,121 @@ def find_artist_tracks(query):
 
                     if not any(
                         x.get("artistId") == artist_id
-                        for x in song_candidates
+                        for x in candidates
                     ):
 
-                        song_candidates.append({
+                        candidates.append({
                             "artistId": artist_id,
                             "artistName": artist_name
                         })
 
-            if not song_candidates:
-                return []
+    if not candidates:
+        return []
 
-            # 곡 검색 결과에서도 이름 완전 일치 우선
-            song_exact = [
+    # -----------------------------------------------------
+    # 1. 정확히 일치
+    # -----------------------------------------------------
+
+    exact = [
+        artist
+        for artist in candidates
+        if normalize(
+            artist.get(
+                "artistName",
+                ""
+            )
+        ) == nq
+    ]
+
+    if exact:
+
+        selected = exact[0]
+
+    else:
+
+        # -------------------------------------------------
+        # 2. alias와 정확히 일치
+        # -------------------------------------------------
+
+        selected = None
+
+        for alias in search_terms[1:]:
+
+            alias_normalized = normalize(
+                alias
+            )
+
+            alias_exact = [
                 artist
-                for artist in song_candidates
+                for artist in candidates
                 if normalize(
-                    artist.get("artistName", "")
-                ) == nq
+                    artist.get(
+                        "artistName",
+                        ""
+                    )
+                ) == alias_normalized
             ]
 
-            if song_exact:
+            if alias_exact:
 
-                selected = song_exact[0]
+                selected = alias_exact[0]
+                break
 
-            else:
+        # -------------------------------------------------
+        # 3. 부분 일치
+        # -------------------------------------------------
 
-                # 부분 일치
-                song_contains = [
+        if selected is None:
+
+            contains = [
+                artist
+                for artist in candidates
+                if nq in normalize(
+                    artist.get(
+                        "artistName",
+                        ""
+                    )
+                )
+            ]
+
+            if contains:
+
+                selected = contains[0]
+
+        # -------------------------------------------------
+        # 4. alias 부분 일치
+        # -------------------------------------------------
+
+        if selected is None:
+
+            for alias in search_terms[1:]:
+
+                alias_normalized = normalize(
+                    alias
+                )
+
+                contains = [
                     artist
-                    for artist in song_candidates
-                    if nq in normalize(
-                        artist.get("artistName", "")
+                    for artist in candidates
+                    if alias_normalized in normalize(
+                        artist.get(
+                            "artistName",
+                            ""
+                        )
                     )
                 ]
 
-                if not song_contains:
-                    return []
+                if contains:
 
-                selected = song_contains[0]
+                    selected = contains[0]
+                    break
 
-    # =====================================================
-    # 선택된 아티스트의 Apple artistId
-    # =====================================================
+    if selected is None:
+        return []
+
+    # -----------------------------------------------------
+    # Artist ID
+    # -----------------------------------------------------
 
     artist_id = selected.get(
         "artistId"
@@ -705,9 +1021,9 @@ def find_artist_tracks(query):
     if not artist_id:
         return []
 
-    # =====================================================
-    # artistId를 이용해서 정확한 곡 목록 가져오기
-    # =====================================================
+    # -----------------------------------------------------
+    # Artist ID로 실제 곡 목록 조회
+    # -----------------------------------------------------
 
     for country in ["KR", "US"]:
 
@@ -733,7 +1049,6 @@ def find_artist_tracks(query):
         ]
 
         if tracks:
-
             return tracks
 
     return []
@@ -741,8 +1056,6 @@ def find_artist_tracks(query):
 
 # =========================================================
 # SONG SEARCH
-# =========================================================
-# ★ 검색 오류 수정된 부분
 # =========================================================
 
 @st.cache_data(ttl=600, show_spinner=False)
@@ -757,7 +1070,6 @@ def find_song(query):
 
     all_results = []
 
-    # 한국 + 미국 스토어 모두 검색
     for country in ["KR", "US"]:
 
         data = apple_search({
@@ -786,42 +1098,45 @@ def find_song(query):
                 "trackId"
             )
 
-            # 중복 제거
             if track_id and any(
-                x.get("trackId") == track_id
+                x.get(
+                    "trackId"
+                ) == track_id
                 for x in all_results
             ):
                 continue
 
-            all_results.append(result)
+            all_results.append(
+                result
+            )
 
     if not all_results:
         return []
 
-    # =====================================================
-    # 1순위: 제목 완전 일치
-    # =====================================================
-
+    # 정확한 제목
     exact = [
         result
         for result in all_results
         if normalize(
-            result.get("trackName", "")
+            result.get(
+                "trackName",
+                ""
+            )
         ) == nq
     ]
 
     if exact:
         return exact
 
-    # =====================================================
-    # 2순위: 제목 부분 일치
-    # =====================================================
-
+    # 부분 일치
     partial = [
         result
         for result in all_results
         if nq in normalize(
-            result.get("trackName", "")
+            result.get(
+                "trackName",
+                ""
+            )
         )
     ]
 
@@ -839,22 +1154,18 @@ def search_music(query, mode):
     if not query:
         return []
 
-    # 사용자가 '가수' 선택
     if mode == "artist":
 
         return find_artist_tracks(
             query
         )
 
-    # 사용자가 '곡' 선택
     if mode == "song":
 
         return find_song(
             query
         )
 
-    # 자동 검색
-    # 먼저 가수로 검색
     artist_results = find_artist_tracks(
         query
     )
@@ -863,7 +1174,6 @@ def search_music(query, mode):
 
         return artist_results
 
-    # 가수가 아니면 곡 검색
     return find_song(
         query
     )
@@ -993,19 +1303,19 @@ def display_results(results):
 
 
 # =========================================================
-# MAIN PAGE
+# MAIN
 # =========================================================
 
 if st.session_state.page == "main":
 
     # -----------------------------------------------------
-    # 처음 MAIN
+    # MAIN 첫 화면
     # -----------------------------------------------------
 
     if not st.session_state.main_entered:
 
         st.markdown(
-            '<div class="welcome-area"><div class="welcome-small">WELCOME TO</div><div class="welcome-title">record room</div><div class="welcome-line"></div><div class="welcome-description">음악을 듣고, 발견하고, 잠시 머무는 작은 방</div></div>',
+            '<div class="welcome-area"><div class="welcome-small">WELCOME TO</div><div class="welcome-title">MYSTERY HOTEL</div><div class="welcome-line"></div><div class="welcome-description">음악을 듣고, 발견하고, 잠시 머무는 작은 방</div></div>',
             unsafe_allow_html=True
         )
 
@@ -1016,7 +1326,7 @@ if st.session_state.page == "main":
         with center:
 
             if st.button(
-                "ENTER ROOM",
+                "ENTER HOTEL",
                 key="enter_room",
                 use_container_width=True
             ):
@@ -1031,26 +1341,26 @@ if st.session_state.page == "main":
 
     else:
 
-        # HTML을 한 줄 문자열로 만들어
-        # 코드 블록으로 인식되는 문제 방지
         letter_html = (
             '<div class="letter-wrap">'
             '<div class="letter-paper">'
             '<div class="letter-date">SEPTEMBER 28, 2026</div>'
-            '<div class="letter-title">DEAR, VISITOR</div>'
+            '<div class="letter-title">DEAR, GUEST</div>'
             '<div class="letter-body">'
             '이곳에는 조금 오래 머물러도 괜찮습니다.'
             '<br><br>'
             '누군가에게는 스쳐 지나갈 한 곡이, '
             '누군가에게는 오래 기억될 밤이 되기도 하니까요.'
             '<br><br>'
-            '이 방에서는 이름을 알고 찾아온 음악도, '
-            '우연히 발견한 음악도 천천히 들여다볼 수 있습니다.'
+            '이 호텔에서는 당신이 원하는 음악을 찾아 '
+            '객실로 가져갈 수 있습니다.'
             '<br><br>'
-            '문을 열었으니, '
-            '이제 당신이 들을 차례입니다.'
+            '그리고 음악이 필요한 밤에는, '
+            '당신만의 방에서 조용히 음악을 틀어보세요.'
+            '<br><br>'
+            '문은 이미 열려 있습니다.'
             '</div>'
-            '<div class="letter-sign">— record room</div>'
+            '<div class="letter-sign">— MYSTERY HOTEL</div>'
             '</div>'
             '</div>'
         )
@@ -1060,21 +1370,29 @@ if st.session_state.page == "main":
             unsafe_allow_html=True
         )
 
+        if st.button(
+            "← BACK TO LOBBY",
+            key="back_main_letter"
+        ):
+
+            st.session_state.main_entered = False
+            st.rerun()
+
 
 # =========================================================
-# CHOICE PAGE
+# ROOM SERVICE
 # =========================================================
 
 elif st.session_state.page == "choice":
 
-    # -----------------------------------------------------
-    # CHOICE 선택 화면
-    # -----------------------------------------------------
+    # =====================================================
+    # 처음 ROOM SERVICE에 들어온 화면
+    # =====================================================
 
     if st.session_state.choice_mode is None:
 
         st.markdown(
-            '<div class="section-area"><div class="section-title">CHOICE</div><div class="section-subtitle">오늘은 어떤 방식으로 음악을 만날까요?</div></div>',
+            '<div class="section-area"><div class="section-title">ROOM SERVICE</div><div class="section-subtitle">오늘 밤 객실로 가져갈 음악을 골라보세요.</div></div>',
             unsafe_allow_html=True
         )
 
@@ -1092,6 +1410,7 @@ elif st.session_state.page == "choice":
             ):
 
                 st.session_state.choice_mode = "listen"
+                st.session_state.room_service_step = "record"
 
                 st.rerun()
 
@@ -1107,78 +1426,226 @@ elif st.session_state.page == "choice":
 
                 st.rerun()
 
-    # -----------------------------------------------------
-    # LISTEN
-    # -----------------------------------------------------
-
-    elif st.session_state.choice_mode == "listen":
-
         st.markdown(
-            '<div class="listen-container"><div class="listen-title">LISTEN</div><div class="listen-subtitle">가수 이름 또는 곡 제목을 검색하세요.</div></div>',
+            '<div style="text-align:center;color:#76563e;font-family:Georgia,serif;margin-top:35px;letter-spacing:2px;">ROOM SERVICE · OPEN ALL NIGHT</div>',
             unsafe_allow_html=True
         )
 
-        search_col, button_col = st.columns(
-            [5, 1]
-        )
 
-        with search_col:
+    # =====================================================
+    # 노래 듣기
+    # =====================================================
 
-            query = st.text_input(
-                "SEARCH",
-                value=st.session_state.search_text,
-                placeholder="예: 아이유 / Love wins all",
-                label_visibility="collapsed",
-                key="music_search_input"
+    elif st.session_state.choice_mode == "listen":
+
+        # -------------------------------------------------
+        # RECORD PLAYER
+        # -------------------------------------------------
+
+        if st.session_state.room_service_step == "record":
+
+            st.markdown(
+                '<div class="room-service-container"><div class="room-service-title">RECORD ROOM</div><div class="room-service-subtitle">당신의 객실에서 음악을 재생할 레코드입니다.</div></div>',
+                unsafe_allow_html=True
             )
 
-        with button_col:
-
-            search_clicked = st.button(
-                "SEARCH",
-                key="music_search_button",
-                use_container_width=True
+            st.markdown(
+                '<div class="record-stage"><div class="record-player"><div class="record-label"><div class="record-label-text">RECORD<br>ROOM</div><div class="record-ring"></div><div class="record-hole"></div></div></div></div>',
+                unsafe_allow_html=True
             )
 
-        search_type = st.radio(
-            "검색 기준",
-            ["자동", "가수", "곡"],
-            horizontal=True,
-            label_visibility="collapsed"
-        )
+            st.markdown(
+                '<div class="record-caption">Your record is waiting.</div>',
+                unsafe_allow_html=True
+            )
 
-        type_map = {
-            "자동": "auto",
-            "가수": "artist",
-            "곡": "song"
-        }
+            st.write("")
 
-        if search_clicked:
+            col1, col2 = st.columns(
+                [1, 1]
+            )
 
-            if query.strip():
+            with col1:
 
-                st.session_state.search_text = query
-
-                with st.spinner(
-                    "record room에서 음악을 찾는 중..."
+                if st.button(
+                    "← BACK",
+                    key="record_back",
+                    use_container_width=True
                 ):
 
-                    st.session_state.search_results = search_music(
-                        query,
-                        type_map[search_type]
-                    )
+                    st.session_state.choice_mode = None
+                    st.session_state.room_service_step = "record"
+
+                    st.rerun()
+
+            with col2:
+
+                if st.button(
+                    "NEXT → FIREPLACE",
+                    key="record_next",
+                    use_container_width=True
+                ):
+
+                    st.session_state.room_service_step = "fireplace"
+
+                    st.rerun()
+
+            # ---------------------------------------------
+            # 검색
+            # ---------------------------------------------
+
+            st.markdown(
+                '<div class="listen-search">',
+                unsafe_allow_html=True
+            )
+
+            st.markdown(
+                '<div class="result-title">FIND A RECORD</div>',
+                unsafe_allow_html=True
+            )
+
+            search_col, button_col = st.columns(
+                [5, 1]
+            )
+
+            with search_col:
+
+                query = st.text_input(
+                    "SEARCH",
+                    value=st.session_state.search_text,
+                    placeholder="예: 아이유 / IU / 지코 / ZICO / Love wins all",
+                    label_visibility="collapsed",
+                    key="music_search_input"
+                )
+
+            with button_col:
+
+                search_clicked = st.button(
+                    "SEARCH",
+                    key="music_search_button",
+                    use_container_width=True
+                )
+
+            search_type = st.radio(
+                "검색 기준",
+                ["자동", "가수", "곡"],
+                horizontal=True,
+                label_visibility="collapsed"
+            )
+
+            type_map = {
+                "자동": "auto",
+                "가수": "artist",
+                "곡": "song"
+            }
+
+            if search_clicked:
+
+                if query.strip():
+
+                    st.session_state.search_text = query
+
+                    with st.spinner(
+                        "호텔에서 음악을 찾는 중..."
+                    ):
+
+                        st.session_state.search_results = search_music(
+                            query,
+                            type_map[search_type]
+                        )
+
+                    st.rerun()
+
+            if st.session_state.search_text:
+
+                display_results(
+                    st.session_state.search_results
+                )
+
+            st.markdown(
+                '</div>',
+                unsafe_allow_html=True
+            )
+
+
+        # -------------------------------------------------
+        # FIREPLACE
+        # -------------------------------------------------
+
+        else:
+
+            st.markdown(
+                '<div class="fireplace-container"><div class="fireplace-title">FIREPLACE</div><div class="fireplace-subtitle">불빛을 바라보며 잠시 쉬어가세요.</div></div>',
+                unsafe_allow_html=True
+            )
+
+            st.markdown(
+                '<div class="fireplace"><div class="wood"></div><div class="wood two"></div><div class="fire"></div><div class="fire-small"></div></div>',
+                unsafe_allow_html=True
+            )
+
+            st.markdown(
+                '<div class="fireplace-note">이곳에서는 아무것도 하지 않아도 괜찮습니다.<br>불멍을 하거나, 아래의 소리를 틀어두고 천천히 쉬어가세요.</div>',
+                unsafe_allow_html=True
+            )
+
+            st.write("")
+
+            sound_col1, sound_col2, sound_col3 = st.columns(
+                3
+            )
+
+            with sound_col1:
+
+                st.markdown(
+                    '<div style="text-align:center;color:#c49a70;font-family:Georgia,serif;letter-spacing:2px;margin-bottom:10px;">FIREPLACE</div>',
+                    unsafe_allow_html=True
+                )
+
+                # 외부 오디오 URL이 필요하므로
+                # 실제 백색소음 파일은 다음 단계에서 연결
+                st.caption(
+                    "🔥 벽난로 소리는 다음 단계에서 연결할 수 있어요."
+                )
+
+            with sound_col2:
+
+                st.markdown(
+                    '<div style="text-align:center;color:#c49a70;font-family:Georgia,serif;letter-spacing:2px;margin-bottom:10px;">RAIN</div>',
+                    unsafe_allow_html=True
+                )
+
+                st.caption(
+                    "🌧️ 빗소리"
+                )
+
+            with sound_col3:
+
+                st.markdown(
+                    '<div style="text-align:center;color:#c49a70;font-family:Georgia,serif;letter-spacing:2px;margin-bottom:10px;">WHITE NOISE</div>',
+                    unsafe_allow_html=True
+                )
+
+                st.caption(
+                    "〰️ 백색소음"
+                )
+
+            st.write("")
+
+            if st.button(
+                "← BACK TO RECORD ROOM",
+                key="fireplace_back",
+                use_container_width=True
+            ):
+
+                st.session_state.room_service_step = "record"
 
                 st.rerun()
 
-        if st.session_state.search_text:
 
-            display_results(
-                st.session_state.search_results
-            )
-
-    # -----------------------------------------------------
-    # RECOMMEND
-    # -----------------------------------------------------
+    # =====================================================
+    # 추천받기
+    # =====================================================
 
     else:
 
@@ -1187,14 +1654,24 @@ elif st.session_state.page == "choice":
             unsafe_allow_html=True
         )
 
+        if st.button(
+            "← BACK TO ROOM SERVICE",
+            key="recommend_back",
+            use_container_width=True
+        ):
+
+            st.session_state.choice_mode = None
+
+            st.rerun()
+
 
 # =========================================================
-# OTHER PAGE
+# MY ROOM
 # =========================================================
 
 else:
 
     st.markdown(
-        '<div class="section-area"><div class="section-title">—</div></div>',
+        '<div class="section-area"><div class="section-title">MY ROOM</div><div class="section-subtitle">YOUR PRIVATE ROOM</div><div style="color:#8f7059;font-family:Georgia,serif;margin-top:20px;">CHECK-IN REQUIRED</div></div>',
         unsafe_allow_html=True
     )
