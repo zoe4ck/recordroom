@@ -11,7 +11,7 @@ from html import escape
 # =========================================================
 
 st.set_page_config(
-    page_title="record room",
+    page_title="record hotel",
     page_icon="♫",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -678,18 +678,50 @@ try:
 except Exception:
     create_client = None
 
+SUPABASE_CONFIG_ERROR = ""
+SUPABASE_URL_VALUE = ""
+
 @st.cache_resource
 def get_supabase():
+    global SUPABASE_CONFIG_ERROR, SUPABASE_URL_VALUE
+
+    SUPABASE_CONFIG_ERROR = ""
+    SUPABASE_URL_VALUE = ""
+
     if create_client is None:
+        SUPABASE_CONFIG_ERROR = "supabase 패키지가 설치되어 있지 않습니다. requirements.txt에 supabase를 추가해 주세요."
         return None
+
     try:
-        url = st.secrets["SUPABASE_URL"]
-        key = st.secrets["SUPABASE_KEY"]
+        url = str(st.secrets["SUPABASE_URL"]).strip()
+        key = str(st.secrets["SUPABASE_KEY"]).strip()
+        SUPABASE_URL_VALUE = url
     except Exception:
+        SUPABASE_CONFIG_ERROR = "Streamlit Secrets에 SUPABASE_URL과 SUPABASE_KEY가 없습니다."
         return None
+
+    # Project URL이 아닌 Supabase 대시보드 주소를 넣는 실수를 방지합니다.
+    if (
+        not url.startswith("https://")
+        or "supabase.com/dashboard" in url
+        or "/dashboard/" in url
+        or ".supabase.co" not in url
+    ):
+        SUPABASE_CONFIG_ERROR = (
+            "SUPABASE_URL이 올바른 Project URL이 아닙니다. "
+            "Supabase → Project Settings → API → Project URL의 "
+            "https://프로젝트주소.supabase.co 형태를 넣어 주세요."
+        )
+        return None
+
+    if not key:
+        SUPABASE_CONFIG_ERROR = "SUPABASE_KEY가 비어 있습니다."
+        return None
+
     try:
         return create_client(url, key)
-    except Exception:
+    except Exception as e:
+        SUPABASE_CONFIG_ERROR = f"Supabase 연결 오류: {e}"
         return None
 
 supabase = get_supabase()
@@ -708,6 +740,7 @@ defaults = {
     "logged_in": False,
     "current_user": None,
     "auth_mode": "login",
+    "my_room_checkin_open": False,
     "current_record": None,
     "room_records": [],
 }
@@ -726,6 +759,8 @@ def go(page):
         st.session_state.main_entered = False
     if page != "choice":
         st.session_state.choice_mode = None
+    if page != "my_room":
+        st.session_state.my_room_checkin_open = False
     st.rerun()
 
 def go_room_service():
@@ -742,9 +777,41 @@ def go_my_room():
 # AUTH
 # =========================================================
 
+def _auth_error_message(message, action="회원가입"):
+    """Supabase의 오류를 사용자가 알아보기 쉽게 변환합니다."""
+    text = str(message).strip()
+    lower = text.lower()
+
+    if "already registered" in lower or "user already registered" in lower:
+        return "이미 가입된 이메일입니다."
+
+    if "email signups are disabled" in lower:
+        return "Supabase에서 이메일 회원가입이 비활성화되어 있습니다. Authentication → Providers → Email에서 활성화해 주세요."
+
+    if "invalid api key" in lower or ("apikey" in lower and "invalid" in lower):
+        return "Supabase API KEY가 올바르지 않습니다. Streamlit Secrets의 SUPABASE_KEY를 확인해 주세요."
+
+    if "rate limit" in lower or "email rate limit" in lower:
+        return "이메일 발송 제한에 걸렸습니다. 잠시 후 다시 시도해 주세요."
+
+    # Supabase URL이 잘못되어 HTML 페이지가 JSON 대신 반환되는 경우
+    # 현재 화면에서 보였던 pydantic 'Invalid JSON' 오류를 사람이 이해할 수 있게 바꿉니다.
+    if "invalid json" in lower and "doctype html" in lower:
+        return (
+            "SUPABASE_URL이 잘못되었습니다. 지금 Supabase API가 JSON 대신 HTML 페이지를 반환했습니다. "
+            "Streamlit Secrets의 SUPABASE_URL에는 Supabase Dashboard 주소가 아니라 "
+            "Project Settings → API → Project URL(https://프로젝트주소.supabase.co)을 넣어 주세요."
+        )
+
+    if "fetch failed" in lower or "connection" in lower or "connect" in lower:
+        return f"Supabase 연결에 실패했습니다. SUPABASE_URL과 SUPABASE_KEY를 확인해 주세요.\n\n상세 오류: {text}"
+
+    return f"{action} 오류: {text}"
+
+
 def login_user(email, password):
     if supabase is None:
-        return False, "Supabase 연결을 확인해 주세요."
+        return False, SUPABASE_CONFIG_ERROR or "Supabase 연결을 확인해 주세요."
     try:
         response = supabase.auth.sign_in_with_password({
             "email": email,
@@ -757,14 +824,18 @@ def login_user(email, password):
         st.session_state.current_user = user
         return True, "CHECK-IN 완료"
     except Exception as e:
-        message = str(e)
-        if "Invalid login credentials" in message:
+        message = str(e).strip()
+        lower_message = message.lower()
+        if "invalid login credentials" in lower_message:
             return False, "이메일 또는 비밀번호가 올바르지 않습니다."
-        return False, "로그인에 실패했습니다. 이메일과 비밀번호를 확인해 주세요."
+        if "email not confirmed" in lower_message:
+            return False, "이메일 인증이 아직 완료되지 않았습니다. 가입한 이메일의 인증 메일을 확인해 주세요."
+        return False, _auth_error_message(message, "로그인")
+
 
 def signup_user(email, password):
     if supabase is None:
-        return False, "Supabase 연결을 확인해 주세요."
+        return False, SUPABASE_CONFIG_ERROR or "Supabase 연결을 확인해 주세요."
     try:
         response = supabase.auth.sign_up({
             "email": email,
@@ -772,32 +843,18 @@ def signup_user(email, password):
         })
         user = getattr(response, "user", None)
         if user is None:
-            return False, "회원가입에 실패했습니다."
+            return False, "회원가입에 실패했습니다. Supabase 응답에 사용자 정보가 없습니다."
+
         session = getattr(response, "session", None)
         if session is not None:
             st.session_state.logged_in = True
             st.session_state.current_user = user
             return True, "CHECK-IN 완료"
+
         return True, "회원가입이 완료되었습니다. 이메일 인증 후 CHECK-IN 해주세요."
     except Exception as e:
-        message = str(e).strip()
-        lower_message = message.lower()
+        return False, _auth_error_message(str(e), "회원가입")
 
-        if "already registered" in lower_message or "user already registered" in lower_message:
-            return False, "이미 가입된 이메일입니다."
-
-        if "email signups are disabled" in lower_message:
-            return False, "Supabase에서 이메일 회원가입이 비활성화되어 있습니다. Authentication → Providers → Email에서 활성화해 주세요."
-
-        if "invalid api key" in lower_message or "apikey" in lower_message and "invalid" in lower_message:
-            return False, "Supabase API KEY가 올바르지 않습니다. Streamlit Secrets의 SUPABASE_KEY를 확인해 주세요."
-
-        if "rate limit" in lower_message:
-            return False, f"이메일 발송 제한에 걸렸습니다. 잠시 후 다시 시도해 주세요.\n\n상세 오류: {message}"
-
-        # 원래는 실제 Supabase 오류를 숨겨서 원인을 알 수 없었기 때문에,
-        # 이제는 정확한 오류 내용을 화면에 표시합니다.
-        return False, f"회원가입 오류: {message}"
 
 def logout_user():
     if supabase is not None:
@@ -817,7 +874,7 @@ def logout_user():
 
 with st.sidebar:
     st.markdown(
-        '<div class="sidebar-title">MYSTERY HOTEL</div>',
+        '<div class="sidebar-title">RECORD HOTEL</div>',
         unsafe_allow_html=True
     )
     st.markdown(
@@ -1698,7 +1755,7 @@ if st.session_state.page == "main":
         st.markdown(
             '<div class="welcome-area">'
             '<div class="welcome-small">WELCOME TO</div>'
-            '<div class="welcome-title">MYSTERY HOTEL</div>'
+            '<div class="welcome-title">RECORD HOTEL</div>'
             '<div class="welcome-line"></div>'
             '<div class="welcome-description">'
             '음악을 듣고, 발견하고, 잠시 머무는 작은 방'
@@ -1738,7 +1795,7 @@ if st.session_state.page == "main":
             '<br><br>'
             '문은 이미 열려 있습니다.'
             '</div>'
-            '<div class="letter-sign">— MYSTERY HOTEL</div>'
+            '<div class="letter-sign">— RECORD HOTEL</div>'
             '</div>'
             '</div>'
         )
@@ -1905,135 +1962,172 @@ elif st.session_state.page == "choice":
 
 elif st.session_state.page == "my_room":
 
+    # =====================================================
+    # MY ROOM - CHECK-IN GATE
+    # =====================================================
     if not st.session_state.logged_in:
 
         st.markdown(
             '<div class="section-area">'
             '<div class="section-title">MY ROOM</div>'
             '<div class="section-subtitle">'
-            'YOUR PRIVATE ROOM · CHECK-IN REQUIRED'
+            'YOUR PRIVATE ROOM'
             '</div></div>',
             unsafe_allow_html=True
         )
 
-        if supabase is None:
-            st.error(
-                "Supabase 연결이 되지 않았습니다. "
-                "Streamlit Cloud의 Secrets에 SUPABASE_URL과 SUPABASE_KEY가 있는지 확인해 주세요."
+        # 처음 MY ROOM에 들어왔을 때는 로그인 화면을 바로 띄우지 않고
+        # CHECK-IN 버튼만 보여줍니다.
+        if not st.session_state.my_room_checkin_open:
+
+            st.markdown(
+                '<div class="auth-box">'
+                '<div class="auth-title">MY ROOM</div>'
+                '<div class="auth-subtitle">'
+                '객실에 들어가려면 먼저 CHECK-IN이 필요합니다.'
+                '</div></div>',
+                unsafe_allow_html=True
             )
 
-        st.markdown(
-            '<div class="auth-box">'
-            '<div class="auth-title">CHECK-IN</div>'
-            '<div class="auth-subtitle">'
-            '객실에 들어가려면 ROOM KEY가 필요합니다.'
-            '</div></div>',
-            unsafe_allow_html=True
-        )
+            gate_left, gate_center, gate_right = st.columns([2, 1, 2])
+            with gate_center:
+                if st.button(
+                    "CHECK-IN",
+                    key="open_checkin",
+                    use_container_width=True
+                ):
+                    st.session_state.my_room_checkin_open = True
+                    st.session_state.auth_mode = "login"
+                    st.rerun()
 
-        auth_left, auth_right = st.columns(2)
+            st.write("")
 
-        with auth_left:
             if st.button(
-                "CHECK-IN",
-                key="auth_login_tab",
+                "← BACK TO LOBBY",
+                key="my_room_back_gate",
                 use_container_width=True
             ):
-                st.session_state.auth_mode = "login"
+                st.session_state.page = "main"
+                st.session_state.my_room_checkin_open = False
                 st.rerun()
 
-        with auth_right:
-            if st.button(
-                "NEW GUEST",
-                key="auth_signup_tab",
-                use_container_width=True
-            ):
-                st.session_state.auth_mode = "signup"
-                st.rerun()
+        else:
 
-        email = st.text_input(
-            "EMAIL",
-            placeholder="guest@example.com",
-            key="auth_email"
-        )
+            st.markdown(
+                '<div class="auth-box">'
+                '<div class="auth-title">CHECK-IN</div>'
+                '<div class="auth-subtitle">'
+                'ROOM KEY를 입력하거나 새로운 GUEST로 등록하세요.'
+                '</div></div>',
+                unsafe_allow_html=True
+            )
 
-        password = st.text_input(
-            "ROOM KEY",
-            type="password",
-            placeholder="비밀번호",
-            key="auth_password"
-        )
+            auth_left, auth_right = st.columns(2)
 
-        if st.session_state.auth_mode == "signup":
-            password_confirm = st.text_input(
-                "ROOM KEY AGAIN",
+            with auth_left:
+                if st.button(
+                    "CHECK-IN",
+                    key="auth_login_tab",
+                    use_container_width=True
+                ):
+                    st.session_state.auth_mode = "login"
+                    st.rerun()
+
+            with auth_right:
+                if st.button(
+                    "NEW GUEST",
+                    key="auth_signup_tab",
+                    use_container_width=True
+                ):
+                    st.session_state.auth_mode = "signup"
+                    st.rerun()
+
+            if supabase is None and SUPABASE_CONFIG_ERROR:
+                st.error(SUPABASE_CONFIG_ERROR)
+
+            email = st.text_input(
+                "EMAIL",
+                placeholder="guest@example.com",
+                key="auth_email"
+            )
+
+            password = st.text_input(
+                "ROOM KEY",
                 type="password",
-                placeholder="비밀번호를 다시 입력하세요",
-                key="auth_password_confirm"
+                placeholder="비밀번호",
+                key="auth_password"
             )
-        else:
-            password_confirm = ""
 
-        if st.session_state.auth_mode == "login":
+            if st.session_state.auth_mode == "signup":
+                password_confirm = st.text_input(
+                    "ROOM KEY AGAIN",
+                    type="password",
+                    placeholder="비밀번호를 다시 입력하세요",
+                    key="auth_password_confirm"
+                )
+            else:
+                password_confirm = ""
+
+            if st.session_state.auth_mode == "login":
+
+                if st.button(
+                    "ENTER MY ROOM",
+                    key="login_submit",
+                    use_container_width=True
+                ):
+
+                    if not email.strip() or not password:
+                        st.warning("이메일과 비밀번호를 입력해 주세요.")
+                    else:
+                        ok, message = login_user(
+                            email.strip(),
+                            password
+                        )
+
+                        if ok:
+                            st.success(message)
+                            st.rerun()
+                        else:
+                            st.error(message)
+
+            else:
+
+                if st.button(
+                    "CREATE ROOM KEY",
+                    key="signup_submit",
+                    use_container_width=True
+                ):
+
+                    if not email.strip() or not password:
+                        st.warning("이메일과 비밀번호를 입력해 주세요.")
+
+                    elif password != password_confirm:
+                        st.warning("두 비밀번호가 일치하지 않습니다.")
+
+                    elif len(password) < 6:
+                        st.warning("비밀번호는 6자 이상으로 입력해 주세요.")
+
+                    else:
+                        ok, message = signup_user(
+                            email.strip(),
+                            password
+                        )
+
+                        if ok:
+                            st.success(message)
+                            st.rerun()
+                        else:
+                            st.error(message)
+
+            st.write("")
 
             if st.button(
-                "ENTER MY ROOM",
-                key="login_submit",
+                "← BACK",
+                key="my_room_back_auth",
                 use_container_width=True
             ):
-
-                if not email.strip() or not password:
-                    st.warning("이메일과 비밀번호를 입력해 주세요.")
-                else:
-                    ok, message = login_user(
-                        email.strip(),
-                        password
-                    )
-
-                    if ok:
-                        st.success(message)
-                        st.rerun()
-                    else:
-                        st.error(message)
-
-        else:
-
-            if st.button(
-                "CREATE ROOM KEY",
-                key="signup_submit",
-                use_container_width=True
-            ):
-
-                if not email.strip() or not password:
-                    st.warning("이메일과 비밀번호를 입력해 주세요.")
-
-                elif password != password_confirm:
-                    st.warning("두 비밀번호가 일치하지 않습니다.")
-
-                elif len(password) < 6:
-                    st.warning("비밀번호는 6자 이상으로 입력해 주세요.")
-
-                else:
-                    ok, message = signup_user(
-                        email.strip(),
-                        password
-                    )
-
-                    if ok:
-                        st.success(message)
-                        st.rerun()
-                    else:
-                        st.error(message)
-
-        st.write("")
-
-        if st.button(
-            "← BACK TO LOBBY",
-            key="my_room_back_login",
-            use_container_width=True
-        ):
-            st.session_state.page = "main"
-            st.rerun()
+                st.session_state.my_room_checkin_open = False
+                st.rerun()
 
     else:
 
@@ -2181,3 +2275,4 @@ elif st.session_state.page == "my_room":
             use_container_width=True
         ):
             go_room_service()
+
