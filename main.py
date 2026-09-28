@@ -1967,12 +1967,12 @@ elif st.session_state.page == "my_room":
     # =====================================================
     if not st.session_state.logged_in:
 
+        # MY ROOM에 들어왔을 때는 제목을 하나만 표시하고,
+        # CHECK-IN 안내 카드는 제목 아래로 자연스럽게 배치합니다.
         st.markdown(
-            '<div class="section-area">'
+            '<div class="section-area" style="margin-bottom: 30px;">'
             '<div class="section-title">MY ROOM</div>'
-            '<div class="section-subtitle">'
-            'YOUR PRIVATE ROOM'
-            '</div></div>',
+            '</div>',
             unsafe_allow_html=True
         )
 
@@ -1981,8 +1981,7 @@ elif st.session_state.page == "my_room":
         if not st.session_state.my_room_checkin_open:
 
             st.markdown(
-                '<div class="auth-box">'
-                '<div class="auth-title">MY ROOM</div>'
+                '<div class="auth-box" style="margin-top: 0;">'
                 '<div class="auth-subtitle">'
                 '객실에 들어가려면 먼저 CHECK-IN이 필요합니다.'
                 '</div></div>',
