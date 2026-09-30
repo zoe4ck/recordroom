@@ -425,47 +425,123 @@ div[data-testid="stButton"] > button:hover {
 }
 
 .fireplace {
-    width:min(760px,82vw); height:390px; margin:48px auto 28px;
-    background:radial-gradient(ellipse at 50% 82%,rgba(151,67,28,.38),transparent 28%),radial-gradient(ellipse at 50% 100%,#4a2417 0%,#24120d 42%,#0d0806 78%);
-    border:14px solid #2d1b13; border-radius:8px; position:relative; overflow:hidden;
-    box-shadow:inset 0 0 0 2px rgba(196,145,91,.16),inset 0 -35px 55px rgba(0,0,0,.72),0 28px 65px rgba(0,0,0,.5);
+    width:min(760px,82vw);
+    height:390px;
+    margin:48px auto 28px;
+    position:relative;
+    overflow:hidden;
+    border:1px solid rgba(215,166,105,.28);
+    border-radius:18px;
+    background:
+        radial-gradient(ellipse at 50% 82%, rgba(255,122,38,.22) 0 12%, transparent 38%),
+        linear-gradient(180deg,#17100c 0%,#0d0907 55%,#070504 100%);
+    box-shadow:0 25px 70px rgba(0,0,0,.55), inset 0 0 70px rgba(0,0,0,.78);
 }
-.fireplace:before{content:"";position:absolute;left:50%;bottom:36px;width:280px;height:90px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse,rgba(238,126,48,.42),rgba(107,40,19,.2) 48%,transparent 72%);filter:blur(7px)}
-.fireplace:after{content:"";position:absolute;inset:16px;border:1px solid rgba(205,156,105,.12);pointer-events:none}
-.fire{position:absolute;bottom:48px;left:50%;width:175px;height:235px;transform:translateX(-50%);background:radial-gradient(ellipse at 50% 82%,#ffe7a7 0 12%,#ffb24d 25%,#e65f27 48%,rgba(113,40,18,.55) 64%,transparent 74%);clip-path:polygon(50% 0,61% 20%,55% 35%,78% 24%,71% 49%,94% 45%,78% 72%,63% 100%,38% 100%,20% 73%,5% 48%,29% 52%,22% 26%,44% 38%);filter:blur(.4px);animation:flame 1.15s infinite alternate ease-in-out;transform-origin:50% 100%}
-.fire-small{position:absolute;bottom:49px;left:50%;width:88px;height:150px;transform:translateX(-50%);background:radial-gradient(ellipse at 50% 82%,#fff6cf 0 15%,#ffd56e 30%,#f38a31 56%,transparent 72%);clip-path:polygon(50% 0,66% 30%,59% 46%,80% 39%,69% 66%,56% 100%,43% 100%,29% 69%,18% 48%,39% 55%);animation:flameSmall .8s infinite alternate ease-in-out}
-.fire-core{position:absolute;bottom:50px;left:50%;width:44px;height:86px;transform:translateX(-50%);background:linear-gradient(180deg,#fffbe7,#ffe08b 55%,#ff9b36);clip-path:polygon(50% 0,73% 37%,64% 58%,82% 53%,63% 100%,39% 100%,22% 61%,42% 55%,32% 33%);animation:flameCore .65s infinite alternate ease-in-out}
-.wood{position:absolute;bottom:40px;left:50%;width:250px;height:27px;background:linear-gradient(180deg,#5a301c,#2b160f);border:1px solid rgba(210,145,81,.25);transform:translateX(-50%) rotate(7deg);border-radius:15px;box-shadow:inset 0 5px 7px rgba(255,177,91,.12)}
-.wood.two{transform:translateX(-50%) rotate(-8deg);bottom:47px}
-.ember{position:absolute;width:4px;height:4px;border-radius:50%;background:#ffb65a;box-shadow:0 0 10px #f47b2b;animation:ember 2.8s infinite ease-out}
-.ember.e1{left:42%;bottom:92px}.ember.e2{left:58%;bottom:105px;animation-delay:.8s}.ember.e3{left:47%;bottom:125px;animation-delay:1.4s}.ember.e4{left:63%;bottom:75px;animation-delay:2s}
+.fireplace:before {
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:42px;
+    width:330px;
+    height:220px;
+    transform:translateX(-50%);
+    border-radius:50%;
+    background:radial-gradient(ellipse,rgba(255,157,68,.38) 0 12%,rgba(230,83,28,.18) 34%,transparent 72%);
+    filter:blur(15px);
+    animation:hearthGlow 2.4s ease-in-out infinite alternate;
+}
+.fireplace:after {
+    content:"";
+    position:absolute;
+    left:50%;
+    top:48px;
+    width:500px;
+    height:280px;
+    transform:translateX(-50%);
+    border:18px solid #241913;
+    border-bottom-width:26px;
+    border-radius:50% 50% 10px 10px;
+    box-shadow:inset 0 0 0 1px rgba(216,169,111,.12), inset 0 0 30px rgba(0,0,0,.65), 0 8px 25px rgba(0,0,0,.35);
+    pointer-events:none;
+}
+.wood {
+    position:absolute;
+    z-index:5;
+    bottom:52px;
+    left:50%;
+    width:235px;
+    height:25px;
+    transform:translateX(-50%) rotate(8deg);
+    border-radius:16px;
+    background:linear-gradient(180deg,#75452b,#32180f 70%);
+    border:1px solid rgba(215,151,88,.25);
+    box-shadow:0 5px 8px rgba(0,0,0,.5), inset 0 4px 5px rgba(255,184,104,.1);
+}
+.wood.two { transform:translateX(-50%) rotate(-9deg); bottom:61px; }
+.wood:after {
+    content:"";
+    position:absolute;
+    right:7px;
+    top:4px;
+    width:14px;
+    height:14px;
+    border-radius:50%;
+    border:2px solid rgba(40,18,10,.5);
+}
+.fire {
+    position:absolute;
+    z-index:4;
+    left:50%;
+    bottom:67px;
+    width:160px;
+    height:205px;
+    transform:translateX(-50%);
+    background:radial-gradient(ellipse at 50% 86%,#fff4c4 0 7%,#ffc65d 18%,#f47a2c 43%,rgba(177,52,20,.5) 62%,transparent 76%);
+    clip-path:polygon(50% 0,61% 22%,55% 37%,78% 27%,70% 49%,94% 45%,77% 73%,63% 100%,37% 100%,20% 74%,6% 48%,29% 54%,22% 28%,44% 40%);
+    filter:blur(.35px);
+    animation:flame 1.25s ease-in-out infinite alternate;
+    transform-origin:50% 100%;
+}
+.fire-small {
+    position:absolute;
+    z-index:6;
+    left:50%;
+    bottom:72px;
+    width:82px;
+    height:145px;
+    transform:translateX(-50%);
+    background:radial-gradient(ellipse at 50% 84%,#fffdf0 0 11%,#ffe27f 25%,#ff9636 55%,transparent 75%);
+    clip-path:polygon(50% 0,66% 29%,59% 46%,79% 38%,68% 67%,55% 100%,43% 100%,28% 68%,18% 48%,40% 54%,33% 31%);
+    animation:flameSmall .82s ease-in-out infinite alternate;
+}
+.fire-core {
+    position:absolute;
+    z-index:7;
+    left:50%;
+    bottom:74px;
+    width:40px;
+    height:91px;
+    transform:translateX(-50%);
+    background:linear-gradient(180deg,#fffef0,#ffe99a 52%,#ffb34d);
+    clip-path:polygon(50% 0,72% 35%,64% 56%,82% 51%,63% 100%,39% 100%,22% 61%,42% 55%,32% 32%);
+    animation:flameCore .65s ease-in-out infinite alternate;
+}
+.ember {
+    position:absolute;
+    z-index:8;
+    width:4px;
+    height:4px;
+    border-radius:50%;
+    background:#ffc16c;
+    box-shadow:0 0 10px rgba(255,118,39,.95);
+    animation:ember 2.8s infinite ease-out;
+}
+.ember.e1{left:43%;bottom:115px}.ember.e2{left:58%;bottom:125px;animation-delay:.8s}.ember.e3{left:48%;bottom:145px;animation-delay:1.4s}.ember.e4{left:63%;bottom:95px;animation-delay:2s}
+@keyframes hearthGlow{from{opacity:.72;transform:translateX(-50%) scale(.94)}to{opacity:1;transform:translateX(-50%) scale(1.08)}}
 @keyframes flameCore{from{transform:translateX(-50%) scale(.92,.96)}to{transform:translateX(-50%) scale(1.05,1.08)}}
 @keyframes ember{0%{opacity:0;transform:translateY(10px) scale(.6)}25%{opacity:1}100%{opacity:0;transform:translateY(-90px) translateX(15px) scale(.15)}}
-
-@keyframes flame {
-    from {
-        transform: translateX(-50%) scaleY(0.95) rotate(-2deg);
-    }
-    to {
-        transform: translateX(-50%) scaleY(1.08) rotate(2deg);
-    }
-}
-
-@keyframes flameSmall {
-    from {
-        transform: translateX(-50%) scaleY(0.9);
-    }
-    to {
-        transform: translateX(-50%) scaleY(1.1);
-    }
-}
-
-.fireplace-note {
-    text-align: center;
-    color: #a17f63;
-    font-family: "Noto Serif KR", serif;
-    line-height: 2;
-}
+@keyframes flame{from{transform:translateX(-50%) scaleY(.94) rotate(-2deg)}to{transform:translateX(-50%) scaleY(1.08) rotate(2deg)}}
+@keyframes flameSmall{from{transform:translateX(-50%) scaleY(.9)}to{transform:translateX(-50%) scaleY(1.08)}}
 
 /* =========================================================
    SEARCH
@@ -686,421 +762,202 @@ div[data-testid="stButton"] > button:hover {
     max-width:190px;
 }
 .mini-drink {
+    width:300px;
+    height:174px;
+    margin:8px auto 0;
     position:relative;
-    width:88px;
-    height:112px;
-    margin:18px auto 2px;
+    overflow:visible;
 }
-.mini-glass {
-    position:absolute;
-    left:12px;
-    bottom:3px;
-    width:64px;
-    height:84px;
-    border:1.5px solid rgba(240,228,211,.58);
-    border-top:0;
-    border-radius:5px 5px 19px 19px;
-    overflow:hidden;
-    background:linear-gradient(90deg, rgba(255,255,255,.10), rgba(255,255,255,.02), rgba(255,255,255,.08));
-    box-shadow:0 10px 18px rgba(0,0,0,.22), inset 0 0 8px rgba(255,255,255,.06);
+/* 메뉴 미리보기와 실제 음료가 완전히 같은 그래픽을 사용하도록 합니다. */
+.mini-drink .drink-visual {
+    width:300px;
+    height:430px;
+    transform:scale(.40);
+    transform-origin:top center;
 }
-.mini-liquid {
-    position:absolute;
-    inset:auto 0 0 0;
-    height:66%;
-    opacity:.88;
-}
-.mini-pink .mini-liquid { background:linear-gradient(180deg,#da93aa,#a94f70); }
-.mini-green .mini-liquid { background:linear-gradient(180deg,#84d38a,#49a968); }
-.mini-orange .mini-liquid { background:linear-gradient(180deg,#ffc06a,#ef761b); }
-.mini-navy .mini-liquid { background:linear-gradient(180deg,#4969a0,#1d274f); }
-.mini-ice {
-    position:absolute;
-    width:19px;
-    height:19px;
-    border:1px solid rgba(255,255,255,.28);
-    background:rgba(255,255,255,.13);
-    transform:rotate(12deg);
-}
-.mini-ice.a { top:34px; left:12px; }
-.mini-ice.b { top:42px; right:10px; transform:rotate(-14deg); }
-.mini-scoop {
-    position:absolute;
-    z-index:4;
-    left:24px;
-    top:2px;
-    width:42px;
-    height:35px;
-    border-radius:50%;
-    background:radial-gradient(circle at 35% 28%, #fffdf2 0%, #fff3d3 55%, #e5d2aa 100%);
-    box-shadow:0 5px 10px rgba(0,0,0,.2);
-}
-.mini-straw {
-    position:absolute;
-    z-index:5;
-    right:20px;
-    top:0;
-    width:3px;
-    height:58px;
-    background:#e9a0a8;
-    transform:rotate(16deg);
-    transform-origin:bottom center;
-    border-radius:3px;
-}
-.mini-cherry {
-    position:absolute;
-    z-index:6;
-    left:18px;
-    top:3px;
-    width:10px;
-    height:10px;
-    border-radius:50%;
-    background:#b63f4e;
-    box-shadow:0 0 0 2px rgba(255,255,255,.12);
-}
-.mini-citrus {
-    position:absolute;
-    z-index:6;
-    right:6px;
-    top:8px;
-    width:24px;
-    height:24px;
-    border-radius:50%;
-    background:radial-gradient(circle, #ffe2a0 0 33%, #f5a33f 35% 72%, #fff0c9 74% 82%, #df7d20 84%);
-}
-.mini-moon {
-    position:absolute;
-    z-index:6;
-    left:23px;
-    top:20px;
-    width:32px;
-    height:32px;
-    border-radius:50%;
-    box-shadow:0 0 18px rgba(121,153,225,.55);
-    background:radial-gradient(circle at 36% 30%, #96aedd, #334b83 58%, #1a2448 100%);
-}
-/* refined cocktail glass details */
-.mini-drink { width:112px; height:138px; margin:14px auto 0; position:relative; filter:drop-shadow(0 10px 12px rgba(0,0,0,.22)); }
-.mini-glass { position:absolute; left:18px; bottom:18px; width:76px; height:84px; border:1.5px solid rgba(245,232,213,.65); border-top:0; border-radius:7px 7px 24px 24px; overflow:hidden; background:linear-gradient(90deg,rgba(255,255,255,.16),rgba(255,255,255,.025),rgba(255,255,255,.12)); box-shadow:inset 8px 0 15px rgba(255,255,255,.06),inset -8px 0 12px rgba(0,0,0,.08); }
-.mini-rim { position:absolute; z-index:10; left:18px; top:34px; width:76px; height:13px; border:1.5px solid rgba(245,232,213,.68); border-radius:50%; background:rgba(255,255,255,.035); }
-.mini-liquid { position:absolute; left:0; right:0; bottom:0; opacity:.92; border-radius:0 0 20px 20px; }
-.mini-stem { position:absolute; left:50%; bottom:7px; width:3px; height:22px; transform:translateX(-50%); background:rgba(235,218,192,.65); }
-.mini-base { position:absolute; left:50%; bottom:1px; width:48px; height:7px; transform:translateX(-50%); border:1.5px solid rgba(235,218,192,.65); border-radius:50%; }
-.mini-pink .mini-glass { height:62px; bottom:36px; width:84px; left:14px; border-radius:0 0 42px 42px; }
-.mini-pink .mini-rim { width:84px; left:14px; top:32px; }
-.mini-pink .mini-liquid { background:linear-gradient(180deg,#ffd0dc,#df779a 55%,#a8446b); }
-.mini-green .mini-glass { height:92px; width:68px; left:22px; border-radius:5px 5px 22px 22px; }
-.mini-green .mini-rim { width:68px; left:22px; top:25px; }
-.mini-green .mini-liquid { background:linear-gradient(180deg,#b8f2a9,#62c976 55%,#2f9958); }
-.mini-orange .mini-glass { height:72px; width:82px; left:15px; border-radius:7px 7px 28px 28px; }
-.mini-orange .mini-rim { width:82px; left:15px; top:43px; }
-.mini-orange .mini-liquid { background:linear-gradient(180deg,#ffd995,#ffac3b 48%,#ec7018); }
-.mini-navy .mini-glass { height:70px; width:82px; left:15px; border-radius:8px 8px 25px 25px; }
-.mini-navy .mini-rim { width:82px; left:15px; top:44px; }
-.mini-navy .mini-liquid { background:linear-gradient(180deg,#6f91d2,#354d91 52%,#171f4d); }
-.mini-scoop { position:absolute; z-index:20; left:29px; top:7px; width:55px; height:39px; border-radius:50%; background:radial-gradient(circle at 34% 25%,#fffef7,#fff0cc 62%,#d9c394); box-shadow:0 5px 10px rgba(0,0,0,.24); }
-.mini-cherry { position:absolute; z-index:22; left:24px; top:13px; width:11px; height:11px; border-radius:50%; background:radial-gradient(circle at 30% 25%,#f08089,#a52d43 65%,#671a2b); }
-.mini-straw { position:absolute; z-index:21; right:18px; top:2px; width:3px; height:68px; border-radius:3px; background:linear-gradient(#ef9a9f,#db5d76); transform:rotate(13deg); transform-origin:bottom; }
-.mini-bubbles { position:absolute; inset:0; z-index:12; }
-.mini-bubbles i { position:absolute; width:4px; height:4px; border-radius:50%; background:rgba(255,255,255,.45); }
-.mini-bubbles i:nth-child(1){left:25px;bottom:35px}.mini-bubbles i:nth-child(2){left:44px;bottom:52px}.mini-bubbles i:nth-child(3){right:20px;bottom:25px}
-.mini-orange-half { position:absolute; z-index:20; width:38px; height:22px; border-radius:38px 38px 0 0; background:radial-gradient(circle at 50% 100%,#ffe7a2 0 32%,#ffb447 34% 68%,#e86d18 70% 100%); box-shadow:0 4px 8px rgba(0,0,0,.2); }
-.mini-orange-half:after { content:""; position:absolute; left:18px; top:3px; width:1px; height:17px; background:rgba(255,239,188,.65); transform:rotate(28deg); }
-.mini-orange-half { right:4px; top:24px; transform:rotate(13deg); }
-.mini-orange-half.second { left:5px; right:auto; top:55px; width:28px; height:17px; transform:rotate(-18deg); }
-.mini-leaf { position:absolute; z-index:21; right:23px; top:20px; width:20px; height:10px; border-radius:100% 0 100% 0; background:linear-gradient(135deg,#83a85c,#456b40); transform:rotate(-20deg); }
-.mini-cocktail-olive { position:absolute; z-index:20; left:36px; top:30px; width:13px; height:13px; border-radius:50%; background:#b5b86d; box-shadow:inset 3px 2px 4px rgba(255,255,255,.28); }
-.mini-pick { position:absolute; z-index:19; left:43px; top:9px; width:2px; height:47px; background:#e9c78d; transform:rotate(-10deg); }
-.mini-blue-glow { position:absolute; z-index:15; left:31px; top:47px; width:45px; height:30px; border-radius:50%; background:radial-gradient(circle,#91b8ff,rgba(60,89,155,.2) 70%,transparent); filter:blur(4px); }
-.mini-lemon-twist { position:absolute; z-index:21; right:11px; top:30px; width:30px; height:10px; border:3px solid #f5c75d; border-left-color:transparent; border-bottom-color:transparent; border-radius:50%; transform:rotate(18deg); }
-.mini-star { position:absolute; z-index:22; left:33px; top:49px; color:#dbe6ff; font-size:12px; text-shadow:0 0 9px #89aaff; }
+
+.mini-drink .mini-rim,
+.mini-drink .mini-stem,
+.mini-drink .mini-base,
+.mini-drink .mini-glass,
+.mini-drink .mini-liquid,
+.mini-drink .mini-scoop,
+.mini-drink .mini-cherry,
+.mini-drink .mini-straw,
+.mini-drink .mini-orange-half,
+.mini-drink .mini-leaf,
+.mini-drink .mini-cocktail-olive,
+.mini-drink .mini-pick,
+.mini-drink .mini-blue-glow,
+.mini-drink .mini-lemon-twist,
+.mini-drink .mini-star,
+.mini-drink .mini-bubbles { display:none; }
 
 .selected-order {
     width:min(900px,92vw);
     margin:0 auto 14px;
-    text-align:center;
-}
-.selected-order-small {
-    color:#805c3d;
-    font-family:Georgia,serif;
-    font-size:10px;
-    letter-spacing:3px;
-    line-height:1.4;
-}
-.selected-order-title {
-    color:#dcae73;
-    font-family:"Noto Serif KR",serif;
-    font-size:28px;
-    line-height:1.45;
-    margin-top:5px;
-}
-.selected-order-sub {
-    color:#96765d;
-    font-family:"Noto Serif KR",serif;
-    font-size:13px;
-    line-height:1.8;
-    margin-top:2px;
-}
-.drink-stage {
-    min-height:600px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:8px 0 14px;
 }
 .drink-visual {
     position:relative;
     width:300px;
     height:430px;
     display:flex;
-    flex-direction:column;
     align-items:center;
     justify-content:center;
+    margin:0 auto;
 }
 .glass {
     position:relative;
     width:190px;
     height:270px;
     margin-top:22px;
-    border:2px solid rgba(226,208,178,.57);
+    border:1.5px solid rgba(236,223,204,.62);
     border-top:0;
     border-radius:10px 10px 52px 52px;
     overflow:hidden;
-    background:linear-gradient(90deg,rgba(255,255,255,.11),rgba(255,255,255,.025),rgba(255,255,255,.09));
-    box-shadow:0 28px 55px rgba(0,0,0,.35), inset 0 0 20px rgba(255,255,255,.05);
+    isolation:isolate;
+    background:linear-gradient(105deg,rgba(255,255,255,.14),rgba(255,255,255,.025) 35%,rgba(255,255,255,.08));
+    box-shadow:0 24px 55px rgba(0,0,0,.36), inset 8px 0 18px rgba(255,255,255,.055), inset -8px 0 15px rgba(0,0,0,.10);
 }
 .glass .liquid {
     position:absolute;
-    left:0;
-    right:0;
-    bottom:0;
+    left:0; right:0; bottom:0;
     border-radius:0 0 48px 48px;
-    transition:height .4s ease;
-    opacity:.9;
+    transition:height .42s ease;
+    opacity:.92;
     overflow:hidden;
 }
 .glass .liquid:after {
     content:"";
     position:absolute;
     inset:0;
-    background:radial-gradient(circle at 20% 28%, rgba(255,255,255,.28) 0 1px, transparent 2px), radial-gradient(circle at 68% 45%, rgba(255,255,255,.18) 0 1px, transparent 2px), radial-gradient(circle at 48% 70%, rgba(255,255,255,.16) 0 1px, transparent 2px);
-    background-size:40px 45px, 52px 55px, 64px 62px;
-    opacity:.6;
+    background:radial-gradient(circle at 25% 28%,rgba(255,255,255,.28) 0 1px,transparent 2px),radial-gradient(circle at 68% 46%,rgba(255,255,255,.20) 0 1px,transparent 2px);
+    opacity:.65;
 }
-.drink-scene.green .liquid { background:linear-gradient(180deg,#a4ec9d 0%,#68ca79 46%,#3ca45f 100%); }
-.drink-scene.orange .liquid { background:linear-gradient(180deg,#ffd98f 0%,#ffad3c 42%,#f17b19 100%); }
-.drink-scene.pink .liquid { background:linear-gradient(180deg,#f4b1c0 0%,#dc7f9b 42%,#b24e76 100%); }
-.drink-scene.navy .liquid { background:linear-gradient(180deg,#708dc4 0%,#40598f 40%,#202c59 100%); }
 .glass-shine {
     position:absolute;
-    z-index:9;
-    top:25px;
-    left:28px;
-    width:18px;
-    height:205px;
+    z-index:20;
+    top:28px;
+    left:24px;
+    width:15px;
+    height:185px;
     border-radius:50%;
-    background:rgba(255,255,255,.14);
-    filter:blur(2px);
+    background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,0));
+    filter:blur(1px);
     pointer-events:none;
 }
 .glass-rim {
     position:absolute;
-    z-index:10;
-    left:-1px;
-    right:-1px;
-    top:-1px;
-    height:17px;
-    border:2px solid rgba(236,226,214,.58);
+    z-index:30;
+    left:-1px; right:-1px; top:-1px;
+    height:18px;
+    border:1.5px solid rgba(240,229,214,.65);
     border-radius:50%;
-    background:rgba(255,255,255,.03);
-    box-shadow:0 2px 7px rgba(0,0,0,.16);
+    background:rgba(255,255,255,.035);
 }
 .glass-foot {
     position:absolute;
-    left:50%;
-    bottom:-35px;
-    width:3px;
-    height:38px;
+    left:50%; bottom:27px;
+    width:3px; height:48px;
     transform:translateX(-50%);
     background:rgba(226,208,178,.55);
 }
 .glass-base {
     position:absolute;
-    left:50%;
-    bottom:-43px;
-    width:112px;
-    height:10px;
+    left:50%; bottom:17px;
+    width:112px; height:10px;
     transform:translateX(-50%);
-    border:2px solid rgba(226,208,178,.55);
+    border:1.5px solid rgba(226,208,178,.55);
     border-radius:50%;
 }
+
+/* GREEN MELON SODA — 실제 카페의 투명한 하이볼 느낌 */
 .drink-scene.green .glass {
-    width:174px;
-    height:285px;
-    border-radius:5px 5px 38px 38px;
+    width:166px;
+    height:286px;
+    border-radius:9px 9px 44px 44px;
+    background:linear-gradient(105deg,rgba(255,255,255,.18),rgba(255,255,255,.025) 40%,rgba(255,255,255,.10));
 }
-.drink-scene.green .glass-foot,
-.drink-scene.green .glass-base { display:block; }
-.drink-scene.orange .glass {
-    width:220px;
-    height:220px;
-    margin-top:45px;
-    border-radius:11px 11px 56px 56px;
-}
-.drink-scene.orange .glass-foot,
-.drink-scene.orange .glass-base { display:none; }
-.drink-scene.pink .glass {
-    width:225px;
-    height:170px;
-    margin-top:58px;
-    border-radius:0 0 110px 110px;
-    transform:perspective(200px) rotateX(-3deg);
-}
-.drink-scene.pink .glass-foot,
-.drink-scene.pink .glass-base { display:block; }
-.drink-scene.navy .glass {
-    width:230px;
-    height:205px;
-    margin-top:44px;
-    border-radius:12px 12px 46px 46px;
-}
-.drink-scene.navy .glass-foot,
-.drink-scene.navy .glass-base { display:none; }
+.drink-scene.green .liquid { background:linear-gradient(180deg,#b9ef9b 0%,#67cf72 35%,#31a75a 100%); }
+.drink-scene.green .glass-foot { bottom:29px; }
+.drink-scene.green .glass-base { bottom:18px; }
 .melon-ice-cream {
-    position:absolute;
-    z-index:12;
-    top:10px;
-    left:50%;
-    width:88px;
-    height:54px;
-    transform:translateX(-50%);
-    border-radius:54% 54% 45% 45%;
-    background:radial-gradient(circle at 34% 24%, #fffef7 0%, #fff2d0 55%, #dfcca2 100%);
-    box-shadow:0 8px 16px rgba(0,0,0,.24);
-}
-.melon-ice-cream:after {
-    content:"";
-    position:absolute;
-    left:50%;
-    bottom:-4px;
-    width:65px;
-    height:12px;
-    transform:translateX(-50%);
+    position:absolute; z-index:25; top:14px; left:50%;
+    width:76px; height:47px; transform:translateX(-50%);
     border-radius:50%;
-    background:rgba(218,194,150,.55);
+    background:radial-gradient(circle at 34% 24%,#fffef8,#fff3d5 58%,#d9c49b 100%);
+    box-shadow:0 4px 12px rgba(0,0,0,.28);
 }
 .drink-straw {
-    position:absolute;
-    z-index:13;
-    top:3px;
-    left:63%;
-    width:4px;
-    height:92px;
-    border-radius:4px;
-    background:linear-gradient(180deg,#ec8f9c,#dd5f76);
-    transform:rotate(12deg);
-    transform-origin:bottom center;
+    position:absolute; z-index:26; top:10px; left:60%;
+    width:4px; height:70px; border-radius:4px;
+    background:linear-gradient(#f0a0a8,#dc6078);
+    transform:rotate(11deg); transform-origin:bottom;
 }
 .drink-cherry {
-    position:absolute;
-    z-index:14;
-    top:14px;
-    left:38%;
-    width:18px;
-    height:18px;
-    border-radius:50%;
-    background:radial-gradient(circle at 30% 25%, #e77c83, #ae3147 62%, #762033 100%);
-    box-shadow:0 4px 8px rgba(0,0,0,.2);
+    position:absolute; z-index:27; top:23px; left:34%;
+    width:17px; height:17px; border-radius:50%;
+    background:radial-gradient(circle at 30% 25%,#ef8089,#a72c44 65%,#671a2b);
 }
-.drink-cherry:after {
-    content:"";
-    position:absolute;
-    width:30px;
-    height:22px;
-    top:-16px;
-    left:9px;
-    border-top:2px solid #6b8156;
-    border-radius:50%;
-    transform:rotate(28deg);
+.bubbles { position:absolute; z-index:15; inset:0; pointer-events:none; }
+.bubbles span { position:absolute; border-radius:50%; background:rgba(255,255,255,.40); box-shadow:0 0 8px rgba(255,255,255,.22); }
+.bubbles .b1{width:6px;height:6px;left:25%;top:37%}.bubbles .b2{width:4px;height:4px;left:42%;top:27%}.bubbles .b3{width:7px;height:7px;left:62%;top:45%}.bubbles .b4{width:4px;height:4px;left:72%;top:32%}.bubbles .b5{width:3px;height:3px;left:53%;top:58%}
+
+/* ORANGE JUICE — 둥근 주스 글라스 + 컵 안쪽 반달 오렌지 */
+.drink-scene.orange .glass {
+    width:214px; height:230px; margin-top:40px;
+    border-radius:13px 13px 64px 64px;
 }
+.drink-scene.orange .liquid { background:linear-gradient(180deg,#ffd77d 0%,#ffad37 42%,#ef7118 100%); }
 .orange-half {
-    position:absolute;
-    z-index:14;
-    width:88px;
-    height:48px;
-    border-radius:88px 88px 0 0;
-    background:radial-gradient(circle at 50% 100%, #ffe8a6 0 34%, #ffb84c 36% 69%, #f47b20 71% 88%, #fff1c6 90% 94%, #df6b17 95%);
-    box-shadow:0 8px 16px rgba(0,0,0,.22);
+    position:absolute; z-index:25;
+    width:66px; height:38px;
+    border-radius:66px 66px 0 0;
+    background:radial-gradient(circle at 50% 100%,#fff0b4 0 31%,#ffb84b 34% 70%,#ec701b 72% 100%);
+    box-shadow:0 4px 10px rgba(0,0,0,.22);
 }
 .orange-half:after {
-    content:""; position:absolute; left:50%; bottom:4px; width:2px; height:39px;
-    background:rgba(255,240,190,.7); transform:translateX(-50%) rotate(25deg);
-    box-shadow:-15px 8px 0 -0.5px rgba(255,240,190,.5), 15px 8px 0 -0.5px rgba(255,240,190,.5);
+    content:""; position:absolute; left:50%; bottom:4px; width:2px; height:28px;
+    background:rgba(255,239,186,.75); transform:translateX(-50%) rotate(25deg);
 }
-.orange-half.one { right:10px; top:8px; transform:rotate(15deg); }
-.orange-half.two { left:18px; top:28px; width:60px; height:34px; opacity:.95; transform:rotate(-18deg); }
-.orange-leaf {
-    position:absolute;
-    z-index:14;
-    left:37px;
-    top:10px;
-    width:42px;
-    height:22px;
-    border-radius:100% 0 100% 0;
-    background:linear-gradient(135deg,#7eac58,#406b40);
-    transform:rotate(-20deg);
+.orange-half.one { right:26px; top:22px; transform:rotate(12deg); }
+.orange-half.two { left:26px; top:38px; width:50px; height:29px; transform:rotate(-15deg); }
+
+/* PINK COCKTAIL — 깔끔한 마티니 잔 */
+.drink-scene.pink .glass {
+    width:226px; height:172px; margin-top:55px;
+    border-radius:0 0 112px 112px;
+    transform:perspective(220px) rotateX(-2deg);
 }
-.melon-straw-line {
-    position:absolute;
-    z-index:15;
-    left:50%;
-    top:-52px;
-    width:4px;
-    height:150px;
-    border-radius:4px;
-    background:linear-gradient(180deg,#f3c67a,#db8b41);
-    transform:translateX(-50%) rotate(-13deg);
-    transform-origin:bottom center;
+.drink-scene.pink .liquid { background:linear-gradient(180deg,#f7c2d0 0%,#dc809e 45%,#ad4c73 100%); }
+.drink-scene.pink .glass-foot { bottom:27px; }
+.drink-scene.pink .glass-base { bottom:17px; }
+.pink-foam {
+    position:absolute; z-index:25; left:18%; right:18%; top:10px; height:20px;
+    border-radius:50%; background:radial-gradient(circle at 35% 30%,#fff8fa,#f5c6d4 58%,#d77d9d 100%);
 }
-.bubbles {
-    position:absolute;
-    z-index:11;
-    inset:0;
-    pointer-events:none;
+.pink-cherry {
+    position:absolute; z-index:26; left:48%; top:13px;
+    width:13px; height:13px; border-radius:50%;
+    background:radial-gradient(circle at 30% 25%,#ef7e88,#a52d45 65%,#681a2b);
 }
-.bubbles span { position:absolute; border-radius:50%; background:rgba(255,255,255,.35); box-shadow:0 0 7px rgba(255,255,255,.24); }
-.bubbles .b1 { width:7px; height:7px; left:28%; top:33%; }
-.bubbles .b2 { width:4px; height:4px; left:42%; top:26%; }
-.bubbles .b3 { width:6px; height:6px; left:63%; top:43%; }
-.bubbles .b4 { width:3px; height:3px; left:73%; top:30%; }
-.pink-foam{position:absolute;z-index:12;left:10%;right:10%;top:7px;height:28px;border-radius:50%;background:radial-gradient(circle at 30% 35%,#fff3f6,#f5c1d0 58%,#d77a9b 100%);opacity:.95}.pink-cherry{position:absolute;z-index:13;left:35%;top:17px;width:15px;height:15px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#f07d89,#a92d45 65%,#681b2b);box-shadow:0 4px 8px rgba(0,0,0,.2)}
+
+/* NAVY COCKTAIL — 낮은 쿠페 잔 */
+.drink-scene.navy .glass {
+    width:230px; height:205px; margin-top:43px;
+    border-radius:12px 12px 52px 52px;
+}
+.drink-scene.navy .liquid { background:linear-gradient(180deg,#6e8fce 0%,#405b9d 42%,#1d2858 100%); }
 .navy-garnish {
-    position:absolute;
-    z-index:14;
-    left:16px;
-    top:10px;
-    width:75px;
-    height:17px;
-    border-radius:70% 30% 70% 30%;
-    background:linear-gradient(90deg,#f8e3a2,#f3b54e);
-    transform:rotate(-17deg);
-    box-shadow:0 6px 13px rgba(0,0,0,.2);
+    position:absolute; z-index:25; left:50%; top:16px;
+    width:52px; height:18px; transform:translateX(-50%) rotate(-7deg);
+    border-radius:50%; background:linear-gradient(90deg,#f4dfa2,#e7b85d);
+    box-shadow:0 4px 10px rgba(0,0,0,.2);
 }
-.navy-garnish:after {
-    content:"";
-    position:absolute;
-    width:28px;
-    height:7px;
-    left:11px;
-    top:5px;
-    border-radius:50%;
-    background:#fff1bd;
-}
-.stars { position:absolute; inset:0; z-index:13; pointer-events:none; }
-.stars span { position:absolute; color:rgba(220,229,255,.75); font-size:16px; text-shadow:0 0 12px rgba(160,187,255,.8); }
-.stars .s1 { top:35px; left:34px; }
-.stars .s2 { top:75px; right:44px; font-size:12px; }
-.stars .s3 { bottom:43px; left:62px; font-size:11px; }
+.stars { position:absolute; inset:0; z-index:16; pointer-events:none; }
+.stars span { position:absolute; color:rgba(226,235,255,.70); font-size:13px; text-shadow:0 0 10px rgba(150,180,255,.75); }
+.stars .s1{top:56px;left:30px}.stars .s2{top:90px;right:42px;font-size:10px}.stars .s3{bottom:45px;left:58px;font-size:9px}
+
 .drink-name {
     color:#dcae73;
     font-family:"Cormorant Garamond",Georgia,serif;
@@ -1953,85 +1810,58 @@ MOOD_CONFIG = {
 
 
 def cocktail_visual_html(color, fill=100, mini=False):
+    """실제 음료와 메뉴 미리보기가 같은 HTML 그래픽을 사용하도록 합니다."""
     height = max(0, min(100, fill))
     eaten = height < 100
 
-    if mini:
-        if color == "green":
-            extras = (
-                '<div class="mini-scoop"></div>'
-                '<div class="mini-cherry"></div>'
-                '<div class="mini-straw"></div>'
-                '<div class="mini-bubbles"><i></i><i></i><i></i></div>'
-            )
-        elif color == "orange":
-            extras = '<div class="mini-orange-half"></div><div class="mini-orange-half second"></div><div class="mini-leaf"></div>'
-        elif color == "pink":
-            extras = '<div class="mini-cocktail-olive"></div><div class="mini-pick"></div>'
-        else:
-            extras = '<div class="mini-blue-glow"></div><div class="mini-lemon-twist"></div><div class="mini-star"></div>'
-
-        return (
-            f'<div class="mini-drink mini-{color}">'
-            f'<div class="mini-rim"></div>'
-            f'<div class="mini-glass"><div class="mini-liquid" style="height:{height}%;"></div>{extras}</div>'
-            f'<div class="mini-stem"></div><div class="mini-base"></div>'
-            f'</div>'
-        )
-
-    common = (
-        f'<div class="glass">'
-        f'<div class="liquid" style="height:{height}%;"></div>'
-        f'<div class="glass-rim"></div>'
-        f'<div class="glass-shine"></div>'
-        f'</div>'
-    )
-
     if color == "green":
-        # 첫 입을 먹으면 아이스크림과 체리가 사라지고 탄산만 남습니다.
         garnish = ""
         if not eaten:
-            garnish = '<div class="melon-ice-cream"></div><div class="drink-straw"></div><div class="drink-cherry"></div>'
+            garnish = (
+                '<div class="melon-ice-cream"></div>'
+                '<div class="drink-straw"></div>'
+                '<div class="drink-cherry"></div>'
+            )
         common = (
             f'<div class="glass soda-glass">'
             f'<div class="liquid" style="height:{height}%;"></div>'
             f'<div class="glass-rim"></div>'
             f'<div class="bubbles"><span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="b4"></span><span class="b5"></span></div>'
-            + garnish +
+            f'{garnish}'
             f'<div class="glass-shine"></div>'
-            f'</div>'
-            f'<div class="glass-foot"></div><div class="glass-base"></div>'
+            f'</div><div class="glass-foot"></div><div class="glass-base"></div>'
         )
     elif color == "orange":
+        garnish = ""
+        if not eaten:
+            garnish = '<div class="orange-half one"></div><div class="orange-half two"></div>'
         common = (
             f'<div class="glass orange-glass">'
             f'<div class="liquid" style="height:{height}%;"></div>'
-            f'<div class="glass-rim"></div>'
-            + (('<div class="orange-half one"></div><div class="orange-half two"></div><div class="orange-leaf"></div>') if not eaten else '') +
-            f'<div class="bubbles"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div>'
-            f'<div class="glass-shine"></div>'
-            f'</div>'
+            f'<div class="glass-rim"></div>{garnish}'
+            f'<div class="glass-shine"></div></div>'
         )
     elif color == "pink":
+        garnish = '<div class="pink-foam"></div><div class="pink-cherry"></div>' if not eaten else ''
         common = (
             f'<div class="glass pink-glass">'
             f'<div class="liquid" style="height:{height}%;"></div>'
-            f'<div class="glass-rim"></div>'
-            + (('<div class="pink-foam"></div><div class="pink-cherry"></div>') if not eaten else '') +
-            f'<div class="glass-shine"></div>'
-            f'</div>'
+            f'<div class="glass-rim"></div>{garnish}'
+            f'<div class="glass-shine"></div></div>'
             f'<div class="glass-foot"></div><div class="glass-base"></div>'
         )
-    elif color == "navy":
+    else:
+        garnish = '<div class="navy-garnish"></div>' if not eaten else ''
         common = (
             f'<div class="glass navy-glass">'
             f'<div class="liquid" style="height:{height}%;"></div>'
-            f'<div class="glass-rim"></div>'
-            + (('<div class="navy-garnish"></div>') if not eaten else '') +
+            f'<div class="glass-rim"></div>{garnish}'
             f'<div class="stars"><span class="s1">✦</span><span class="s2">✧</span><span class="s3">✦</span></div>'
-            f'<div class="glass-shine"></div>'
-            f'</div>'
+            f'<div class="glass-shine"></div></div>'
         )
+
+    if mini:
+        return f'<div class="mini-drink"><div class="drink-visual drink-scene {color}">{common}</div></div>'
 
     return f'<div class="drink-visual drink-scene {color}">{common}</div>'
 
