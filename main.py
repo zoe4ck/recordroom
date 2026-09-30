@@ -835,6 +835,42 @@ div[data-testid="stButton"] > button:hover {
     box-shadow:0 0 18px rgba(121,153,225,.55);
     background:radial-gradient(circle at 36% 30%, #96aedd, #334b83 58%, #1a2448 100%);
 }
+/* refined cocktail glass details */
+.mini-drink { width:112px; height:138px; margin:14px auto 0; position:relative; filter:drop-shadow(0 10px 12px rgba(0,0,0,.22)); }
+.mini-glass { position:absolute; left:18px; bottom:18px; width:76px; height:84px; border:1.5px solid rgba(245,232,213,.65); border-top:0; border-radius:7px 7px 24px 24px; overflow:hidden; background:linear-gradient(90deg,rgba(255,255,255,.16),rgba(255,255,255,.025),rgba(255,255,255,.12)); box-shadow:inset 8px 0 15px rgba(255,255,255,.06),inset -8px 0 12px rgba(0,0,0,.08); }
+.mini-rim { position:absolute; z-index:10; left:18px; top:34px; width:76px; height:13px; border:1.5px solid rgba(245,232,213,.68); border-radius:50%; background:rgba(255,255,255,.035); }
+.mini-liquid { position:absolute; left:0; right:0; bottom:0; opacity:.92; border-radius:0 0 20px 20px; }
+.mini-stem { position:absolute; left:50%; bottom:7px; width:3px; height:22px; transform:translateX(-50%); background:rgba(235,218,192,.65); }
+.mini-base { position:absolute; left:50%; bottom:1px; width:48px; height:7px; transform:translateX(-50%); border:1.5px solid rgba(235,218,192,.65); border-radius:50%; }
+.mini-pink .mini-glass { height:62px; bottom:36px; width:84px; left:14px; border-radius:0 0 42px 42px; }
+.mini-pink .mini-rim { width:84px; left:14px; top:32px; }
+.mini-pink .mini-liquid { background:linear-gradient(180deg,#ffd0dc,#df779a 55%,#a8446b); }
+.mini-green .mini-glass { height:92px; width:68px; left:22px; border-radius:5px 5px 22px 22px; }
+.mini-green .mini-rim { width:68px; left:22px; top:25px; }
+.mini-green .mini-liquid { background:linear-gradient(180deg,#b8f2a9,#62c976 55%,#2f9958); }
+.mini-orange .mini-glass { height:72px; width:82px; left:15px; border-radius:7px 7px 28px 28px; }
+.mini-orange .mini-rim { width:82px; left:15px; top:43px; }
+.mini-orange .mini-liquid { background:linear-gradient(180deg,#ffd995,#ffac3b 48%,#ec7018); }
+.mini-navy .mini-glass { height:70px; width:82px; left:15px; border-radius:8px 8px 25px 25px; }
+.mini-navy .mini-rim { width:82px; left:15px; top:44px; }
+.mini-navy .mini-liquid { background:linear-gradient(180deg,#6f91d2,#354d91 52%,#171f4d); }
+.mini-scoop { position:absolute; z-index:20; left:29px; top:-9px; width:55px; height:39px; border-radius:50%; background:radial-gradient(circle at 34% 25%,#fffef7,#fff0cc 62%,#d9c394); box-shadow:0 5px 10px rgba(0,0,0,.24); }
+.mini-cherry { position:absolute; z-index:22; left:24px; top:-11px; width:11px; height:11px; border-radius:50%; background:radial-gradient(circle at 30% 25%,#f08089,#a52d43 65%,#671a2b); }
+.mini-straw { position:absolute; z-index:21; right:18px; top:-17px; width:3px; height:68px; border-radius:3px; background:linear-gradient(#ef9a9f,#db5d76); transform:rotate(13deg); transform-origin:bottom; }
+.mini-bubbles { position:absolute; inset:0; z-index:12; }
+.mini-bubbles i { position:absolute; width:4px; height:4px; border-radius:50%; background:rgba(255,255,255,.45); }
+.mini-bubbles i:nth-child(1){left:25px;bottom:35px}.mini-bubbles i:nth-child(2){left:44px;bottom:52px}.mini-bubbles i:nth-child(3){right:20px;bottom:25px}
+.mini-orange-half { position:absolute; z-index:20; width:38px; height:22px; border-radius:38px 38px 0 0; background:radial-gradient(circle at 50% 100%,#ffe7a2 0 32%,#ffb447 34% 68%,#e86d18 70% 100%); box-shadow:0 4px 8px rgba(0,0,0,.2); }
+.mini-orange-half:after { content:""; position:absolute; left:18px; top:3px; width:1px; height:17px; background:rgba(255,239,188,.65); transform:rotate(28deg); }
+.mini-orange-half { right:4px; top:20px; transform:rotate(13deg); }
+.mini-orange-half.second { left:5px; right:auto; top:62px; width:28px; height:17px; transform:rotate(-18deg); }
+.mini-leaf { position:absolute; z-index:21; right:23px; top:12px; width:20px; height:10px; border-radius:100% 0 100% 0; background:linear-gradient(135deg,#83a85c,#456b40); transform:rotate(-20deg); }
+.mini-cocktail-olive { position:absolute; z-index:20; left:36px; top:30px; width:13px; height:13px; border-radius:50%; background:#b5b86d; box-shadow:inset 3px 2px 4px rgba(255,255,255,.28); }
+.mini-pick { position:absolute; z-index:19; left:43px; top:9px; width:2px; height:47px; background:#e9c78d; transform:rotate(-10deg); }
+.mini-blue-glow { position:absolute; z-index:15; left:31px; top:47px; width:45px; height:30px; border-radius:50%; background:radial-gradient(circle,#91b8ff,rgba(60,89,155,.2) 70%,transparent); filter:blur(4px); }
+.mini-lemon-twist { position:absolute; z-index:21; right:11px; top:30px; width:30px; height:10px; border:3px solid #f5c75d; border-left-color:transparent; border-bottom-color:transparent; border-radius:50%; transform:rotate(18deg); }
+.mini-star { position:absolute; z-index:22; left:33px; top:49px; color:#dbe6ff; font-size:12px; text-shadow:0 0 9px #89aaff; }
+
 .selected-order {
     width:min(900px,92vw);
     margin:0 auto 14px;
@@ -1043,17 +1079,22 @@ div[data-testid="stButton"] > button:hover {
     border-radius:50%;
     transform:rotate(28deg);
 }
-.orange-slice {
+.orange-half {
     position:absolute;
     z-index:14;
-    width:66px;
-    height:66px;
-    border-radius:50%;
-    background:radial-gradient(circle, #ffe8a6 0 40%, #ffb74c 42% 70%, #f47b20 72% 86%, #fff1c6 88% 92%, #df6b17 94%);
-    box-shadow:0 7px 15px rgba(0,0,0,.2);
+    width:88px;
+    height:48px;
+    border-radius:88px 88px 0 0;
+    background:radial-gradient(circle at 50% 100%, #ffe8a6 0 34%, #ffb84c 36% 69%, #f47b20 71% 88%, #fff1c6 90% 94%, #df6b17 95%);
+    box-shadow:0 8px 16px rgba(0,0,0,.22);
 }
-.orange-slice.one { right:20px; top:-9px; transform:rotate(16deg); }
-.orange-slice.two { left:22px; bottom:20px; width:42px; height:42px; opacity:.92; transform:rotate(-15deg); }
+.orange-half:after {
+    content:""; position:absolute; left:50%; bottom:4px; width:2px; height:39px;
+    background:rgba(255,240,190,.7); transform:translateX(-50%) rotate(25deg);
+    box-shadow:-15px 8px 0 -0.5px rgba(255,240,190,.5), 15px 8px 0 -0.5px rgba(255,240,190,.5);
+}
+.orange-half.one { right:8px; top:-20px; transform:rotate(15deg); }
+.orange-half.two { left:20px; bottom:12px; width:60px; height:34px; opacity:.95; transform:rotate(-18deg); }
 .orange-leaf {
     position:absolute;
     z-index:14;
@@ -1630,6 +1671,13 @@ ARTIST_ALIASES = {
     "akmu": ["악뮤", "AKMU"],
 }
 
+# Apple Music/iTunes의 동명이인 아티스트를 피하기 위한 대표 아티스트 ID입니다.
+# 특히 IU는 같은 이름을 쓰는 다른 아티스트가 검색되는 경우가 있어 ID로 고정합니다.
+KNOWN_ARTIST_IDS = {
+    "아이유": 409076743,
+    "iu": 409076743,
+}
+
 PREFERRED_ARTIST_NAMES = {
     "아이유": ["아이유", "IU"],
     "iu": ["아이유", "IU"],
@@ -1730,13 +1778,46 @@ def find_artist_tracks(query):
     if not candidates:
         return []
 
-    # 원래 검색어 → 공식/대표 표기 → 별칭 → 부분 일치 순서로 정확도를 높입니다.
-    selected = None
+    # -----------------------------------------------------
+    # 0. 대표 아티스트 ID가 있으면 이름 검색 결과보다 ID를 우선합니다.
+    # -----------------------------------------------------
+    known_id = None
+    for key, artist_id in KNOWN_ARTIST_IDS.items():
+        if normalize(key) == normalize(query):
+            known_id = artist_id
+            break
 
+    if known_id is not None:
+        canonical = [
+            artist for artist in candidates
+            if artist.get("artistId") == known_id
+        ]
+        if canonical:
+            selected = canonical[0]
+        else:
+            # 검색 결과에 ID가 빠져도 직접 lookup하면 정확한 아티스트를 확보할 수 있습니다.
+            lookup_data = apple_lookup({
+                "id": known_id,
+                "entity": "song",
+                "country": "KR",
+                "limit": 100
+            })
+            canonical_tracks = [
+                item for item in lookup_data.get("results", [])
+                if item.get("wrapperType") == "track"
+                and item.get("kind") == "song"
+            ]
+            if canonical_tracks:
+                return rank_by_korea_popularity(canonical_tracks, limit=30)
+            selected = None
+    else:
+        selected = None
+
+    # 원래 검색어 → 공식/대표 표기 → 별칭 → 부분 일치 순서로 정확도를 높입니다.
     preferred_names = PREFERRED_ARTIST_NAMES.get(lower := query.lower(), [])
     preferred_normalized = [normalize(name) for name in preferred_names]
 
-    if preferred_normalized:
+    if selected is None and preferred_normalized:
         preferred = [
             artist for artist in candidates
             if normalize(artist.get("artistName", "")) in preferred_normalized
@@ -1930,18 +2011,26 @@ def cocktail_visual_html(color, fill=100, mini=False):
     height = max(0, min(100, fill))
 
     if mini:
-        garnish = ""
-        extras = '<div class="mini-ice a"></div><div class="mini-ice b"></div>'
         if color == "green":
-            extras = '<div class="mini-scoop"></div><div class="mini-cherry"></div><div class="mini-straw"></div>'
+            extras = (
+                '<div class="mini-scoop"></div>'
+                '<div class="mini-cherry"></div>'
+                '<div class="mini-straw"></div>'
+                '<div class="mini-bubbles"><i></i><i></i><i></i></div>'
+            )
         elif color == "orange":
-            extras = '<div class="mini-citrus"></div>'
-        elif color == "navy":
-            extras = '<div class="mini-moon"></div>'
+            extras = '<div class="mini-orange-half"></div><div class="mini-orange-half second"></div><div class="mini-leaf"></div>'
+        elif color == "pink":
+            extras = '<div class="mini-cocktail-olive"></div><div class="mini-pick"></div>'
+        else:
+            extras = '<div class="mini-blue-glow"></div><div class="mini-lemon-twist"></div><div class="mini-star"></div>'
+
         return (
             f'<div class="mini-drink mini-{color}">'
-            f'<div class="mini-glass"><div class="mini-liquid" style="height:{height}%;"></div>'
-            f'{extras}</div></div>'
+            f'<div class="mini-rim"></div>'
+            f'<div class="mini-glass"><div class="mini-liquid" style="height:{height}%;"></div>{extras}</div>'
+            f'<div class="mini-stem"></div><div class="mini-base"></div>'
+            f'</div>'
         )
 
     common = (
@@ -1953,25 +2042,27 @@ def cocktail_visual_html(color, fill=100, mini=False):
     )
 
     if color == "green":
+        # 첫 입을 먹으면 아이스크림과 체리가 사라지고 탄산만 남습니다.
+        garnish = ""
+        if height >= 100:
+            garnish = '<div class="melon-ice-cream"></div><div class="drink-straw"></div><div class="drink-cherry"></div>'
         common = (
-            f'<div class="glass">'
+            f'<div class="glass soda-glass">'
             f'<div class="liquid" style="height:{height}%;"></div>'
             f'<div class="glass-rim"></div>'
-            f'<div class="bubbles"><span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="b4"></span></div>'
-            f'<div class="melon-ice-cream"></div>'
-            f'<div class="drink-straw"></div>'
-            f'<div class="drink-cherry"></div>'
+            f'<div class="bubbles"><span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="b4"></span><span class="b5"></span></div>'
+            + garnish +
             f'<div class="glass-shine"></div>'
             f'</div>'
             f'<div class="glass-foot"></div><div class="glass-base"></div>'
         )
     elif color == "orange":
         common = (
-            f'<div class="glass">'
+            f'<div class="glass orange-glass">'
             f'<div class="liquid" style="height:{height}%;"></div>'
             f'<div class="glass-rim"></div>'
-            f'<div class="orange-slice one"></div>'
-            f'<div class="orange-slice two"></div>'
+            f'<div class="orange-half one"></div>'
+            f'<div class="orange-half two"></div>'
             f'<div class="orange-leaf"></div>'
             f'<div class="bubbles"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div>'
             f'<div class="glass-shine"></div>'
@@ -1979,17 +2070,18 @@ def cocktail_visual_html(color, fill=100, mini=False):
         )
     elif color == "pink":
         common = (
-            f'<div class="glass">'
+            f'<div class="glass pink-glass">'
             f'<div class="liquid" style="height:{height}%;"></div>'
             f'<div class="glass-rim"></div>'
-            f'<div class="drink-cherry"></div>'
+            f'<div class="pink-foam"></div>'
+            f'<div class="pink-cherry"></div>'
             f'<div class="glass-shine"></div>'
             f'</div>'
             f'<div class="glass-foot"></div><div class="glass-base"></div>'
         )
     elif color == "navy":
         common = (
-            f'<div class="glass">'
+            f'<div class="glass navy-glass">'
             f'<div class="liquid" style="height:{height}%;"></div>'
             f'<div class="glass-rim"></div>'
             f'<div class="navy-garnish"></div>'
@@ -1998,12 +2090,7 @@ def cocktail_visual_html(color, fill=100, mini=False):
             f'</div>'
         )
 
-    return (
-        f'<div class="drink-visual drink-scene {color}">'
-        f'{common}'
-        f'</div>'
-    )
-
+    return f'<div class="drink-visual drink-scene {color}">{common}</div>'
 
 
 def get_openai_key():
@@ -2773,6 +2860,12 @@ elif st.session_state.page == "choice":
                         st.rerun()
 
         else:
+            if st.button("← BACK TO COCKTAIL BAR", key="cocktail_back_top", use_container_width=True):
+                st.session_state.cocktail_mood = None
+                st.session_state.cocktail_sips = 0
+                st.session_state.cocktail_recommendations = []
+                st.rerun()
+
             mood_key = st.session_state.cocktail_mood
             config = MOOD_CONFIG[mood_key]
             sips = st.session_state.cocktail_sips
@@ -2882,16 +2975,8 @@ elif st.session_state.page == "choice":
                     )
 
             st.write("")
-            back_col, reset_col = st.columns(2)
-            with back_col:
-                if st.button("← BACK TO COCKTAIL MENU", key="back_cocktail_menu", use_container_width=True):
-                    st.session_state.cocktail_mood = None
-                    st.session_state.cocktail_sips = 0
-                    st.session_state.cocktail_recommendations = []
-                    st.rerun()
-            with reset_col:
-                if st.button("← BACK TO ROOM SERVICE", key="recommend_back", use_container_width=True):
-                    go_room_service()
+            if st.button("← BACK TO ROOM SERVICE", key="recommend_back", use_container_width=True):
+                go_room_service()
 
 # =========================================================
 # MY ROOM
