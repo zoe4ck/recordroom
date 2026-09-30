@@ -425,78 +425,22 @@ div[data-testid="stButton"] > button:hover {
 }
 
 .fireplace {
-    width: min(720px, 80vw);
-    height: 350px;
-    margin: 55px auto 25px auto;
-    background:
-        radial-gradient(
-            ellipse at 50% 100%,
-            #8a4424 0%,
-            #542617 28%,
-            #27130d 58%,
-            #110a07 100%
-        );
-    border: 16px solid #3b261a;
-    box-shadow:
-        inset 0 0 40px rgba(0,0,0,0.7),
-        0 25px 60px rgba(0,0,0,0.5);
-    position: relative;
-    overflow: hidden;
+    width:min(760px,82vw); height:390px; margin:48px auto 28px;
+    background:radial-gradient(ellipse at 50% 82%,rgba(151,67,28,.38),transparent 28%),radial-gradient(ellipse at 50% 100%,#4a2417 0%,#24120d 42%,#0d0806 78%);
+    border:14px solid #2d1b13; border-radius:8px; position:relative; overflow:hidden;
+    box-shadow:inset 0 0 0 2px rgba(196,145,91,.16),inset 0 -35px 55px rgba(0,0,0,.72),0 28px 65px rgba(0,0,0,.5);
 }
-
-.fire {
-    position: absolute;
-    bottom: 30px;
-    left: 50%;
-    width: 130px;
-    height: 190px;
-    transform: translateX(-50%);
-    background:
-        radial-gradient(
-            ellipse at center bottom,
-            #f2a34d 0%,
-            #d8642f 35%,
-            #7b2f1b 62%,
-            transparent 72%
-        );
-    border-radius: 50% 50% 35% 35%;
-    filter: blur(1px);
-    animation: flame 1.4s infinite alternate ease-in-out;
-}
-
-.fire-small {
-    position: absolute;
-    bottom: 35px;
-    left: 50%;
-    width: 65px;
-    height: 110px;
-    transform: translateX(-50%);
-    background:
-        radial-gradient(
-            ellipse at center bottom,
-            #ffe0a3 0%,
-            #f19a43 40%,
-            #bd4825 70%,
-            transparent 75%
-        );
-    border-radius: 50% 50% 35% 35%;
-    animation: flameSmall 0.9s infinite alternate ease-in-out;
-}
-
-.wood {
-    position: absolute;
-    bottom: 27px;
-    left: 50%;
-    width: 210px;
-    height: 22px;
-    background: #24140e;
-    transform: translateX(-50%) rotate(4deg);
-    border-radius: 8px;
-}
-
-.wood.two {
-    transform: translateX(-50%) rotate(-7deg);
-}
+.fireplace:before{content:"";position:absolute;left:50%;bottom:36px;width:280px;height:90px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse,rgba(238,126,48,.42),rgba(107,40,19,.2) 48%,transparent 72%);filter:blur(7px)}
+.fireplace:after{content:"";position:absolute;inset:16px;border:1px solid rgba(205,156,105,.12);pointer-events:none}
+.fire{position:absolute;bottom:48px;left:50%;width:175px;height:235px;transform:translateX(-50%);background:radial-gradient(ellipse at 50% 82%,#ffe7a7 0 12%,#ffb24d 25%,#e65f27 48%,rgba(113,40,18,.55) 64%,transparent 74%);clip-path:polygon(50% 0,61% 20%,55% 35%,78% 24%,71% 49%,94% 45%,78% 72%,63% 100%,38% 100%,20% 73%,5% 48%,29% 52%,22% 26%,44% 38%);filter:blur(.4px);animation:flame 1.15s infinite alternate ease-in-out;transform-origin:50% 100%}
+.fire-small{position:absolute;bottom:49px;left:50%;width:88px;height:150px;transform:translateX(-50%);background:radial-gradient(ellipse at 50% 82%,#fff6cf 0 15%,#ffd56e 30%,#f38a31 56%,transparent 72%);clip-path:polygon(50% 0,66% 30%,59% 46%,80% 39%,69% 66%,56% 100%,43% 100%,29% 69%,18% 48%,39% 55%);animation:flameSmall .8s infinite alternate ease-in-out}
+.fire-core{position:absolute;bottom:50px;left:50%;width:44px;height:86px;transform:translateX(-50%);background:linear-gradient(180deg,#fffbe7,#ffe08b 55%,#ff9b36);clip-path:polygon(50% 0,73% 37%,64% 58%,82% 53%,63% 100%,39% 100%,22% 61%,42% 55%,32% 33%);animation:flameCore .65s infinite alternate ease-in-out}
+.wood{position:absolute;bottom:40px;left:50%;width:250px;height:27px;background:linear-gradient(180deg,#5a301c,#2b160f);border:1px solid rgba(210,145,81,.25);transform:translateX(-50%) rotate(7deg);border-radius:15px;box-shadow:inset 0 5px 7px rgba(255,177,91,.12)}
+.wood.two{transform:translateX(-50%) rotate(-8deg);bottom:47px}
+.ember{position:absolute;width:4px;height:4px;border-radius:50%;background:#ffb65a;box-shadow:0 0 10px #f47b2b;animation:ember 2.8s infinite ease-out}
+.ember.e1{left:42%;bottom:92px}.ember.e2{left:58%;bottom:105px;animation-delay:.8s}.ember.e3{left:47%;bottom:125px;animation-delay:1.4s}.ember.e4{left:63%;bottom:75px;animation-delay:2s}
+@keyframes flameCore{from{transform:translateX(-50%) scale(.92,.96)}to{transform:translateX(-50%) scale(1.05,1.08)}}
+@keyframes ember{0%{opacity:0;transform:translateY(10px) scale(.6)}25%{opacity:1}100%{opacity:0;transform:translateY(-90px) translateX(15px) scale(.15)}}
 
 @keyframes flame {
     from {
@@ -854,17 +798,17 @@ div[data-testid="stButton"] > button:hover {
 .mini-navy .mini-glass { height:70px; width:82px; left:15px; border-radius:8px 8px 25px 25px; }
 .mini-navy .mini-rim { width:82px; left:15px; top:44px; }
 .mini-navy .mini-liquid { background:linear-gradient(180deg,#6f91d2,#354d91 52%,#171f4d); }
-.mini-scoop { position:absolute; z-index:20; left:29px; top:-9px; width:55px; height:39px; border-radius:50%; background:radial-gradient(circle at 34% 25%,#fffef7,#fff0cc 62%,#d9c394); box-shadow:0 5px 10px rgba(0,0,0,.24); }
-.mini-cherry { position:absolute; z-index:22; left:24px; top:-11px; width:11px; height:11px; border-radius:50%; background:radial-gradient(circle at 30% 25%,#f08089,#a52d43 65%,#671a2b); }
-.mini-straw { position:absolute; z-index:21; right:18px; top:-17px; width:3px; height:68px; border-radius:3px; background:linear-gradient(#ef9a9f,#db5d76); transform:rotate(13deg); transform-origin:bottom; }
+.mini-scoop { position:absolute; z-index:20; left:29px; top:7px; width:55px; height:39px; border-radius:50%; background:radial-gradient(circle at 34% 25%,#fffef7,#fff0cc 62%,#d9c394); box-shadow:0 5px 10px rgba(0,0,0,.24); }
+.mini-cherry { position:absolute; z-index:22; left:24px; top:13px; width:11px; height:11px; border-radius:50%; background:radial-gradient(circle at 30% 25%,#f08089,#a52d43 65%,#671a2b); }
+.mini-straw { position:absolute; z-index:21; right:18px; top:2px; width:3px; height:68px; border-radius:3px; background:linear-gradient(#ef9a9f,#db5d76); transform:rotate(13deg); transform-origin:bottom; }
 .mini-bubbles { position:absolute; inset:0; z-index:12; }
 .mini-bubbles i { position:absolute; width:4px; height:4px; border-radius:50%; background:rgba(255,255,255,.45); }
 .mini-bubbles i:nth-child(1){left:25px;bottom:35px}.mini-bubbles i:nth-child(2){left:44px;bottom:52px}.mini-bubbles i:nth-child(3){right:20px;bottom:25px}
 .mini-orange-half { position:absolute; z-index:20; width:38px; height:22px; border-radius:38px 38px 0 0; background:radial-gradient(circle at 50% 100%,#ffe7a2 0 32%,#ffb447 34% 68%,#e86d18 70% 100%); box-shadow:0 4px 8px rgba(0,0,0,.2); }
 .mini-orange-half:after { content:""; position:absolute; left:18px; top:3px; width:1px; height:17px; background:rgba(255,239,188,.65); transform:rotate(28deg); }
-.mini-orange-half { right:4px; top:20px; transform:rotate(13deg); }
-.mini-orange-half.second { left:5px; right:auto; top:62px; width:28px; height:17px; transform:rotate(-18deg); }
-.mini-leaf { position:absolute; z-index:21; right:23px; top:12px; width:20px; height:10px; border-radius:100% 0 100% 0; background:linear-gradient(135deg,#83a85c,#456b40); transform:rotate(-20deg); }
+.mini-orange-half { right:4px; top:24px; transform:rotate(13deg); }
+.mini-orange-half.second { left:5px; right:auto; top:55px; width:28px; height:17px; transform:rotate(-18deg); }
+.mini-leaf { position:absolute; z-index:21; right:23px; top:20px; width:20px; height:10px; border-radius:100% 0 100% 0; background:linear-gradient(135deg,#83a85c,#456b40); transform:rotate(-20deg); }
 .mini-cocktail-olive { position:absolute; z-index:20; left:36px; top:30px; width:13px; height:13px; border-radius:50%; background:#b5b86d; box-shadow:inset 3px 2px 4px rgba(255,255,255,.28); }
 .mini-pick { position:absolute; z-index:19; left:43px; top:9px; width:2px; height:47px; background:#e9c78d; transform:rotate(-10deg); }
 .mini-blue-glow { position:absolute; z-index:15; left:31px; top:47px; width:45px; height:30px; border-radius:50%; background:radial-gradient(circle,#91b8ff,rgba(60,89,155,.2) 70%,transparent); filter:blur(4px); }
@@ -921,7 +865,7 @@ div[data-testid="stButton"] > button:hover {
     border:2px solid rgba(226,208,178,.57);
     border-top:0;
     border-radius:10px 10px 52px 52px;
-    overflow:visible;
+    overflow:hidden;
     background:linear-gradient(90deg,rgba(255,255,255,.11),rgba(255,255,255,.025),rgba(255,255,255,.09));
     box-shadow:0 28px 55px rgba(0,0,0,.35), inset 0 0 20px rgba(255,255,255,.05);
 }
@@ -1025,10 +969,10 @@ div[data-testid="stButton"] > button:hover {
 .melon-ice-cream {
     position:absolute;
     z-index:12;
-    top:-35px;
+    top:10px;
     left:50%;
-    width:98px;
-    height:72px;
+    width:88px;
+    height:54px;
     transform:translateX(-50%);
     border-radius:54% 54% 45% 45%;
     background:radial-gradient(circle at 34% 24%, #fffef7 0%, #fff2d0 55%, #dfcca2 100%);
@@ -1048,10 +992,10 @@ div[data-testid="stButton"] > button:hover {
 .drink-straw {
     position:absolute;
     z-index:13;
-    top:-56px;
+    top:3px;
     left:63%;
     width:4px;
-    height:112px;
+    height:92px;
     border-radius:4px;
     background:linear-gradient(180deg,#ec8f9c,#dd5f76);
     transform:rotate(12deg);
@@ -1060,7 +1004,7 @@ div[data-testid="stButton"] > button:hover {
 .drink-cherry {
     position:absolute;
     z-index:14;
-    top:-45px;
+    top:14px;
     left:38%;
     width:18px;
     height:18px;
@@ -1093,13 +1037,13 @@ div[data-testid="stButton"] > button:hover {
     background:rgba(255,240,190,.7); transform:translateX(-50%) rotate(25deg);
     box-shadow:-15px 8px 0 -0.5px rgba(255,240,190,.5), 15px 8px 0 -0.5px rgba(255,240,190,.5);
 }
-.orange-half.one { right:8px; top:-20px; transform:rotate(15deg); }
-.orange-half.two { left:20px; bottom:12px; width:60px; height:34px; opacity:.95; transform:rotate(-18deg); }
+.orange-half.one { right:10px; top:8px; transform:rotate(15deg); }
+.orange-half.two { left:18px; top:28px; width:60px; height:34px; opacity:.95; transform:rotate(-18deg); }
 .orange-leaf {
     position:absolute;
     z-index:14;
     left:37px;
-    top:-22px;
+    top:10px;
     width:42px;
     height:22px;
     border-radius:100% 0 100% 0;
@@ -1129,11 +1073,12 @@ div[data-testid="stButton"] > button:hover {
 .bubbles .b2 { width:4px; height:4px; left:42%; top:26%; }
 .bubbles .b3 { width:6px; height:6px; left:63%; top:43%; }
 .bubbles .b4 { width:3px; height:3px; left:73%; top:30%; }
+.pink-foam{position:absolute;z-index:12;left:10%;right:10%;top:7px;height:28px;border-radius:50%;background:radial-gradient(circle at 30% 35%,#fff3f6,#f5c1d0 58%,#d77a9b 100%);opacity:.95}.pink-cherry{position:absolute;z-index:13;left:35%;top:17px;width:15px;height:15px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#f07d89,#a92d45 65%,#681b2b);box-shadow:0 4px 8px rgba(0,0,0,.2)}
 .navy-garnish {
     position:absolute;
     z-index:14;
     left:16px;
-    top:8px;
+    top:10px;
     width:75px;
     height:17px;
     border-radius:70% 30% 70% 30%;
@@ -2009,6 +1954,7 @@ MOOD_CONFIG = {
 
 def cocktail_visual_html(color, fill=100, mini=False):
     height = max(0, min(100, fill))
+    eaten = height < 100
 
     if mini:
         if color == "green":
@@ -2044,7 +1990,7 @@ def cocktail_visual_html(color, fill=100, mini=False):
     if color == "green":
         # 첫 입을 먹으면 아이스크림과 체리가 사라지고 탄산만 남습니다.
         garnish = ""
-        if height >= 100:
+        if not eaten:
             garnish = '<div class="melon-ice-cream"></div><div class="drink-straw"></div><div class="drink-cherry"></div>'
         common = (
             f'<div class="glass soda-glass">'
@@ -2061,9 +2007,7 @@ def cocktail_visual_html(color, fill=100, mini=False):
             f'<div class="glass orange-glass">'
             f'<div class="liquid" style="height:{height}%;"></div>'
             f'<div class="glass-rim"></div>'
-            f'<div class="orange-half one"></div>'
-            f'<div class="orange-half two"></div>'
-            f'<div class="orange-leaf"></div>'
+            + (('<div class="orange-half one"></div><div class="orange-half two"></div><div class="orange-leaf"></div>') if not eaten else '') +
             f'<div class="bubbles"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div>'
             f'<div class="glass-shine"></div>'
             f'</div>'
@@ -2073,8 +2017,7 @@ def cocktail_visual_html(color, fill=100, mini=False):
             f'<div class="glass pink-glass">'
             f'<div class="liquid" style="height:{height}%;"></div>'
             f'<div class="glass-rim"></div>'
-            f'<div class="pink-foam"></div>'
-            f'<div class="pink-cherry"></div>'
+            + (('<div class="pink-foam"></div><div class="pink-cherry"></div>') if not eaten else '') +
             f'<div class="glass-shine"></div>'
             f'</div>'
             f'<div class="glass-foot"></div><div class="glass-base"></div>'
@@ -2084,7 +2027,7 @@ def cocktail_visual_html(color, fill=100, mini=False):
             f'<div class="glass navy-glass">'
             f'<div class="liquid" style="height:{height}%;"></div>'
             f'<div class="glass-rim"></div>'
-            f'<div class="navy-garnish"></div>'
+            + (('<div class="navy-garnish"></div>') if not eaten else '') +
             f'<div class="stars"><span class="s1">✦</span><span class="s2">✧</span><span class="s3">✦</span></div>'
             f'<div class="glass-shine"></div>'
             f'</div>'
@@ -2522,7 +2465,7 @@ def render_fireplace():
         '<div class="wood"></div>'
         '<div class="wood two"></div>'
         '<div class="fire"></div>'
-        '<div class="fire-small"></div>'
+        '<div class="fire-small"></div><div class="fire-core"></div><i class="ember e1"></i><i class="ember e2"></i><i class="ember e3"></i><i class="ember e4"></i>'
         '</div>',
         unsafe_allow_html=True
     )
