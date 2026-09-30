@@ -22,7 +22,7 @@ st.set_page_config(
 # CSS
 # =========================================================
 
-CSS = """"
+CSS = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Noto+Serif+KR:wght@400;500;600&display=swap');
 
@@ -668,49 +668,550 @@ div[data-testid="stButton"] > button:hover {
    COCKTAIL BAR
    ========================================================= */
 .cocktail-header {
-    width: min(1100px, 92vw);
+    width: min(1120px, 92vw);
     margin: 0 auto;
-    padding: 55px 0 30px;
+    padding: 48px 0 28px;
     text-align: center;
 }
-.cocktail-kicker { color:#805c3d; font-family:"Cormorant Garamond",Georgia,serif; letter-spacing:4px; font-size:12px; }
-.cocktail-title { color:#d5a56d; font-family:"Cormorant Garamond",Georgia,serif; font-size:56px; letter-spacing:7px; margin-top:6px; }
-.cocktail-subtitle { color:#96765d; font-family:"Noto Serif KR",serif; font-size:14px; margin-top:8px; }
-.order-slip { min-height:245px; padding:24px 18px; border:1px solid rgba(199,157,109,.3); background:rgba(247,238,219,.045); position:relative; text-align:center; box-shadow:0 15px 35px rgba(0,0,0,.18); }
-.order-slip:before { content:""; position:absolute; inset:8px; border:1px dashed rgba(199,157,109,.16); pointer-events:none; }
-.slip-no { color:#806047; font-family:Georgia,serif; font-size:10px; letter-spacing:2px; }
-.slip-label { color:#e0bd91; font-family:"Noto Serif KR",serif; font-size:17px; margin-top:35px; }
-.slip-drink { color:#c49a70; font-family:"Cormorant Garamond",Georgia,serif; font-size:18px; letter-spacing:2px; margin-top:16px; }
-.slip-desc { color:#92735d; font-family:"Noto Serif KR",serif; font-size:12px; line-height:1.8; margin-top:15px; }
-.selected-order { width:min(850px,92vw); margin:0 auto 30px; text-align:center; }
-.selected-order-small { color:#805c3d; font-family:Georgia,serif; font-size:10px; letter-spacing:3px; }
-.selected-order-title { color:#dcae73; font-family:"Noto Serif KR",serif; font-size:28px; margin-top:7px; }
-.selected-order-sub { color:#96765d; font-family:"Noto Serif KR",serif; font-size:13px; margin-top:5px; }
-.drink-scene { min-height:430px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-.glass { width:210px; height:285px; border:2px solid rgba(226,208,178,.55); border-top:0; border-radius:8px 8px 48px 48px; position:relative; overflow:hidden; background:linear-gradient(90deg,rgba(255,255,255,.10),rgba(255,255,255,.025),rgba(255,255,255,.08)); box-shadow:0 25px 50px rgba(0,0,0,.35), inset 0 0 20px rgba(255,255,255,.05); }
-.glass:after { content:""; position:absolute; left:50%; bottom:-1px; transform:translateX(-50%); width:235px; height:8px; border-radius:50%; border:2px solid rgba(226,208,178,.55); background:transparent; }
-.liquid { position:absolute; bottom:0; left:0; width:100%; opacity:.78; transition:height .35s ease; background:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,0) 15%), #6b394b; }
-.drink-scene.green .liquid { background:#557b56; }
-.drink-scene.orange .liquid { background:#b76731; }
-.drink-scene.navy .liquid { background:#1f304f; }
-.drink-scene.pink .liquid { background:#9a526d; }
-.ice { position:absolute; width:42px; height:42px; border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.12); transform:rotate(17deg); z-index:3; }
-.i1 { top:90px; left:45px; } .i2 { top:120px; right:35px; transform:rotate(-14deg); } .i3 { top:150px; left:90px; transform:rotate(7deg); }
-.glass-shine { position:absolute; z-index:4; top:20px; left:27px; width:18px; height:205px; border-radius:50%; background:rgba(255,255,255,.10); filter:blur(2px); }
-.drink-name { color:#dcae73; font-family:"Cormorant Garamond",Georgia,serif; letter-spacing:3px; font-size:17px; margin-top:22px; }
-.drink-state { color:#896951; font-family:Georgia,serif; font-size:10px; letter-spacing:3px; margin-top:6px; }
-.concierge-card { margin-top:45px; padding:38px 32px; border:1px solid rgba(199,157,109,.25); background:rgba(247,238,219,.045); box-shadow:0 20px 45px rgba(0,0,0,.22); }
-.concierge-label { color:#805c3d; font-family:Georgia,serif; font-size:11px; letter-spacing:3px; }
-.concierge-title { color:#dcae73; font-family:"Noto Serif KR",serif; font-size:22px; line-height:1.7; margin-top:15px; }
-.concierge-copy { color:#96765d; font-family:"Noto Serif KR",serif; font-size:13px; line-height:2; margin-top:18px; }
-.recommendation-title { color:#dca072; font-family:"Cormorant Garamond",Georgia,serif; font-size:30px; letter-spacing:4px; margin:45px 0 5px; text-align:center; }
-.ai-note { color:#76563e; font-family:Georgia,serif; font-size:10px; letter-spacing:2px; text-align:center; margin-bottom:18px; }
+.cocktail-kicker {
+    color:#806047;
+    font-family:"Cormorant Garamond",Georgia,serif;
+    letter-spacing:4px;
+    font-size:12px;
+    line-height:1.4;
+}
+.cocktail-title {
+    color:#d5a56d;
+    font-family:"Cormorant Garamond",Georgia,serif;
+    font-size:56px;
+    letter-spacing:7px;
+    line-height:1.05;
+    margin-top:8px;
+}
+.cocktail-subtitle {
+    color:#96765d;
+    font-family:"Noto Serif KR",serif;
+    font-size:14px;
+    line-height:1.9;
+    margin:12px auto 0;
+    max-width:650px;
+}
+.order-slip {
+    min-height:330px;
+    padding:22px 18px 18px;
+    border:1px solid rgba(199,157,109,.3);
+    background:linear-gradient(180deg, rgba(247,238,219,.065), rgba(247,238,219,.025));
+    position:relative;
+    text-align:center;
+    box-shadow:0 15px 35px rgba(0,0,0,.18);
+    overflow:hidden;
+}
+.order-slip:before {
+    content:"";
+    position:absolute;
+    inset:8px;
+    border:1px dashed rgba(199,157,109,.16);
+    pointer-events:none;
+}
+.slip-no {
+    color:#806047;
+    font-family:Georgia,serif;
+    font-size:10px;
+    letter-spacing:2px;
+}
+.slip-label {
+    color:#e0bd91;
+    font-family:"Noto Serif KR",serif;
+    font-size:16px;
+    line-height:1.5;
+    margin-top:16px;
+}
+.slip-drink {
+    color:#c49a70;
+    font-family:"Cormorant Garamond",Georgia,serif;
+    font-size:15px;
+    letter-spacing:2px;
+    margin-top:7px;
+}
+.slip-desc {
+    color:#92735d;
+    font-family:"Noto Serif KR",serif;
+    font-size:11px;
+    line-height:1.8;
+    margin:8px auto 0;
+    max-width:190px;
+}
+.mini-drink {
+    position:relative;
+    width:88px;
+    height:112px;
+    margin:18px auto 2px;
+}
+.mini-glass {
+    position:absolute;
+    left:12px;
+    bottom:3px;
+    width:64px;
+    height:84px;
+    border:1.5px solid rgba(240,228,211,.58);
+    border-top:0;
+    border-radius:5px 5px 19px 19px;
+    overflow:hidden;
+    background:linear-gradient(90deg, rgba(255,255,255,.10), rgba(255,255,255,.02), rgba(255,255,255,.08));
+    box-shadow:0 10px 18px rgba(0,0,0,.22), inset 0 0 8px rgba(255,255,255,.06);
+}
+.mini-liquid {
+    position:absolute;
+    inset:auto 0 0 0;
+    height:66%;
+    opacity:.88;
+}
+.mini-pink .mini-liquid { background:linear-gradient(180deg,#da93aa,#a94f70); }
+.mini-green .mini-liquid { background:linear-gradient(180deg,#84d38a,#49a968); }
+.mini-orange .mini-liquid { background:linear-gradient(180deg,#ffc06a,#ef761b); }
+.mini-navy .mini-liquid { background:linear-gradient(180deg,#4969a0,#1d274f); }
+.mini-ice {
+    position:absolute;
+    width:19px;
+    height:19px;
+    border:1px solid rgba(255,255,255,.28);
+    background:rgba(255,255,255,.13);
+    transform:rotate(12deg);
+}
+.mini-ice.a { top:34px; left:12px; }
+.mini-ice.b { top:42px; right:10px; transform:rotate(-14deg); }
+.mini-scoop {
+    position:absolute;
+    z-index:4;
+    left:24px;
+    top:2px;
+    width:42px;
+    height:35px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 28%, #fffdf2 0%, #fff3d3 55%, #e5d2aa 100%);
+    box-shadow:0 5px 10px rgba(0,0,0,.2);
+}
+.mini-straw {
+    position:absolute;
+    z-index:5;
+    right:20px;
+    top:0;
+    width:3px;
+    height:58px;
+    background:#e9a0a8;
+    transform:rotate(16deg);
+    transform-origin:bottom center;
+    border-radius:3px;
+}
+.mini-cherry {
+    position:absolute;
+    z-index:6;
+    left:18px;
+    top:3px;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#b63f4e;
+    box-shadow:0 0 0 2px rgba(255,255,255,.12);
+}
+.mini-citrus {
+    position:absolute;
+    z-index:6;
+    right:6px;
+    top:8px;
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    background:radial-gradient(circle, #ffe2a0 0 33%, #f5a33f 35% 72%, #fff0c9 74% 82%, #df7d20 84%);
+}
+.mini-moon {
+    position:absolute;
+    z-index:6;
+    left:23px;
+    top:20px;
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    box-shadow:0 0 18px rgba(121,153,225,.55);
+    background:radial-gradient(circle at 36% 30%, #96aedd, #334b83 58%, #1a2448 100%);
+}
+.selected-order {
+    width:min(900px,92vw);
+    margin:0 auto 14px;
+    text-align:center;
+}
+.selected-order-small {
+    color:#805c3d;
+    font-family:Georgia,serif;
+    font-size:10px;
+    letter-spacing:3px;
+    line-height:1.4;
+}
+.selected-order-title {
+    color:#dcae73;
+    font-family:"Noto Serif KR",serif;
+    font-size:28px;
+    line-height:1.45;
+    margin-top:5px;
+}
+.selected-order-sub {
+    color:#96765d;
+    font-family:"Noto Serif KR",serif;
+    font-size:13px;
+    line-height:1.8;
+    margin-top:2px;
+}
+.drink-stage {
+    min-height:600px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:8px 0 14px;
+}
+.drink-visual {
+    position:relative;
+    width:300px;
+    height:430px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+.glass {
+    position:relative;
+    width:190px;
+    height:270px;
+    margin-top:22px;
+    border:2px solid rgba(226,208,178,.57);
+    border-top:0;
+    border-radius:10px 10px 52px 52px;
+    overflow:visible;
+    background:linear-gradient(90deg,rgba(255,255,255,.11),rgba(255,255,255,.025),rgba(255,255,255,.09));
+    box-shadow:0 28px 55px rgba(0,0,0,.35), inset 0 0 20px rgba(255,255,255,.05);
+}
+.glass .liquid {
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    border-radius:0 0 48px 48px;
+    transition:height .4s ease;
+    opacity:.9;
+    overflow:hidden;
+}
+.glass .liquid:after {
+    content:"";
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle at 20% 28%, rgba(255,255,255,.28) 0 1px, transparent 2px), radial-gradient(circle at 68% 45%, rgba(255,255,255,.18) 0 1px, transparent 2px), radial-gradient(circle at 48% 70%, rgba(255,255,255,.16) 0 1px, transparent 2px);
+    background-size:40px 45px, 52px 55px, 64px 62px;
+    opacity:.6;
+}
+.drink-scene.green .liquid { background:linear-gradient(180deg,#a4ec9d 0%,#68ca79 46%,#3ca45f 100%); }
+.drink-scene.orange .liquid { background:linear-gradient(180deg,#ffd98f 0%,#ffad3c 42%,#f17b19 100%); }
+.drink-scene.pink .liquid { background:linear-gradient(180deg,#f4b1c0 0%,#dc7f9b 42%,#b24e76 100%); }
+.drink-scene.navy .liquid { background:linear-gradient(180deg,#708dc4 0%,#40598f 40%,#202c59 100%); }
+.glass-shine {
+    position:absolute;
+    z-index:9;
+    top:25px;
+    left:28px;
+    width:18px;
+    height:205px;
+    border-radius:50%;
+    background:rgba(255,255,255,.14);
+    filter:blur(2px);
+    pointer-events:none;
+}
+.glass-rim {
+    position:absolute;
+    z-index:10;
+    left:-1px;
+    right:-1px;
+    top:-1px;
+    height:17px;
+    border:2px solid rgba(236,226,214,.58);
+    border-radius:50%;
+    background:rgba(255,255,255,.03);
+    box-shadow:0 2px 7px rgba(0,0,0,.16);
+}
+.glass-foot {
+    position:absolute;
+    left:50%;
+    bottom:-35px;
+    width:3px;
+    height:38px;
+    transform:translateX(-50%);
+    background:rgba(226,208,178,.55);
+}
+.glass-base {
+    position:absolute;
+    left:50%;
+    bottom:-43px;
+    width:112px;
+    height:10px;
+    transform:translateX(-50%);
+    border:2px solid rgba(226,208,178,.55);
+    border-radius:50%;
+}
+.drink-scene.green .glass {
+    width:174px;
+    height:285px;
+    border-radius:5px 5px 38px 38px;
+}
+.drink-scene.green .glass-foot,
+.drink-scene.green .glass-base { display:block; }
+.drink-scene.orange .glass {
+    width:220px;
+    height:220px;
+    margin-top:45px;
+    border-radius:11px 11px 56px 56px;
+}
+.drink-scene.orange .glass-foot,
+.drink-scene.orange .glass-base { display:none; }
+.drink-scene.pink .glass {
+    width:225px;
+    height:170px;
+    margin-top:58px;
+    border-radius:0 0 110px 110px;
+    transform:perspective(200px) rotateX(-3deg);
+}
+.drink-scene.pink .glass-foot,
+.drink-scene.pink .glass-base { display:block; }
+.drink-scene.navy .glass {
+    width:230px;
+    height:205px;
+    margin-top:44px;
+    border-radius:12px 12px 46px 46px;
+}
+.drink-scene.navy .glass-foot,
+.drink-scene.navy .glass-base { display:none; }
+.melon-ice-cream {
+    position:absolute;
+    z-index:12;
+    top:-35px;
+    left:50%;
+    width:98px;
+    height:72px;
+    transform:translateX(-50%);
+    border-radius:54% 54% 45% 45%;
+    background:radial-gradient(circle at 34% 24%, #fffef7 0%, #fff2d0 55%, #dfcca2 100%);
+    box-shadow:0 8px 16px rgba(0,0,0,.24);
+}
+.melon-ice-cream:after {
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:-4px;
+    width:65px;
+    height:12px;
+    transform:translateX(-50%);
+    border-radius:50%;
+    background:rgba(218,194,150,.55);
+}
+.drink-straw {
+    position:absolute;
+    z-index:13;
+    top:-56px;
+    left:63%;
+    width:4px;
+    height:112px;
+    border-radius:4px;
+    background:linear-gradient(180deg,#ec8f9c,#dd5f76);
+    transform:rotate(12deg);
+    transform-origin:bottom center;
+}
+.drink-cherry {
+    position:absolute;
+    z-index:14;
+    top:-45px;
+    left:38%;
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    background:radial-gradient(circle at 30% 25%, #e77c83, #ae3147 62%, #762033 100%);
+    box-shadow:0 4px 8px rgba(0,0,0,.2);
+}
+.drink-cherry:after {
+    content:"";
+    position:absolute;
+    width:30px;
+    height:22px;
+    top:-16px;
+    left:9px;
+    border-top:2px solid #6b8156;
+    border-radius:50%;
+    transform:rotate(28deg);
+}
+.orange-slice {
+    position:absolute;
+    z-index:14;
+    width:66px;
+    height:66px;
+    border-radius:50%;
+    background:radial-gradient(circle, #ffe8a6 0 40%, #ffb74c 42% 70%, #f47b20 72% 86%, #fff1c6 88% 92%, #df6b17 94%);
+    box-shadow:0 7px 15px rgba(0,0,0,.2);
+}
+.orange-slice.one { right:20px; top:-9px; transform:rotate(16deg); }
+.orange-slice.two { left:22px; bottom:20px; width:42px; height:42px; opacity:.92; transform:rotate(-15deg); }
+.orange-leaf {
+    position:absolute;
+    z-index:14;
+    left:37px;
+    top:-22px;
+    width:42px;
+    height:22px;
+    border-radius:100% 0 100% 0;
+    background:linear-gradient(135deg,#7eac58,#406b40);
+    transform:rotate(-20deg);
+}
+.melon-straw-line {
+    position:absolute;
+    z-index:15;
+    left:50%;
+    top:-52px;
+    width:4px;
+    height:150px;
+    border-radius:4px;
+    background:linear-gradient(180deg,#f3c67a,#db8b41);
+    transform:translateX(-50%) rotate(-13deg);
+    transform-origin:bottom center;
+}
+.bubbles {
+    position:absolute;
+    z-index:11;
+    inset:0;
+    pointer-events:none;
+}
+.bubbles span { position:absolute; border-radius:50%; background:rgba(255,255,255,.35); box-shadow:0 0 7px rgba(255,255,255,.24); }
+.bubbles .b1 { width:7px; height:7px; left:28%; top:33%; }
+.bubbles .b2 { width:4px; height:4px; left:42%; top:26%; }
+.bubbles .b3 { width:6px; height:6px; left:63%; top:43%; }
+.bubbles .b4 { width:3px; height:3px; left:73%; top:30%; }
+.navy-garnish {
+    position:absolute;
+    z-index:14;
+    left:16px;
+    top:8px;
+    width:75px;
+    height:17px;
+    border-radius:70% 30% 70% 30%;
+    background:linear-gradient(90deg,#f8e3a2,#f3b54e);
+    transform:rotate(-17deg);
+    box-shadow:0 6px 13px rgba(0,0,0,.2);
+}
+.navy-garnish:after {
+    content:"";
+    position:absolute;
+    width:28px;
+    height:7px;
+    left:11px;
+    top:5px;
+    border-radius:50%;
+    background:#fff1bd;
+}
+.stars { position:absolute; inset:0; z-index:13; pointer-events:none; }
+.stars span { position:absolute; color:rgba(220,229,255,.75); font-size:16px; text-shadow:0 0 12px rgba(160,187,255,.8); }
+.stars .s1 { top:35px; left:34px; }
+.stars .s2 { top:75px; right:44px; font-size:12px; }
+.stars .s3 { bottom:43px; left:62px; font-size:11px; }
+.drink-name {
+    color:#dcae73;
+    font-family:"Cormorant Garamond",Georgia,serif;
+    letter-spacing:3px;
+    font-size:18px;
+    line-height:1.3;
+    margin-top:66px;
+    text-align:center;
+}
+.drink-state {
+    color:#896951;
+    font-family:Georgia,serif;
+    font-size:10px;
+    letter-spacing:3px;
+    margin-top:6px;
+    text-align:center;
+}
+.concierge-card {
+    padding:25px 26px 23px;
+    border:1px solid rgba(199,157,109,.25);
+    background:linear-gradient(180deg, rgba(247,238,219,.065), rgba(247,238,219,.025));
+    box-shadow:0 20px 45px rgba(0,0,0,.22);
+    margin-bottom:18px;
+}
+.concierge-label {
+    color:#805c3d;
+    font-family:Georgia,serif;
+    font-size:11px;
+    letter-spacing:3px;
+    line-height:1.4;
+}
+.concierge-title {
+    color:#dcae73;
+    font-family:"Noto Serif KR",serif;
+    font-size:21px;
+    line-height:1.75;
+    margin-top:10px;
+}
+.concierge-copy {
+    color:#96765d;
+    font-family:"Noto Serif KR",serif;
+    font-size:12px;
+    line-height:1.9;
+    margin-top:12px;
+}
+.compact-recommendations {
+    max-height:510px;
+    overflow-y:auto;
+    padding-right:5px;
+}
+.compact-recommendation {
+    border-top:1px solid rgba(199,157,109,.16);
+    padding:13px 0 14px;
+}
+.compact-recommendation:first-child { border-top:0; }
+.compact-rec-title {
+    color:#e0bd91;
+    font-family:"Cormorant Garamond",Georgia,serif;
+    font-size:18px;
+    line-height:1.4;
+}
+.compact-rec-meta {
+    color:#9c7b63;
+    font-family:"Noto Serif KR",serif;
+    font-size:11px;
+    line-height:1.7;
+    margin-top:2px;
+}
+.recommendation-title {
+    color:#dca072;
+    font-family:"Cormorant Garamond",Georgia,serif;
+    font-size:25px;
+    letter-spacing:4px;
+    margin:2px 0 7px;
+}
+.ai-note {
+    color:#76563e;
+    font-family:Georgia,serif;
+    font-size:9px;
+    letter-spacing:2px;
+    margin-bottom:5px;
+}
+.drink-controls {
+    width:min(340px, 90vw);
+    margin:0 auto;
+}
+
+@media (max-width: 1050px) {
+    .cocktail-title { font-size:48px; }
+    .drink-stage { min-height:520px; }
+}
 
 @media (max-width: 900px) {
     .cocktail-title { font-size:42px; }
     .cocktail-header { padding-top:30px; }
-    .glass { width:175px; height:240px; }
-    .drink-scene { min-height:360px; }
+    .drink-stage { min-height:430px; }
+    .drink-visual { transform:scale(.9); transform-origin:center; margin-bottom:-18px; }
 }
 
 @media (max-width: 700px) {
@@ -719,10 +1220,12 @@ div[data-testid="stButton"] > button:hover {
     .section-title { font-size:38px; }
     .cocktail-title { font-size:34px; letter-spacing:4px; }
     .cocktail-subtitle { padding:0 20px; }
-    .order-slip { min-height:190px; margin-bottom:10px; }
-    .slip-label { margin-top:20px; font-size:15px; }
+    .order-slip { min-height:285px; margin-bottom:10px; }
+    .slip-label { margin-top:15px; font-size:15px; }
     .letter-paper { padding:50px 35px; min-height:auto; }
     .letter-body { font-size:15px; }
+    .drink-visual { transform:scale(.82); margin-bottom:-35px; }
+    .drink-stage { min-height:380px; padding-bottom:0; }
 }
 </style>
 """
@@ -999,6 +1502,87 @@ def apple_lookup(params):
     except Exception:
         return {"resultCount": 0, "results": []}
 
+# =========================================================
+# KOREA POPULAR CHART
+# =========================================================
+
+@st.cache_data(ttl=900, show_spinner=False)
+def korea_top_chart():
+    """Apple Music 대한민국 Top 100을 받아 검색 결과의 인기순 정렬에 사용합니다."""
+    urls = [
+        "https://rss.applemarketingtools.com/api/v2/kr/music/most-played/100/songs.json",
+        "https://itunes.apple.com/kr/rss/topsongs/limit=100/json",
+    ]
+
+    for url in urls:
+        try:
+            request = urllib.request.Request(
+                url,
+                headers={"User-Agent": "record-room/1.0"}
+            )
+            with urllib.request.urlopen(request, timeout=12) as response:
+                data = json.loads(response.read().decode("utf-8"))
+
+            results = data.get("feed", {}).get("results", [])
+            if not results:
+                results = data.get("results", [])
+
+            if results:
+                return results[:100]
+        except Exception:
+            continue
+
+    return []
+
+
+def artist_names_equivalent(name_a, name_b):
+    na = normalize(name_a)
+    nb = normalize(name_b)
+    if not na or not nb:
+        return False
+    if na == nb:
+        return True
+
+    for key, aliases in ARTIST_ALIASES.items():
+        group = {normalize(key)}
+        group.update(normalize(alias) for alias in aliases)
+        if na in group and nb in group:
+            return True
+
+    return False
+
+
+def korea_chart_rank(track):
+    title = normalize(track.get("trackName") or track.get("name") or "")
+    artist = track.get("artistName", "")
+    if not title:
+        return 9999
+
+    for rank, item in enumerate(korea_top_chart(), start=1):
+        chart_title = normalize(item.get("name") or item.get("trackName") or "")
+        chart_artist = item.get("artistName", "")
+        if chart_title == title and artist_names_equivalent(artist, chart_artist):
+            return rank
+
+    return 9999
+
+
+def popularity_sort_key(track):
+    chart_rank = korea_chart_rank(track)
+    release_date = track.get("releaseDate", "") or ""
+    release_score = 0
+    if release_date:
+        try:
+            release_score = -int(release_date[:10].replace("-", ""))
+        except Exception:
+            release_score = 0
+    return (0 if chart_rank < 9999 else 1, chart_rank, release_score)
+
+
+def rank_by_korea_popularity(results, limit=None):
+    ranked = sorted(results, key=popularity_sort_key)
+    return ranked[:limit] if limit else ranked
+
 def normalize(text):
     if not text:
         return ""
@@ -1045,6 +1629,24 @@ ARTIST_ALIASES = {
     "악뮤": ["AKMU", "악동뮤지션"],
     "akmu": ["악뮤", "AKMU"],
 }
+
+PREFERRED_ARTIST_NAMES = {
+    "아이유": ["아이유", "IU"],
+    "iu": ["아이유", "IU"],
+    "지코": ["ZICO", "지코"],
+    "zico": ["ZICO", "지코"],
+    "뉴진스": ["NewJeans", "뉴진스"],
+    "newjeans": ["NewJeans", "뉴진스"],
+    "보이넥스트도어": ["BOYNEXTDOOR", "보이넥스트도어"],
+    "boynextdoor": ["BOYNEXTDOOR", "보이넥스트도어"],
+    "방탄소년단": ["BTS", "방탄소년단"],
+    "bts": ["BTS", "방탄소년단"],
+    "블랙핑크": ["BLACKPINK", "블랙핑크"],
+    "blackpink": ["BLACKPINK", "블랙핑크"],
+    "에스파": ["aespa", "에스파"],
+    "aespa": ["aespa", "에스파"],
+}
+
 
 SONG_ALIASES = {
     "러브 윈즈 올": ["Love wins all"],
@@ -1128,14 +1730,27 @@ def find_artist_tracks(query):
     if not candidates:
         return []
 
-    # 원래 검색어 → 별칭 → 부분 일치 순서로 정확도를 높입니다.
+    # 원래 검색어 → 공식/대표 표기 → 별칭 → 부분 일치 순서로 정확도를 높입니다.
     selected = None
-    exact = [
-        artist for artist in candidates
-        if normalize(artist.get("artistName", "")) == nq
-    ]
-    if exact:
-        selected = exact[0]
+
+    preferred_names = PREFERRED_ARTIST_NAMES.get(lower := query.lower(), [])
+    preferred_normalized = [normalize(name) for name in preferred_names]
+
+    if preferred_normalized:
+        preferred = [
+            artist for artist in candidates
+            if normalize(artist.get("artistName", "")) in preferred_normalized
+        ]
+        if preferred:
+            selected = preferred[0]
+
+    if selected is None:
+        exact = [
+            artist for artist in candidates
+            if normalize(artist.get("artistName", "")) == nq
+        ]
+        if exact:
+            selected = exact[0]
 
     if selected is None:
         for alias in search_terms[1:]:
@@ -1181,7 +1796,10 @@ def find_artist_tracks(query):
                     continue
                 all_tracks.append(item)
 
-    return all_tracks
+    # 대한민국에서 현재 많이 듣는 곡을 먼저 보여주고,
+    # 그 뒤에 최신 발매곡을 보완합니다. 그래서 "아이유"처럼
+    # 동명이인의 듣보 아티스트가 검색 상단을 차지하는 문제를 줄입니다.
+    return rank_by_korea_popularity(all_tracks, limit=30)
 
 
 # =========================================================
@@ -1227,7 +1845,7 @@ def find_song(query):
             if normalize(result.get("trackName", "")) == nt
         ]
         if exact:
-            return exact[:30]
+            return rank_by_korea_popularity(exact, limit=30)
 
     # 제목에 검색어가 포함되는 결과
     partial = []
@@ -1249,7 +1867,7 @@ def find_song(query):
         seen.add(track_id)
         unique.append(result)
 
-    return unique[:30]
+    return rank_by_korea_popularity(unique, limit=30)
 
 
 # =========================================================
@@ -1306,6 +1924,86 @@ MOOD_CONFIG = {
         "fallback": ["Korean indie acoustic", "Korean chill R&B", "Korean lo-fi", "Korean soft pop"],
     },
 }
+
+
+def cocktail_visual_html(color, fill=100, mini=False):
+    height = max(0, min(100, fill))
+
+    if mini:
+        garnish = ""
+        extras = '<div class="mini-ice a"></div><div class="mini-ice b"></div>'
+        if color == "green":
+            extras = '<div class="mini-scoop"></div><div class="mini-cherry"></div><div class="mini-straw"></div>'
+        elif color == "orange":
+            extras = '<div class="mini-citrus"></div>'
+        elif color == "navy":
+            extras = '<div class="mini-moon"></div>'
+        return (
+            f'<div class="mini-drink mini-{color}">'
+            f'<div class="mini-glass"><div class="mini-liquid" style="height:{height}%;"></div>'
+            f'{extras}</div></div>'
+        )
+
+    common = (
+        f'<div class="glass">'
+        f'<div class="liquid" style="height:{height}%;"></div>'
+        f'<div class="glass-rim"></div>'
+        f'<div class="glass-shine"></div>'
+        f'</div>'
+    )
+
+    if color == "green":
+        common = (
+            f'<div class="glass">'
+            f'<div class="liquid" style="height:{height}%;"></div>'
+            f'<div class="glass-rim"></div>'
+            f'<div class="bubbles"><span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="b4"></span></div>'
+            f'<div class="melon-ice-cream"></div>'
+            f'<div class="drink-straw"></div>'
+            f'<div class="drink-cherry"></div>'
+            f'<div class="glass-shine"></div>'
+            f'</div>'
+            f'<div class="glass-foot"></div><div class="glass-base"></div>'
+        )
+    elif color == "orange":
+        common = (
+            f'<div class="glass">'
+            f'<div class="liquid" style="height:{height}%;"></div>'
+            f'<div class="glass-rim"></div>'
+            f'<div class="orange-slice one"></div>'
+            f'<div class="orange-slice two"></div>'
+            f'<div class="orange-leaf"></div>'
+            f'<div class="bubbles"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div>'
+            f'<div class="glass-shine"></div>'
+            f'</div>'
+        )
+    elif color == "pink":
+        common = (
+            f'<div class="glass">'
+            f'<div class="liquid" style="height:{height}%;"></div>'
+            f'<div class="glass-rim"></div>'
+            f'<div class="drink-cherry"></div>'
+            f'<div class="glass-shine"></div>'
+            f'</div>'
+            f'<div class="glass-foot"></div><div class="glass-base"></div>'
+        )
+    elif color == "navy":
+        common = (
+            f'<div class="glass">'
+            f'<div class="liquid" style="height:{height}%;"></div>'
+            f'<div class="glass-rim"></div>'
+            f'<div class="navy-garnish"></div>'
+            f'<div class="stars"><span class="s1">✦</span><span class="s2">✧</span><span class="s3">✦</span></div>'
+            f'<div class="glass-shine"></div>'
+            f'</div>'
+        )
+
+    return (
+        f'<div class="drink-visual drink-scene {color}">'
+        f'{common}'
+        f'</div>'
+    )
+
 
 
 def get_openai_key():
@@ -1408,8 +2106,13 @@ def get_ai_recommendations(mood_key):
             if track_id and any(x.get("trackId") == track_id for x in results):
                 continue
             results.append(item)
-            if len(results) >= 8:
-                return results, used_ai
+            if len(results) >= 12:
+                break
+        if len(results) >= 12:
+            break
+
+    if results:
+        return rank_by_korea_popularity(results, limit=8), used_ai
 
     # KR 검색이 부족하면 US 검색도 보완합니다.
     for term in terms:
@@ -1427,10 +2130,12 @@ def get_ai_recommendations(mood_key):
             if track_id and any(x.get("trackId") == track_id for x in results):
                 continue
             results.append(item)
-            if len(results) >= 8:
-                return results, used_ai
+            if len(results) >= 12:
+                break
+        if len(results) >= 12:
+            break
 
-    return results, used_ai
+    return rank_by_korea_popularity(results, limit=8), used_ai
 
 # =========================================================
 # RECORD HELPERS
@@ -2050,13 +2755,15 @@ elif st.session_state.page == "choice":
             mood_cols = st.columns(4, gap="medium")
             for col, (key, config) in zip(mood_cols, MOOD_CONFIG.items()):
                 with col:
+                    mini_visual = cocktail_visual_html(config["color"], mini=True)
                     st.markdown(
                         f'<div class="order-slip {config["color"]}">'
                         f'<div class="slip-no">ORDER NO. {list(MOOD_CONFIG).index(key)+1:02d}</div>'
                         f'<div class="slip-label">{config["label"]}</div>'
-                        f'<div class="slip-drink">{config["drink"]}</div>'
-                        f'<div class="slip-desc">{config["description"]}</div>'
-                        '</div>',
+                        + mini_visual
+                        + f'<div class="slip-drink">{config["drink"]}</div>'
+                        + f'<div class="slip-desc">{config["description"]}</div>'
+                        + '</div>',
                         unsafe_allow_html=True
                     )
                     if st.button("ORDER THIS", key=f"order_mood_{key}", use_container_width=True):
@@ -2080,20 +2787,31 @@ elif st.session_state.page == "choice":
                 unsafe_allow_html=True
             )
 
-            drink_col, info_col = st.columns([1.15, 1], gap="large")
+            # 추천은 음료를 고르는 즉시 불러오고, 화면 오른쪽에 고정해서 보여줍니다.
+            if not st.session_state.cocktail_recommendations:
+                with st.spinner("CONCIERGE IS CHOOSING RECORDS..."):
+                    recs, used_ai = get_ai_recommendations(mood_key)
+                st.session_state.cocktail_recommendations = recs
+                st.session_state.cocktail_ai_used = used_ai
+
+            recs = st.session_state.cocktail_recommendations
+
+            drink_col, info_col = st.columns([1.02, 1.28], gap="large", vertical_alignment="top")
+
             with drink_col:
                 st.markdown(
-                    f'<div class="drink-scene {config["color"]}">'
-                    f'<div class="glass">'
-                    f'<div class="liquid" style="height:{fill}%;"></div>'
-                    f'<div class="ice i1"></div><div class="ice i2"></div><div class="ice i3"></div>'
-                    f'<div class="glass-shine"></div></div>'
-                    f'<div class="drink-name">{config["drink"]}</div>'
-                    f'<div class="drink-state">{("FULL" if sips == 0 else f"{fill}% REMAINING")}</div>'
-                    '</div>',
+                    cocktail_visual_html(config["color"], fill=fill),
                     unsafe_allow_html=True
                 )
-                sip_col, refill_col = st.columns(2)
+
+                st.markdown(
+                    f'<div class="drink-name">{config["drink"]}</div>'
+                    f'<div class="drink-state">{("FULL" if sips == 0 else f"{fill}% REMAINING")}</div>',
+                    unsafe_allow_html=True
+                )
+
+                st.write("")
+                sip_col, refill_col = st.columns(2, gap="small")
                 with sip_col:
                     if st.button("TAKE A SIP", key="take_sip", use_container_width=True):
                         if sips < 6:
@@ -2108,53 +2826,60 @@ elif st.session_state.page == "choice":
                 st.markdown(
                     '<div class="concierge-card">'
                     '<div class="concierge-label">NIGHT CONCIERGE</div>'
-                    '<div class="concierge-title">당신의 밤에 어울리는<br>음악을 찾고 있어요.</div>'
-                    '<div class="concierge-copy">AI가 선택한 분위기와 장르를 바탕으로 실제 Apple 음악 카탈로그에서 들을 수 있는 곡을 찾아옵니다.</div>'
+                    '<div class="concierge-title">오늘의 한 잔 옆에<br>어울리는 레코드를 골랐어요.</div>'
+                    '<div class="concierge-copy">현재 대한민국에서 인기 있는 음악을 우선으로, 선택한 기분과 장르에 맞는 실제 Apple 음악 카탈로그의 곡을 골라옵니다.</div>'
                     '</div>',
                     unsafe_allow_html=True
                 )
 
-                if not st.session_state.cocktail_recommendations:
-                    with st.spinner("CONCIERGE IS CHOOSING RECORDS..."):
-                        recs, used_ai = get_ai_recommendations(mood_key)
-                    st.session_state.cocktail_recommendations = recs
-                    st.session_state.cocktail_ai_used = used_ai
-                    st.rerun()
-
-            recs = st.session_state.cocktail_recommendations
-            if recs:
                 st.markdown(
                     '<div class="recommendation-title">TONIGHT\'S RECORDS</div>',
                     unsafe_allow_html=True
                 )
                 if st.session_state.get("cocktail_ai_used", False):
-                    st.markdown('<div class="ai-note">AI CONCIERGE · MOOD MATCHED</div>', unsafe_allow_html=True)
+                    st.markdown('<div class="ai-note">AI CONCIERGE · MOOD MATCHED · KOREA POPULAR FIRST</div>', unsafe_allow_html=True)
                 else:
-                    st.markdown('<div class="ai-note">CONCIERGE · FALLBACK MUSIC MENU</div>', unsafe_allow_html=True)
+                    st.markdown('<div class="ai-note">CONCIERGE · FALLBACK MENU · KOREA POPULAR FIRST</div>', unsafe_allow_html=True)
 
-                for index, result in enumerate(recs):
-                    artwork = result.get("artworkUrl100", "")
-                    track = escape(result.get("trackName", "제목 없음"))
-                    artist = escape(result.get("artistName", "아티스트 없음"))
-                    album = escape(result.get("collectionName", "앨범 정보 없음"))
-                    with st.container(border=True):
-                        image_col, text_col, action_col = st.columns([1, 4, 1.4], vertical_alignment="center")
-                        with image_col:
-                            if artwork:
-                                st.image(artwork, width=90)
-                        with text_col:
-                            st.markdown(f'<div class="result-name">{track}</div>', unsafe_allow_html=True)
-                            st.markdown(f'<div class="result-meta">{artist}<br>{album}</div>', unsafe_allow_html=True)
+                if recs:
+                    for index, result in enumerate(recs[:5]):
+                        artwork = result.get("artworkUrl100", "")
+                        track = escape(result.get("trackName", "제목 없음"))
+                        artist = escape(result.get("artistName", "아티스트 없음"))
+                        album = escape(result.get("collectionName", "앨범 정보 없음"))
+
+                        with st.container(border=True):
+                            image_col, text_col = st.columns([0.8, 3.4], gap="small", vertical_alignment="center")
+                            with image_col:
+                                if artwork:
+                                    st.image(artwork, width=68)
+                            with text_col:
+                                st.markdown(
+                                    f'<div class="compact-rec-title">{track}</div>'
+                                    f'<div class="compact-rec-meta">{artist}<br>{album}</div>',
+                                    unsafe_allow_html=True
+                                )
+
                             if result.get("previewUrl"):
                                 st.audio(result["previewUrl"])
-                        with action_col:
-                            if st.button("TAKE TO MY ROOM", key=f"cocktail_take_{index}_{result.get('trackId')}", use_container_width=True):
+
+                            if st.button(
+                                "TAKE TO MY ROOM",
+                                key=f"cocktail_take_{index}_{result.get('trackId')}",
+                                use_container_width=True
+                            ):
                                 add_to_room(result)
                                 st.session_state.my_room_view = "lp"
                                 st.session_state.page = "my_room"
                                 st.rerun()
-            else:
-                st.markdown('<div class="no-result">오늘 밤에 맞는 레코드를 찾지 못했어요.<br>다시 주문하면 다른 메뉴를 찾아볼게요.</div>', unsafe_allow_html=True)
+                else:
+                    st.markdown(
+                        '<div class="no-result" style="margin-top:20px;">'
+                        '오늘 밤에 맞는 레코드를 찾지 못했어요.<br>'
+                        '다시 주문하면 다른 메뉴를 찾아볼게요.'
+                        '</div>',
+                        unsafe_allow_html=True
+                    )
 
             st.write("")
             back_col, reset_col = st.columns(2)
