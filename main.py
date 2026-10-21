@@ -1501,6 +1501,50 @@ div[data-testid="stButton"] > button:hover {
     .drink-visual { transform:scale(.82); margin-bottom:-35px; }
     .drink-stage { min-height:380px; padding-bottom:0; }
 }
+/* Final visual spacing and cocktail refinement */
+.order-slip {
+    min-height: 372px !important;
+    padding: 27px 18px 24px !important;
+    margin-bottom: 18px !important;
+    background: linear-gradient(145deg, rgba(255,244,229,.095), rgba(69,42,30,.34) 48%, rgba(16,10,8,.34)) !important;
+    border-color: rgba(220,177,128,.42) !important;
+}
+.order-slip div[data-testid="stButton"] { margin-top: 18px !important; }
+.order-slip div[data-testid="stButton"] > button {
+    min-height: 48px !important;
+    margin-top: 0 !important;
+    letter-spacing: 3px !important;
+    background: linear-gradient(135deg, rgba(105,68,43,.26), rgba(28,17,13,.66)) !important;
+}
+.cocktail-header { padding: 26px 0 34px !important; }
+.cocktail-subtitle { margin-top: 15px !important; line-height: 2 !important; }
+.mini-drink { margin-top: 25px !important; margin-bottom: 15px !important; transform: scale(1.12); }
+.slip-drink { margin-top: 15px !important; }
+.slip-desc { margin-top: 12px !important; line-height: 2 !important; }
+.drink-visual { filter: drop-shadow(0 24px 28px rgba(0,0,0,.32)) !important; }
+.glass {
+    backdrop-filter: blur(3px) !important;
+    border-color: rgba(255,245,232,.82) !important;
+    box-shadow: 0 28px 54px rgba(0,0,0,.28), inset 10px 0 17px rgba(255,255,255,.13), inset -10px 0 18px rgba(0,0,0,.11), inset 0 0 0 1px rgba(255,255,255,.08) !important;
+}
+.glass .liquid { transition: height .28s ease, background .28s ease; }
+.glass .bubble-dot { position:absolute; z-index:5; width:5px; height:5px; border-radius:50%; background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.95),rgba(255,255,255,.18) 72%); box-shadow:0 0 7px rgba(255,255,255,.2); pointer-events:none; }
+.bubbles { position:absolute; inset:0; overflow:hidden; border-radius:inherit; pointer-events:none; }
+.drink-straw { z-index:18 !important; filter:drop-shadow(1px 1px 1px rgba(0,0,0,.16)); }
+.melon-ice-cream { box-shadow: inset 5px 3px 8px rgba(255,255,255,.65), inset -4px -4px 8px rgba(194,165,120,.2), 0 7px 13px rgba(0,0,0,.18) !important; }
+.melon-ice-cream.half-gone { opacity:.55 !important; transform:translateY(12px) scale(.82) !important; transition:all .2s ease; }
+.orange-half { box-shadow: inset 0 0 0 2px rgba(255,243,203,.72), 0 5px 12px rgba(0,0,0,.2) !important; }
+.pink-olive { box-shadow: inset 4px 3px 5px rgba(255,255,255,.7), inset -3px -3px 5px rgba(120,39,70,.2), 0 4px 8px rgba(0,0,0,.2) !important; }
+.drink-name { margin-top: 26px !important; }
+.drink-state { margin-top: 8px !important; }
+@media (max-width: 900px) {
+    .order-slip { min-height: 340px !important; margin-bottom: 18px !important; }
+    .cocktail-header { padding-bottom: 26px !important; }
+}
+@media (max-width: 700px) {
+    .order-slip { min-height: 300px !important; margin-bottom: 16px !important; }
+    .mini-drink { margin-top: 18px !important; transform: scale(1.02); }
+}
 </style>
 """
 
@@ -2241,107 +2285,69 @@ MOOD_CONFIG = {
 
 
 def cocktail_visual_html(color, fill=100, mini=False):
-    """칵테일 메뉴 미리보기와 실제 음료를 같은 계열의 그래픽으로 렌더링합니다.
-    실제 음료의 토핑은 첫 입 이후 사라지고, 토핑은 모두 잔 내부에만 배치됩니다.
+    """Draw a cocktail illustration. Garnishes reduce progressively with each sip.
+    The melon soda straw is the only garnish that remains until the glass is empty.
     """
-    height = max(0, min(100, fill))
-    full = height >= 100
+    height = max(0, min(100, int(fill)))
+    sips = max(0, min(6, round((100 - height) / 17)))
 
     if mini:
         if color == "green":
-            extras = (
-                '<div class="mini-scoop"></div>'
-                '<div class="mini-cherry"></div>'
-                '<div class="mini-straw"></div>'
-                '<div class="mini-bubbles"><i></i><i></i><i></i></div>'
-            )
+            extras = ('<div class="mini-scoop"></div><div class="mini-cherry"></div>'
+                      '<div class="mini-straw"></div><div class="mini-bubbles"><i></i><i></i><i></i><i></i></div>')
         elif color == "orange":
-            extras = (
-                '<div class="mini-orange-half"></div>'
-                '<div class="mini-orange-half second"></div>'
-            )
+            extras = '<div class="mini-orange-half"></div><div class="mini-orange-half second"></div>'
         elif color == "pink":
-            extras = (
-                '<div class="mini-cocktail-olive"></div>'
-                '<div class="mini-pick"></div>'
-            )
+            extras = '<div class="mini-cocktail-olive"></div><div class="mini-pick"></div>'
         else:
-            extras = (
-                '<div class="mini-blue-glow"></div>'
-                '<div class="mini-lemon-twist"></div>'
-                '<div class="mini-star"></div>'
-            )
+            extras = '<div class="mini-blue-glow"></div><div class="mini-lemon-twist"></div><div class="mini-star"></div>'
+        return (f'<div class="mini-drink mini-{color}"><div class="mini-rim"></div>'
+                f'<div class="mini-glass"><div class="mini-liquid" style="height:{height}%;"></div>{extras}</div>'
+                '<div class="mini-stem"></div><div class="mini-base"></div></div>')
 
-        return (
-            f'<div class="mini-drink mini-{color}">'
-            f'<div class="mini-rim"></div>'
-            f'<div class="mini-glass"><div class="mini-liquid" style="height:{height}%;"></div>{extras}</div>'
-            f'<div class="mini-stem"></div><div class="mini-base"></div>'
-            f'</div>'
-        )
+    # Bubbles are part of the liquid, not permanent stickers: fewer remain as the drink goes down.
+    bubble_count = max(0, min(5, round(height / 22)))
+    bubble_positions = [(24, 28), (67, 46), (42, 62), (76, 22), (31, 75)]
+    bubbles = ''.join(
+        f'<span class="bubble-dot" style="left:{x}%;bottom:{y}%;"></span>'
+        for x, y in bubble_positions[:bubble_count]
+    ) if height > 0 else ''
 
     if color == "green":
-        garnish = ""
-        if full:
-            garnish = (
-                '<div class="melon-ice-cream"></div>'
-                '<div class="drink-straw"></div>'
-                '<div class="drink-cherry"></div>'
-            )
-        common = (
-            f'<div class="glass soda-glass">'
-            f'<div class="liquid" style="height:{height}%;"></div>'
-            f'<div class="glass-rim"></div>'
-            f'<div class="bubbles"><span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="b4"></span></div>'
-            f'{garnish}'
-            f'<div class="glass-shine"></div>'
-            f'</div>'
-            f'<div class="glass-foot"></div><div class="glass-base"></div>'
-        )
+        # Cream and cherry are consumed gradually; the long pink straw intentionally remains.
+        garnish = '<div class="drink-straw"></div>'
+        if sips < 1:
+            garnish += '<div class="melon-ice-cream"></div><div class="drink-cherry"></div>'
+        elif sips < 3:
+            garnish += '<div class="melon-ice-cream half-gone"></div>'
+        common = (f'<div class="glass soda-glass"><div class="liquid" style="height:{height}%;"></div>'
+                  f'<div class="glass-rim"></div><div class="bubbles">{bubbles}</div>{garnish}'
+                  '<div class="glass-shine"></div></div><div class="glass-foot"></div><div class="glass-base"></div>')
     elif color == "orange":
-        garnish = ""
-        if full:
-            garnish = (
-                '<div class="orange-half one"></div>'
-                '<div class="orange-half two"></div>'
-            )
-        common = (
-            f'<div class="glass orange-glass">'
-            f'<div class="liquid" style="height:{height}%;"></div>'
-            f'<div class="glass-rim"></div>'
-            f'{garnish}'
-            f'<div class="bubbles"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div>'
-            f'<div class="glass-shine"></div>'
-            f'</div>'
-        )
+        garnish = ''
+        if sips < 1:
+            garnish = '<div class="orange-half one"></div><div class="orange-half two"></div>'
+        elif sips < 2:
+            garnish = '<div class="orange-half one"></div>'
+        common = (f'<div class="glass orange-glass"><div class="liquid" style="height:{height}%;"></div>'
+                  f'<div class="glass-rim"></div>{garnish}<div class="bubbles">{bubbles}</div>'
+                  '<div class="glass-shine"></div></div>')
     elif color == "pink":
-        garnish = ""
-        if full:
+        garnish = ''
+        if sips < 1:
             garnish = '<div class="pink-olive"></div><div class="pink-pick"></div>'
-        common = (
-            f'<div class="glass pink-glass">'
-            f'<div class="liquid" style="height:{height}%;"></div>'
-            f'<div class="glass-rim"></div>'
-            f'{garnish}'
-            f'<div class="glass-shine"></div>'
-            f'</div>'
-            f'<div class="glass-foot"></div><div class="glass-base"></div>'
-        )
+        elif sips < 2:
+            garnish = '<div class="pink-olive"></div>'
+        common = (f'<div class="glass pink-glass"><div class="liquid" style="height:{height}%;"></div>'
+                  f'<div class="glass-rim"></div>{garnish}<div class="bubbles">{bubbles}</div>'
+                  '<div class="glass-shine"></div></div><div class="glass-foot"></div><div class="glass-base"></div>')
     else:
-        garnish = ""
-        if full:
-            garnish = '<div class="navy-garnish"></div>'
-        common = (
-            f'<div class="glass navy-glass">'
-            f'<div class="liquid" style="height:{height}%;"></div>'
-            f'<div class="glass-rim"></div>'
-            f'{garnish}'
-            f'<div class="stars"><span class="s1">✦</span><span class="s2">✧</span><span class="s3">✦</span></div>'
-            f'<div class="glass-shine"></div>'
-            f'</div>'
-        )
-
-    return f'<div class="drink-visual drink-scene {color}">{common}</div>'
+        garnish = '<div class="navy-garnish"></div>' if sips < 1 else ''
+        stars = '<div class="stars"><span class="s1">✦</span><span class="s2">✧</span><span class="s3">✦</span></div>' if height > 50 else ('<div class="stars"><span class="s1">✦</span></div>' if height > 0 else '')
+        common = (f'<div class="glass navy-glass"><div class="liquid" style="height:{height}%;"></div>'
+                  f'<div class="glass-rim"></div>{garnish}{stars}<div class="bubbles">{bubbles}</div>'
+                  '<div class="glass-shine"></div></div>')
+    return f'<div class="drink-visual drink-scene {color}" data-sips="{sips}">{common}</div>'
 
 
 def get_openai_key():
