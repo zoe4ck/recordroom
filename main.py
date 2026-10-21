@@ -1674,6 +1674,61 @@ try:
 except Exception:
     st.markdown(CSS, unsafe_allow_html=True)
 
+# Final responsive visual corrections. Kept separate so these overrides reliably win.
+POLISH_CSS = r"""
+<style>
+/* Consistent, legible section heading and more breathing room before actions. */
+.section-area { min-height: 0 !important; padding-top: clamp(34px, 5vh, 58px) !important; margin: 0 auto 0 !important; text-align: center !important; }
+.section-area .section-title, .cocktail-header .cocktail-title { color: #d9ad75 !important; font-family: "Cormorant Garamond", Georgia, serif !important; font-weight: 400 !important; letter-spacing: 5px !important; line-height: 1.2 !important; }
+.section-area .section-subtitle { color: #aa8667 !important; line-height: 1.9 !important; margin-top: 12px !important; }
+.room-service-buttons-spacer { height: 34px !important; width: 100%; line-height: 0 !important; }
+
+/* Mood menu: compact cards, centered type and clearly separated order buttons. */
+.cocktail-header { width: min(1180px, 94vw) !important; padding: 25px 0 35px !important; margin: 0 auto !important; text-align: center !important; }
+.cocktail-kicker { color: #a98563 !important; font-size: 10px !important; letter-spacing: 4px !important; }
+.cocktail-title { color: #dcb47c !important; font-family: "Cormorant Garamond", Georgia, serif !important; font-size: clamp(38px, 4.3vw, 52px) !important; font-weight: 400 !important; letter-spacing: 5px !important; line-height: 1.15 !important; text-align: center !important; }
+.cocktail-subtitle { color: #c0a087 !important; font-size: 13px !important; margin: 15px auto 0 !important; max-width: 680px !important; line-height: 1.9 !important; text-align: center !important; }
+.order-slip { height: 360px !important; min-height: 360px !important; box-sizing: border-box !important; padding: 18px 14px 16px !important; margin: 0 !important; overflow: hidden !important; border: 1px solid rgba(211,170,121,.34) !important; border-radius: 4px !important; background: linear-gradient(155deg, rgba(255,240,220,.065), rgba(54,34,24,.20) 54%, rgba(14,9,7,.28)) !important; box-shadow: 0 12px 28px rgba(0,0,0,.19), inset 0 1px rgba(255,255,255,.03) !important; }
+.order-slip:before { inset: 7px !important; border-color: rgba(211,170,121,.12) !important; }
+.slip-no { color: #957353 !important; text-align: center !important; font-size: 9px !important; letter-spacing: 2.4px !important; }
+.slip-label { display: block !important; min-height: 0 !important; margin: 10px auto 0 !important; max-width: 240px !important; color: #f0d7b8 !important; text-align: center !important; font-size: 14px !important; line-height: 1.6 !important; letter-spacing: 0 !important; }
+.mini-drink { display: flex !important; width: 100% !important; height: 198px !important; align-items: center !important; justify-content: center !important; margin: 7px auto 0 !important; transform: none !important; filter: drop-shadow(0 7px 9px rgba(0,0,0,.20)) !important; overflow: visible !important; }
+.cocktail-svg.mini { display: block !important; width: 158px !important; height: 198px !important; max-width: 100% !important; margin: 0 auto !important; overflow: visible !important; }
+.slip-drink { color: #d9b182 !important; text-align: center !important; margin: 6px auto 0 !important; font-size: 12px !important; line-height: 1.5 !important; letter-spacing: 1.5px !important; }
+.slip-desc { min-height: 0 !important; max-width: 245px !important; margin: 5px auto 0 !important; color: #aa8b71 !important; font-size: 10px !important; line-height: 1.6 !important; text-align: center !important; }
+.cocktail-order-button-gap { height: 10px !important; min-height: 10px !important; width: 100%; line-height: 0 !important; }
+[data-testid="stColumn"] div[data-testid="stButton"] > button { min-height: 46px !important; letter-spacing: 2.5px !important; border-color: rgba(213,167,117,.48) !important; background: linear-gradient(135deg, rgba(92,58,39,.34), rgba(24,15,11,.80)) !important; }
+
+/* Selected drink: smaller overall glass, connected stem/base retained in the SVG. */
+.selected-order { margin: 4px auto 16px !important; }
+.selected-order-title { color: #dcb47c !important; font-size: clamp(20px, 2vw, 25px) !important; line-height: 1.45 !important; }
+.drink-stage { min-height: 0 !important; padding: 0 !important; }
+.drink-visual { width: 100% !important; height: auto !important; min-height: 0 !important; margin: 0 auto !important; filter: drop-shadow(0 12px 18px rgba(0,0,0,.24)) !important; }
+.cocktail-svg.hero { display: block !important; width: min(225px, 100%) !important; height: auto !important; max-height: 300px !important; margin: 0 auto !important; }
+.drink-name { color: #dcb47c !important; margin-top: 8px !important; font-size: 14px !important; letter-spacing: 1.5px !important; line-height: 1.6 !important; text-align: center !important; }
+.drink-state { margin-top: 2px !important; color: #a98768 !important; font-size: 9px !important; letter-spacing: 2px !important; text-align: center !important; }
+.concierge-card { padding: 21px 22px !important; }
+
+@media (max-width: 1050px) {
+  .order-slip { height: 348px !important; min-height: 348px !important; padding-left: 10px !important; padding-right: 10px !important; }
+  .mini-drink { height: 184px !important; }
+  .cocktail-svg.mini { width: 148px !important; height: 185px !important; }
+}
+@media (max-width: 700px) {
+  .room-service-buttons-spacer { height: 26px !important; }
+  .cocktail-header { padding: 20px 0 25px !important; }
+  .cocktail-title { font-size: 34px !important; letter-spacing: 3px !important; }
+  .order-slip { height: 334px !important; min-height: 334px !important; padding: 16px 9px 14px !important; }
+  .mini-drink { height: 172px !important; }
+  .cocktail-svg.mini { width: 138px !important; height: 172px !important; }
+  .slip-label { font-size: 12px !important; }
+  .slip-desc { font-size: 9px !important; }
+  .cocktail-svg.hero { width: min(210px, 100%) !important; }
+}
+</style>
+"""
+st.markdown(POLISH_CSS, unsafe_allow_html=True)
+
 # =========================================================
 # SUPABASE
 # =========================================================
@@ -2375,31 +2430,31 @@ def search_music(query, mode):
 
 MOOD_CONFIG = {
     "sad": {
-        "label": "위로가 필요한 밤",
-        "drink": "ROSE PEARL",
+        "label": "조금 위로가 필요해요",
+        "drink": "핑크 칵테일",
         "color": "pink",
-        "description": "마음을 다그치지 않고 부드럽게 안아주는 선곡",
+        "description": "마음을 가라앉히고 천천히 쉬어 가는 음악",
         "fallback": ["Korean sad ballad", "Korean emotional R&B", "IU ballad", "Korean indie melancholy"],
     },
     "refresh": {
-        "label": "산뜻하게 털어내고 싶은 날",
-        "drink": "MELON CREAM FIZZ",
+        "label": "산뜻하게 기분 전환",
+        "drink": "멜론 소다",
         "color": "green",
-        "description": "답답함은 내려놓고 산뜻하게 숨을 돌리는 시간",
+        "description": "가볍고 청량한 분위기로 전환하는 음악",
         "fallback": ["K-pop refreshing", "Korean upbeat pop", "Korean pop summer", "K-pop bright"],
     },
     "excited": {
-        "label": "리듬을 올리고 싶은 순간",
-        "drink": "SUNSET ORANGE",
+        "label": "신나는 노래가 필요해요",
+        "drink": "오렌지 주스",
         "color": "orange",
-        "description": "기분 좋은 에너지를 리듬으로 이어가는 밤",
+        "description": "리듬을 타면서 기분을 끌어올리는 음악",
         "fallback": ["K-pop dance", "Korean hip hop", "K-pop party", "Korean upbeat R&B"],
     },
     "quiet": {
-        "label": "고요히 쉬고 싶은 밤",
-        "drink": "MIDNIGHT BLUE",
+        "label": "조용히 쉬고 싶어요",
+        "drink": "네이비 칵테일",
         "color": "navy",
-        "description": "소음을 잠시 내려두고 나에게 집중하는 시간",
+        "description": "차분하게 집중하고 편하게 쉴 수 있는 음악",
         "fallback": ["Korean indie acoustic", "Korean chill R&B", "Korean lo-fi", "Korean soft pop"],
     },
 }
@@ -2469,7 +2524,8 @@ def cocktail_visual_html(color, fill=100, mini=False):
     }
     c1, c2, c3 = liquid_colors[color]
     bubble_positions = [(0.24, .20), (.69, .34), (.43, .52), (.78, .66), (.29, .76), (.57, .26), (.61, .86), (.18, .48)]
-    bubble_count = 0 if height <= 0 else min(len(bubble_positions), max(1, round(height / 13)))
+    # Small, fine carbonation bubbles; fewer as the drink is sipped.
+    bubble_count = 0 if height <= 0 else min(5, max(1, round(height / 21)))
     bubbles_svg = []
     if liquid_h > 6:
         interior_left = s["left"] + 6
@@ -2477,10 +2533,10 @@ def cocktail_visual_html(color, fill=100, mini=False):
         for i, (xp, yp) in enumerate(bubble_positions[:bubble_count]):
             bx = interior_left + interior_w * xp
             by = s["floor"] - max(4, liquid_h * yp)
-            radius = (2.0, 2.7, 1.8, 2.3, 2.0, 1.6, 2.4, 1.7)[i]
+            radius = (1.05, 1.25, 0.95, 1.15, 1.0, 0.9, 1.2, 0.85)[i]
             bubbles_svg.append(
                 f'<circle cx="{bx:.1f}" cy="{by:.1f}" r="{radius}" '
-                'fill="#fff9f1" fill-opacity=".74" stroke="#ffffff" stroke-opacity=".24" stroke-width=".7"/>'
+                'fill="#fff9f1" fill-opacity=".48" stroke="#ffffff" stroke-opacity=".16" stroke-width=".45"/>'
             )
     bubbles = ''.join(bubbles_svg)
 
@@ -2516,46 +2572,42 @@ def cocktail_visual_html(color, fill=100, mini=False):
             '<path d="M 156 14 L 133 105" stroke="#ffe2df" stroke-width="2" stroke-linecap="round"/>'
         )
         if sips < 1:
+            # Full scoop and cherry overlap slightly so they read as one garnish on the rim.
             garnish += (
-                '<path d="M 81 71 C 78 57 89 43 105 43 C 123 43 137 55 135 74 '
-                'Q 110 83 81 71 Z" fill="url(#' + uid + '-cream)" stroke="#fff9e9" stroke-width="1.4"/>'
-                '<path d="M 87 66 Q 108 73 130 67" fill="none" stroke="#e9d9b8" stroke-width="1.6" stroke-opacity=".76"/>'
-                '<circle cx="143" cy="66" r="8.8" fill="url(#' + uid + '-cherry)" stroke="#f5b8af" stroke-width="1.1"/>'
-                '<path d="M 143 58 Q 149 50 154 55" fill="none" stroke="#7a9659" stroke-width="2.2" stroke-linecap="round"/>'
+                '<path d="M 73 72 C 70 53 86 37 107 37 C 130 37 144 53 142 73 '
+                'Q 109 88 73 72 Z" fill="url(#' + uid + '-cream)" stroke="#fff9e9" stroke-width="1.5"/>'
+                '<path d="M 80 65 Q 108 76 136 66" fill="none" stroke="#e9d9b8" stroke-width="1.6" stroke-opacity=".68"/>'
+                '<circle cx="135" cy="66" r="9.5" fill="url(#' + uid + '-cherry)" stroke="#f5b8af" stroke-width="1.1"/>'
+                '<path d="M 134 57 Q 142 49 150 54" fill="none" stroke="#7a9659" stroke-width="2.1" stroke-linecap="round"/>'
             )
         elif sips < 2:
             garnish += (
-                '<path d="M 94 72 Q 103 61 115 68 L 127 74 Q 110 79 94 72 Z" '
-                'fill="url(#' + uid + '-cream)" stroke="#fff9e9" stroke-width="1.1" opacity=".76"/>'
+                '<path d="M 89 73 Q 100 62 115 69 L 130 74 Q 108 82 89 73 Z" '
+                'fill="url(#' + uid + '-cream)" stroke="#fff9e9" stroke-width="1.1" opacity=".70"/>'
             )
     elif color == "orange":
         if sips < 2:
-            # Bright, segmented orange wheel resting on the rim; clipped pulp stays inside the citrus.
+            # One modest citrus wheel sits directly on the bowl's rim; no detached garnish.
             garnish += (
-                '<g transform="translate(178 111) rotate(13)">'
-                '<circle r="25" fill="#e9671b" stroke="#ffcd74" stroke-width="2.4"/>'
-                '<circle r="21" fill="#fff0b9"/>'
-                '<circle r="18.5" fill="url(#' + uid + '-liquid)" stroke="#f28b2d" stroke-width="1.4"/>'
-                '<path d="M 0 0 L 0 -18 M 0 0 L 16 9 M 0 0 L -16 9 M 0 0 L 0 18" stroke="#fff2c5" stroke-width="1.6" stroke-linecap="round"/>'
-                '<circle r="3" fill="#fff3cf"/>'
+                '<g transform="translate(171 113) rotate(10)">'
+                '<circle r="19" fill="#e9671b" stroke="#ffcd74" stroke-width="2.0"/>'
+                '<circle r="15.8" fill="#fff0b9"/>'
+                '<circle r="13.7" fill="url(#' + uid + '-liquid)" stroke="#f28b2d" stroke-width="1.15"/>'
+                '<path d="M 0 0 L 0 -13 M 0 0 L 11.8 6.5 M 0 0 L -11.8 6.5 M 0 0 L 0 13" stroke="#fff2c5" stroke-width="1.15" stroke-linecap="round"/>'
+                '<circle r="2.0" fill="#fff3cf"/>'
                 '</g>'
-            )
-        if sips < 1:
-            garnish += (
-                '<path d="M 84 112 Q 96 94 111 107 Q 101 117 88 115 Z" fill="#ffd16c" stroke="#fff0bf" stroke-width="1.4"/>'
-                '<path d="M 88 111 Q 98 102 108 108" fill="none" stroke="#f39127" stroke-width="2"/>'
             )
     else:  # navy
         if sips < 2:
+            # A single fine lemon twist sits across the rim; no loose pick or floating dot.
             garnish += (
-                '<path d="M 163 70 Q 188 58 193 74 Q 180 86 163 70 Z" fill="#ffd46e" stroke="#fff0b2" stroke-width="1.3"/>'
-                '<path d="M 170 70 Q 183 66 187 73" fill="none" stroke="#fff6d3" stroke-width="2" stroke-linecap="round"/>'
+                '<path d="M 151 80 C 157 66 176 65 185 78 C 177 84 163 84 155 78" '
+                'fill="#ffd46e" stroke="#fff0b2" stroke-width="1.25" stroke-linejoin="round"/>'
+                '<path d="M 158 78 Q 170 72 179 78" fill="none" stroke="#fff6d3" stroke-width="1.4" stroke-linecap="round"/>'
             )
-        if sips < 1:
-            garnish += '<path d="M 123 60 L 179 104" stroke="#d9bc7b" stroke-width="2.2" stroke-linecap="round"/><circle cx="179" cy="104" r="3.1" fill="#fff0be"/>'
-        # Tiny stars are inside the current liquid volume, so they decrease with the drink.
-        star_specs = [(88, .28, 3.1), (145, .47, 2.4), (106, .68, 2.0), (167, .30, 2.1)]
-        count = 0 if height < 8 else (1 if height < 30 else (2 if height < 55 else 4))
+        # Fine, sparse glints fade with the liquid level.
+        star_specs = [(91, .30, 1.45), (145, .49, 1.2), (111, .68, 1.05)]
+        count = 0 if height < 8 else (1 if height < 34 else (2 if height < 62 else 3))
         for sx, yf, rr in star_specs[:count]:
             sy = s["floor"] - max(5, liquid_h * yf)
             sparkles += (
@@ -2582,8 +2634,8 @@ def cocktail_visual_html(color, fill=100, mini=False):
 
     # Draw base and stem first so the bowl visibly joins them rather than floating above them.
     svg = (
-        f'<svg class="cocktail-svg {"mini" if mini else "hero"}" viewBox="0 0 240 300" '
-        'role="img" aria-label="' + {"pink":"Rose Pearl cocktail", "green":"Melon cream soda", "orange":"Sunset orange drink", "navy":"Midnight blue cocktail"}[color] + '">' 
+        f'<svg class="cocktail-svg {"mini" if mini else "hero"}" viewBox="0 0 240 300" width="{158 if mini else 240}" height="{198 if mini else 300}" '
+        'role="img" aria-label="' + {"pink":"Pink cocktail", "green":"Melon soda", "orange":"Orange juice", "navy":"Navy cocktail"}[color] + '">' 
         '<defs>'
         f'<linearGradient id="{uid}-liquid" x1="0" y1="0" x2="0" y2="1">'
         f'<stop offset="0" stop-color="{c1}"/><stop offset=".45" stop-color="{c2}"/><stop offset="1" stop-color="{c3}"/></linearGradient>'
@@ -3302,6 +3354,7 @@ elif st.session_state.page == "choice":
             '</div>',
             unsafe_allow_html=True
         )
+        st.markdown('<div class="room-service-buttons-spacer"></div>', unsafe_allow_html=True)
         left, right = st.columns(2, gap="large")
         with left:
             if st.button("노래 듣기", key="listen_choice", use_container_width=True):
@@ -3386,6 +3439,7 @@ elif st.session_state.page == "choice":
                         + '</div>',
                         unsafe_allow_html=True
                     )
+                    st.markdown('<div class="cocktail-order-button-gap"></div>', unsafe_allow_html=True)
                     if st.button("ORDER THIS", key=f"order_mood_{key}", use_container_width=True):
                         st.session_state.cocktail_mood = key
                         st.session_state.cocktail_sips = 0
