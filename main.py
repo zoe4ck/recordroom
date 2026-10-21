@@ -257,9 +257,12 @@ div[data-testid="stButton"] > button:hover {
 
 .section-title {
     color: #d5a56d;
-    font-family: "Cormorant Garamond", Georgia, serif;
-    font-size: 48px;
-    letter-spacing: 6px;
+    font-family: "Cormorant Garamond", Georgia, serif !important;
+    font-size: 15px !important;
+    letter-spacing: 2.2px !important;
+    border-radius: 2px !important;
+    box-shadow: none !important;
+    transition: background .18s ease, border-color .18s ease, color .18s ease !important;
     margin-bottom: 12px;
 }
 
@@ -1729,6 +1732,90 @@ POLISH_CSS = r"""
 """
 st.markdown(POLISH_CSS, unsafe_allow_html=True)
 
+# Final targeted fixes requested after live-screen review.
+# These rules intentionally come last to override conflicting earlier style layers.
+FINAL_VISUAL_FIXES = r"""
+<style>
+/* MY ROOM check-in gate: readable contrast and truly centered supporting text. */
+.main .block-container .auth-box {
+    width: min(520px, 90vw) !important;
+    max-width: 520px !important;
+    margin: 16px auto 10px !important;
+    padding: 25px 30px !important;
+    box-sizing: border-box !important;
+    background: linear-gradient(145deg, rgba(247,238,219,.095), rgba(247,238,219,.045)) !important;
+    border: 1px solid rgba(213,167,117,.42) !important;
+    box-shadow: 0 12px 28px rgba(0,0,0,.18) !important;
+}
+.main .block-container .auth-box .auth-subtitle {
+    display: block !important;
+    width: 100% !important;
+    color: #e6c7a3 !important;
+    font-family: "Noto Serif KR", serif !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    text-align: center !important;
+    line-height: 2 !important;
+    letter-spacing: .1px !important;
+    margin: 4px auto 8px !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+.main .block-container .auth-box .auth-title {
+    color: #e1b276 !important;
+    text-align: center !important;
+}
+
+/* ROOM SERVICE landing: a clearly visible pause between subtitle and both action buttons. */
+.room-service-buttons-spacer {
+    display: block !important;
+    width: 100% !important;
+    height: 64px !important;
+    min-height: 64px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 0 !important;
+}
+@media (max-width: 700px) {
+    .room-service-buttons-spacer {
+        height: 48px !important;
+        min-height: 48px !important;
+    }
+}
+
+/* Warm, restrained room interior: legible and responsive. */
+.room-interior-heading { text-align:center; padding: 14px 0 24px; }
+.room-interior-kicker { color:#9f7956; font-size:10px; letter-spacing:4px; margin-bottom:9px; }
+.room-interior-title { color:#d9ad76; font-family:"Cormorant Garamond", Georgia, serif; font-size:clamp(34px,4vw,46px); letter-spacing:5px; line-height:1.1; }
+.room-interior-subtitle { color:#b3977d; font-family:"Noto Serif KR", serif; font-size:13px; margin-top:12px; letter-spacing:.4px; }
+.room-scene-wrap { width:100%; max-width:1120px; margin:0 auto; border:1px solid rgba(190,145,92,.32); background:#1a100c; box-shadow:0 16px 36px rgba(0,0,0,.18); overflow:hidden; }
+.room-scene { display:block; width:100%; height:auto; }
+.room-scene-caption { text-align:center; color:#9e7b59; font-family:Georgia,serif; font-size:10px; letter-spacing:3px; margin:12px 0 8px; }
+.room-scene-caption span { color:#d3a56d; padding:0 8px; }
+.st-key-room_service_actions { margin-top: 76px !important; max-width:1100px !important; margin-left:auto !important; margin-right:auto !important; }
+.st-key-room_service_actions div[data-testid="stButton"] > button { min-height:54px !important; background:rgba(42,27,19,.42) !important; border:1px solid rgba(191,145,95,.48) !important; color:#dfb27b !important; font-size:15px !important; letter-spacing:3px !important; }
+.st-key-room_service_actions div[data-testid="stButton"] > button:hover { background:rgba(112,75,45,.24) !important; border-color:rgba(220,174,119,.7) !important; color:#f0d3a9 !important; transform:translateY(-1px); }
+.st-key-room_furniture_actions { margin-top:-350px !important; position:relative !important; z-index:10 !important; }
+.st-key-room_furniture_actions div[data-testid="stButton"] > button { min-height:250px !important; height:250px !important; padding:12px 8px !important; background:rgba(18,10,7,.035) !important; border:1px solid rgba(190,145,92,.12) !important; color:#f0d0a0 !important; font-size:13px !important; letter-spacing:1.2px !important; white-space:normal !important; text-shadow:0 1px 4px rgba(0,0,0,.9) !important; }
+.st-key-room_furniture_actions div[data-testid="stButton"] > button:hover { background:rgba(122,83,51,.18) !important; border-color:rgba(221,176,119,.55) !important; color:#ffe2b6 !important; }
+.main .block-container div[data-testid="stButton"] > button { font-size:15px !important; letter-spacing:2px !important; line-height:1.35 !important; min-height:44px !important; border-radius:2px !important; box-shadow:none !important; }
+
+/* Reduce the glass gloss while preserving a clear rim and stem/base connection. */
+.mini-drink {
+    filter: drop-shadow(0 4px 7px rgba(0,0,0,.14)) !important;
+}
+.drink-visual {
+    filter: drop-shadow(0 9px 14px rgba(0,0,0,.17)) !important;
+}
+.cocktail-svg .glass-highlight,
+.cocktail-svg .glass-shine {
+    opacity: .42 !important;
+}
+</style>
+"""
+st.markdown(FINAL_VISUAL_FIXES, unsafe_allow_html=True)
+
+
 # =========================================================
 # SUPABASE
 # =========================================================
@@ -1803,7 +1890,8 @@ defaults = {
     "my_room_checkin_open": False,
     "current_record": None,
     "room_records": [],
-    "my_room_view": "fireplace",
+    "my_room_view": "room",
+    "room_lobby_migration_v1": False,
     "cocktail_mood": None,
     "cocktail_sips": 0,
     "cocktail_recommendations": [],
@@ -1812,6 +1900,12 @@ defaults = {
 for key, value in defaults.items():
     if key not in st.session_state:
         st.session_state[key] = value
+
+# One-time migration for guests who were already signed in when the room lobby was added.
+if not st.session_state.room_lobby_migration_v1:
+    if st.session_state.logged_in and st.session_state.my_room_view == "fireplace":
+        st.session_state.my_room_view = "room"
+    st.session_state.room_lobby_migration_v1 = True
 
 # =========================================================
 # NAVIGATION
@@ -2536,7 +2630,7 @@ def cocktail_visual_html(color, fill=100, mini=False):
             radius = (1.05, 1.25, 0.95, 1.15, 1.0, 0.9, 1.2, 0.85)[i]
             bubbles_svg.append(
                 f'<circle cx="{bx:.1f}" cy="{by:.1f}" r="{radius}" '
-                'fill="#fff9f1" fill-opacity=".48" stroke="#ffffff" stroke-opacity=".16" stroke-width=".45"/>'
+                'fill="#fff9f1" fill-opacity=".30" stroke="#ffffff" stroke-opacity=".08" stroke-width=".35"/>'
             )
     bubbles = ''.join(bubbles_svg)
 
@@ -2544,10 +2638,10 @@ def cocktail_visual_html(color, fill=100, mini=False):
     if height > 0 and liquid_h > 0:
         liquid_block = (
             f'<rect x="0" y="{liquid_top:.2f}" width="240" height="{liquid_h + 7:.2f}" '
-            f'fill="url(#{uid}-liquid)" opacity=".98"/>'
+            f'fill="url(#{uid}-liquid)" opacity=".92"/>'
             f'<path d="M {surface_left:.1f} {liquid_top:.1f} Q 120 {liquid_top + 3:.1f} '
             f'{surface_left + surface_w:.1f} {liquid_top:.1f}" fill="none" stroke="#fff9ee" '
-            'stroke-opacity=".46" stroke-width="1.6"/>'
+            'stroke-opacity=".27" stroke-width="1.2"/>'
             + bubbles
         )
 
@@ -2640,8 +2734,8 @@ def cocktail_visual_html(color, fill=100, mini=False):
         f'<linearGradient id="{uid}-liquid" x1="0" y1="0" x2="0" y2="1">'
         f'<stop offset="0" stop-color="{c1}"/><stop offset=".45" stop-color="{c2}"/><stop offset="1" stop-color="{c3}"/></linearGradient>'
         f'<linearGradient id="{uid}-glass" x1="0" y1="0" x2="1" y2="0">'
-        '<stop offset="0" stop-color="#ffffff" stop-opacity=".30"/><stop offset=".22" stop-color="#ffffff" stop-opacity=".035"/>'
-        '<stop offset=".76" stop-color="#ffffff" stop-opacity=".02"/><stop offset="1" stop-color="#ffffff" stop-opacity=".19"/></linearGradient>'
+        '<stop offset="0" stop-color="#ffffff" stop-opacity=".17"/><stop offset=".22" stop-color="#ffffff" stop-opacity=".02"/>'
+        '<stop offset=".76" stop-color="#ffffff" stop-opacity=".015"/><stop offset="1" stop-color="#ffffff" stop-opacity=".11"/></linearGradient>'
         f'<linearGradient id="{uid}-stem" x1="0" y1="0" x2="1" y2="0">'
         '<stop offset="0" stop-color="#cbbba5" stop-opacity=".68"/><stop offset=".45" stop-color="#fff2dc" stop-opacity=".9"/>'
         '<stop offset="1" stop-color="#a18d77" stop-opacity=".74"/></linearGradient>'
@@ -2655,15 +2749,15 @@ def cocktail_visual_html(color, fill=100, mini=False):
         '</defs>'
         f'<ellipse cx="120" cy="{base_y + 4}" rx="{base_rx + 6}" ry="4" fill="#000000" fill-opacity=".20"/>'
         f'<path d="{stem}" fill="url(#{uid}-stem)" stroke="#f2dfc7" stroke-opacity=".58" stroke-width=".8"/>'
-        f'<ellipse cx="120" cy="{base_y}" rx="{base_rx}" ry="{base_ry}" fill="#281911" fill-opacity=".56" stroke="#e8d7c0" stroke-opacity=".78" stroke-width="1.7"/>'
-        f'<ellipse cx="120" cy="{base_y-1}" rx="{base_rx-7}" ry="{max(2,base_ry-2)}" fill="none" stroke="#fff1da" stroke-opacity=".26" stroke-width="1"/>'
+        f'<ellipse cx="120" cy="{base_y}" rx="{base_rx}" ry="{base_ry}" fill="#281911" fill-opacity=".56" stroke="#e8d7c0" stroke-opacity=".62" stroke-width="1.5"/>'
+        f'<ellipse cx="120" cy="{base_y-1}" rx="{base_rx-7}" ry="{max(2,base_ry-2)}" fill="none" stroke="#fff1da" stroke-opacity=".15" stroke-width=".8"/>'
         f'<g clip-path="url(#{uid}-clip)">'
         + liquid_block + sparkles +
         '</g>'
-        f'<path d="{glass_shape}" fill="url(#{uid}-glass)" fill-opacity=".42" stroke="#f5e7d5" stroke-opacity=".88" stroke-width="2" stroke-linejoin="round"/>'
-        f'<path d="{s["shine"]}" fill="none" stroke="#fffdf6" stroke-opacity=".62" stroke-width="3.1" stroke-linecap="round"/>'
-        f'<ellipse cx="120" cy="{top_y}" rx="{rim_rx}" ry="{rim_ry}" fill="#ffffff" fill-opacity=".045" stroke="#fff6e9" stroke-opacity=".88" stroke-width="2"/>'
-        f'<ellipse cx="120" cy="{top_y+1}" rx="{rim_rx-4}" ry="{max(2,rim_ry-3)}" fill="none" stroke="#ffffff" stroke-opacity=".26" stroke-width="1"/>'
+        f'<path d="{glass_shape}" fill="url(#{uid}-glass)" fill-opacity=".24" stroke="#f5e7d5" stroke-opacity=".70" stroke-width="1.6" stroke-linejoin="round"/>'
+        f'<path d="{s["shine"]}" fill="none" stroke="#fffdf6" stroke-opacity=".28" stroke-width="2.0" stroke-linecap="round"/>'
+        f'<ellipse cx="120" cy="{top_y}" rx="{rim_rx}" ry="{rim_ry}" fill="#ffffff" fill-opacity=".025" stroke="#fff6e9" stroke-opacity=".68" stroke-width="1.6"/>'
+        f'<ellipse cx="120" cy="{top_y+1}" rx="{rim_rx-4}" ry="{max(2,rim_ry-3)}" fill="none" stroke="#ffffff" stroke-opacity=".13" stroke-width=".8"/>'
         + garnish +
         '</svg>'
     )
@@ -3092,6 +3186,58 @@ audio.addEventListener("error", () => {{
 # FIREPLACE
 # =========================================================
 
+def render_room_lobby():
+    'Draw the full guest room and offer interactive furniture controls.'
+    st.markdown(
+        '<div class="room-interior-heading"><div class="room-interior-kicker">RECORD HOTEL · PRIVATE SUITE</div>'
+        '<div class="room-interior-title">YOUR ROOM</div>'
+        '<div class="room-interior-subtitle">객실 안의 가구를 선택해 각 공간을 이용해 보세요.</div></div>',
+        unsafe_allow_html=True
+    )
+    room_svg = r'''
+    <div class="room-scene-wrap">
+    <svg class="room-scene" viewBox="0 0 1200 590" role="img" aria-label="벽난로, LP 플레이어, 책장이 있는 호텔 객실">
+      <defs>
+        <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a281e"/><stop offset="1" stop-color="#21140f"/></linearGradient>
+        <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#3b2518"/><stop offset="1" stop-color="#120b08"/></linearGradient>
+        <linearGradient id="fireglow" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffd17a"/><stop offset="1" stop-color="#b84c20"/></linearGradient>
+        <linearGradient id="wood" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#805638"/><stop offset="1" stop-color="#392318"/></linearGradient>
+        <radialGradient id="lampglow"><stop stop-color="#d9a15f" stop-opacity=".28"/><stop offset="1" stop-color="#d9a15f" stop-opacity="0"/></radialGradient>
+      </defs>
+      <rect x="12" y="12" width="1176" height="420" rx="3" fill="url(#wall)" stroke="#6f4c31" stroke-width="2"/>
+      <path d="M12 432 L1188 432 L1135 578 L65 578 Z" fill="url(#floor)" stroke="#6f4c31" stroke-width="2"/>
+      <path d="M38 35 H1162 M38 50 H1162" stroke="#9a7049" stroke-opacity=".22"/>
+      <ellipse cx="600" cy="510" rx="360" ry="48" fill="#0b0705" opacity=".38"/>
+      <rect x="510" y="56" width="180" height="145" fill="#20140f" stroke="#9b754e" stroke-width="5"/><rect x="522" y="68" width="156" height="121" fill="#39261a" stroke="#c49a68" stroke-opacity=".5"/><path d="M540 168 Q570 108 600 148 T660 92" fill="none" stroke="#c89d6a" stroke-width="2" opacity=".65"/><circle cx="600" cy="125" r="20" fill="#d5b080" opacity=".18"/>
+      <ellipse cx="235" cy="395" rx="165" ry="150" fill="url(#lampglow)"/>
+      <rect x="70" y="210" width="330" height="220" rx="3" fill="url(#wood)" stroke="#9a704d" stroke-width="5"/><rect x="94" y="232" width="282" height="171" fill="#130b08" stroke="#65432c" stroke-width="6"/><rect x="112" y="248" width="246" height="145" fill="#0d0806"/><path d="M185 382 Q145 325 202 280 Q195 330 229 343 Q248 292 271 272 Q322 325 278 382 Z" fill="url(#fireglow)"/><path d="M222 383 Q198 347 235 318 Q232 350 254 360 Q275 334 274 319 Q309 357 273 383 Z" fill="#ffdb8b"/><path d="M150 388 L320 388" stroke="#a87647" stroke-width="10" stroke-linecap="round"/><rect x="54" y="196" width="362" height="18" rx="2" fill="#9c7048"/><rect x="52" y="427" width="366" height="22" rx="2" fill="#70492f"/>
+      <path d="M415 358 Q408 300 450 286 L530 286 Q564 300 558 360 L548 424 L430 424 Z" fill="#4c3025" stroke="#8b6346" stroke-width="4"/><rect x="423" y="348" width="128" height="70" rx="16" fill="#6c4430" stroke="#9d7450" stroke-width="3"/><path d="M438 370 Q485 390 535 369" fill="none" stroke="#b18a61" stroke-opacity=".5" stroke-width="3"/><path d="M440 423 L434 462 M540 423 L548 462" stroke="#5b3a27" stroke-width="12"/>
+      <rect x="610" y="335" width="250" height="24" rx="3" fill="#825a3a" stroke="#b78a5d" stroke-width="2"/><rect x="628" y="359" width="214" height="87" fill="url(#wood)" stroke="#9c714a" stroke-width="3"/><path d="M647 446 L640 493 M823 446 L831 493" stroke="#4d3020" stroke-width="13"/><rect x="640" y="292" width="190" height="44" rx="3" fill="#1b120e" stroke="#c09a70" stroke-width="2"/><circle cx="733" cy="314" r="19" fill="#100d0c" stroke="#8d785e" stroke-width="3"/><circle cx="733" cy="314" r="13" fill="none" stroke="#78644f" stroke-width="1.5"/><circle cx="733" cy="314" r="3" fill="#d2ad7c"/><path d="M781 302 L797 321 L789 325" fill="none" stroke="#d1b185" stroke-width="3" stroke-linecap="round"/>
+      <rect x="900" y="135" width="220" height="320" fill="url(#wood)" stroke="#a47b53" stroke-width="5"/><path d="M900 240 H1120 M900 344 H1120" stroke="#c09a70" stroke-width="7"/>
+      <g stroke="#c3a17a" stroke-width="2"><rect x="922" y="166" width="20" height="68" fill="#4b5545"/><rect x="946" y="153" width="27" height="81" fill="#75483b"/><rect x="977" y="174" width="19" height="60" fill="#b18a56"/><rect x="1000" y="159" width="24" height="75" fill="#343e43"/><rect x="1028" y="168" width="32" height="66" fill="#785a43"/><rect x="1064" y="151" width="24" height="83" fill="#5b4532"/><rect x="922" y="262" width="28" height="73" fill="#8d5b40"/><rect x="954" y="278" width="21" height="57" fill="#3c4a40"/><rect x="980" y="254" width="29" height="81" fill="#b18a56"/><rect x="1014" y="271" width="21" height="64" fill="#4e3b31"/><rect x="1040" y="259" width="25" height="76" fill="#4b5545"/><rect x="1070" y="277" width="29" height="58" fill="#82513e"/><rect x="922" y="365" width="55" height="65" fill="#31241b"/><rect x="983" y="375" width="48" height="55" fill="#b28c5d"/><rect x="1037" y="359" width="61" height="71" fill="#3d493c"/></g>
+      <ellipse cx="1015" cy="102" rx="90" ry="72" fill="url(#lampglow)"/><path d="M1008 126 L1008 83" stroke="#b18a61" stroke-width="5"/><path d="M977 84 Q1008 49 1039 84 Z" fill="#c59a65" stroke="#e0bc8a" stroke-width="2"/>
+      <path d="M350 482 Q600 445 850 482 L895 551 Q600 580 305 551 Z" fill="#513322" stroke="#946b45" stroke-width="3"/><path d="M382 490 Q600 463 818 490 M360 536 Q600 560 840 536" fill="none" stroke="#b68b5d" stroke-opacity=".35" stroke-width="2"/>
+    </svg></div><div class="room-scene-caption">FIREPLACE <span>·</span> VINYL PLAYER <span>·</span> RECORD LIBRARY</div>
+    '''
+    st.markdown(room_svg, unsafe_allow_html=True)
+    with st.container(key="room_furniture_actions"):
+        fire_col, lp_col, shelf_col = st.columns(3, gap="medium")
+        with fire_col:
+            if st.button("🔥 FIREPLACE · 불멍 공간", key="room_click_fireplace", use_container_width=True):
+                st.session_state.my_room_view = "fireplace"
+                st.rerun()
+        with lp_col:
+            if st.button("♫ LP PLAYER · 레코드 듣기", key="room_click_lp", use_container_width=True):
+                st.session_state.my_room_view = "lp"
+                st.rerun()
+        with shelf_col:
+            if st.button("▤ BOOKSHELF · 보관한 음반", key="room_click_shelf", use_container_width=True):
+                st.session_state.my_room_view = "bookshelf"
+                st.rerun()
+    # The transparent Streamlit buttons overlay the matching furniture areas in the room illustration.
+    st.markdown('<div style="height:100px;"></div>', unsafe_allow_html=True)
+
+
 def render_fireplace():
 
     st.markdown(
@@ -3354,20 +3500,20 @@ elif st.session_state.page == "choice":
             '</div>',
             unsafe_allow_html=True
         )
-        st.markdown('<div class="room-service-buttons-spacer"></div>', unsafe_allow_html=True)
-        left, right = st.columns(2, gap="large")
-        with left:
-            if st.button("노래 듣기", key="listen_choice", use_container_width=True):
-                st.session_state.choice_mode = "listen"
-                st.session_state.room_service_step = "search"
-                st.rerun()
-        with right:
-            if st.button("추천받기", key="recommend_choice", use_container_width=True):
-                st.session_state.choice_mode = "recommend"
-                st.session_state.cocktail_mood = None
-                st.session_state.cocktail_sips = 0
-                st.session_state.cocktail_recommendations = []
-                st.rerun()
+        with st.container(key="room_service_actions"):
+            left, right = st.columns(2, gap="large")
+            with left:
+                if st.button("노래 듣기", key="listen_choice", use_container_width=True):
+                    st.session_state.choice_mode = "listen"
+                    st.session_state.room_service_step = "search"
+                    st.rerun()
+            with right:
+                if st.button("추천받기", key="recommend_choice", use_container_width=True):
+                    st.session_state.choice_mode = "recommend"
+                    st.session_state.cocktail_mood = None
+                    st.session_state.cocktail_sips = 0
+                    st.session_state.cocktail_recommendations = []
+                    st.rerun()
         st.markdown(
             '<div style="text-align:center;color:#76563e;font-family:Georgia,serif;'
             'margin-top:35px;letter-spacing:2px;">ROOM SERVICE · OPEN ALL NIGHT</div>',
@@ -3636,7 +3782,7 @@ elif st.session_state.page == "my_room":
                     else:
                         ok, message = login_user(email.strip(), password)
                         if ok:
-                            st.session_state.my_room_view = "fireplace"
+                            st.session_state.my_room_view = "room"
                             st.success(message)
                             st.rerun()
                         else:
@@ -3688,22 +3834,36 @@ elif st.session_state.page == "my_room":
 
         view = st.session_state.my_room_view
 
-        if view == "fireplace":
+        if view == "room":
+            render_room_lobby()
+            st.markdown('<div style="height:18px"></div>', unsafe_allow_html=True)
+            if st.button("← BACK TO ROOM SERVICE", key="my_room_back_room", use_container_width=True):
+                go_room_service()
+
+        elif view == "fireplace":
             render_fireplace()
-            st.markdown('<div style="height:25px;"></div>', unsafe_allow_html=True)
+            st.markdown('<div style="height:18px"></div>', unsafe_allow_html=True)
             nav_left, nav_center, nav_right = st.columns([1,2,1])
             with nav_center:
-                if st.button("GO TO LP PLAYER →", key="go_lp_from_fire", use_container_width=True):
-                    st.session_state.my_room_view = "lp"
+                if st.button("← BACK TO MY ROOM", key="back_room_from_fire", use_container_width=True):
+                    st.session_state.my_room_view = "room"
                     st.rerun()
             if st.button("← BACK TO ROOM SERVICE", key="my_room_back_fire", use_container_width=True):
                 go_room_service()
 
-        else:
+        elif view == "lp":
             st.markdown('<div class="room-tabs">PLAY YOUR RECORD</div>', unsafe_allow_html=True)
             render_lp_player(st.session_state.current_record)
+            nav_left, nav_center, nav_right = st.columns([1,2,1])
+            with nav_center:
+                if st.button("← BACK TO MY ROOM", key="back_room_from_lp", use_container_width=True):
+                    st.session_state.my_room_view = "room"
+                    st.rerun()
+            if st.button("← BACK TO ROOM SERVICE", key="my_room_back_lp", use_container_width=True):
+                go_room_service()
 
-            st.markdown('<div class="room-tabs">RECORD CABINET</div>', unsafe_allow_html=True)
+        elif view == "bookshelf":
+            st.markdown('<div class="room-tabs">RECORD LIBRARY</div>', unsafe_allow_html=True)
             if not st.session_state.room_records:
                 st.markdown(
                     '<div class="room-record-empty">아직 객실로 가져온 음악이 없습니다.<br>ROOM SERVICE에서 음악을 선택해 주세요.</div>',
@@ -3726,18 +3886,17 @@ elif st.session_state.page == "my_room":
                     with action_col:
                         if st.button("PLAY ON LP", key=f"cabinet_play_{index}_{record.get('track_id')}", use_container_width=True):
                             st.session_state.current_record = record
+                            st.session_state.my_room_view = "lp"
                             st.rerun()
                         if st.button("RETURN", key=f"cabinet_return_{index}_{record.get('track_id')}", use_container_width=True):
                             remove_from_room(record.get("track_id"))
                             st.rerun()
                     st.markdown('<div style="height:1px;background:rgba(199,157,109,0.10);margin:8px 0 16px 0;"></div>', unsafe_allow_html=True)
-
-            st.markdown('<div style="height:25px;"></div>', unsafe_allow_html=True)
             nav_left, nav_center, nav_right = st.columns([1,2,1])
             with nav_center:
-                if st.button("← BACK TO FIREPLACE", key="back_to_fireplace", use_container_width=True):
-                    st.session_state.my_room_view = "fireplace"
+                if st.button("← BACK TO MY ROOM", key="back_room_from_shelf", use_container_width=True):
+                    st.session_state.my_room_view = "room"
                     st.rerun()
-            if st.button("← BACK TO ROOM SERVICE", key="my_room_back_lp", use_container_width=True):
+            if st.button("← BACK TO ROOM SERVICE", key="my_room_back_shelf", use_container_width=True):
                 go_room_service()
 
