@@ -5,6 +5,7 @@ import urllib.request
 import json
 import re
 from html import escape
+from concurrent.futures import ThreadPoolExecutor
 
 
 # =========================================================
@@ -1362,6 +1363,104 @@ div[data-testid="stButton"] > button:hover {
     .drink-visual { transform:scale(.82); margin-bottom:-35px; }
     .drink-stage { min-height:380px; padding-bottom:0; }
 }
+
+/* =========================================================
+   COCKTAIL BAR — taller cards, clearer Korean typography
+   ========================================================= */
+.order-slip {
+    min-height: 390px !important;
+    height: auto !important;
+    padding: 24px 20px 22px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    border-color: rgba(207, 164, 112, .42) !important;
+    background:
+        radial-gradient(ellipse at 50% 43%, rgba(215, 166, 112, .075), transparent 62%),
+        linear-gradient(155deg, rgba(250, 232, 208, .075), rgba(43, 25, 17, .24)) !important;
+    box-shadow: 0 16px 34px rgba(0,0,0,.19), inset 0 1px 0 rgba(255,236,205,.035) !important;
+    transition: border-color .25s ease, background .25s ease, transform .25s ease, box-shadow .25s ease;
+}
+.order-slip:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 18%;
+    width: 64%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(224,177,119,.55), transparent);
+    pointer-events: none;
+}
+.order-slip.pink { background: radial-gradient(ellipse at 50% 53%, rgba(198,91,129,.12), transparent 58%), linear-gradient(155deg, rgba(250,232,208,.075), rgba(43,25,17,.24)) !important; }
+.order-slip.green { background: radial-gradient(ellipse at 50% 53%, rgba(91,174,115,.12), transparent 58%), linear-gradient(155deg, rgba(250,232,208,.075), rgba(43,25,17,.24)) !important; }
+.order-slip.orange { background: radial-gradient(ellipse at 50% 53%, rgba(235,139,48,.13), transparent 58%), linear-gradient(155deg, rgba(250,232,208,.075), rgba(43,25,17,.24)) !important; }
+.order-slip.navy { background: radial-gradient(ellipse at 50% 53%, rgba(86,115,186,.15), transparent 58%), linear-gradient(155deg, rgba(250,232,208,.075), rgba(43,25,17,.24)) !important; }
+.slip-no {
+    flex: 0 0 auto;
+    color: #a98562 !important;
+    font-size: 10px !important;
+    letter-spacing: 2.5px !important;
+    line-height: 1.5 !important;
+}
+.slip-label {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 17px !important;
+    color: #f0c99b !important;
+    font-size: 16px !important;
+    line-height: 1.75 !important;
+    letter-spacing: .1px !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    text-wrap: balance;
+}
+.cocktail-svg.mini {
+    display: block !important;
+    width: 164px !important;
+    height: 205px !important;
+    max-width: 100%;
+    flex: 0 0 auto;
+    margin: 3px auto 0 !important;
+    overflow: visible;
+    filter: drop-shadow(0 8px 9px rgba(0,0,0,.19));
+}
+.slip-drink {
+    width: 100%;
+    margin-top: 0 !important;
+    color: #e0b989 !important;
+    font-size: 15px !important;
+    line-height: 1.6 !important;
+    letter-spacing: 1.5px !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+}
+.slip-desc {
+    width: 100%;
+    max-width: 245px !important;
+    margin: 7px auto 0 !important;
+    color: #b0937b !important;
+    font-size: 12px !important;
+    line-height: 1.9 !important;
+    letter-spacing: 0 !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    text-wrap: pretty;
+}
+.cocktail-order-button-gap { height: 12px; }
+@media (hover: hover) and (min-width: 701px) {
+    .order-slip:hover {
+        border-color: rgba(224,177,119,.65) !important;
+        box-shadow: 0 20px 40px rgba(0,0,0,.23), inset 0 1px 0 rgba(255,236,205,.06) !important;
+        transform: translateY(-2px);
+    }
+}
+@media (max-width: 700px) {
+    .order-slip { min-height: 365px !important; padding: 21px 16px 20px !important; }
+    .cocktail-svg.mini { width: 150px !important; height: 188px !important; }
+    .slip-label { font-size: 15px !important; margin-top: 14px !important; }
+    .slip-desc { max-width: 260px !important; font-size: 12px !important; }
+}
 </style>
 """
 
@@ -1452,6 +1551,10 @@ defaults = {
     "cocktail_mood": None,
     "cocktail_sips": 0,
     "cocktail_recommendations": [],
+    "cocktail_recommendation_future": None,
+    "cocktail_recommendation_future_mood": None,
+    "cocktail_recommendation_requested": False,
+    "cocktail_ai_used": False,
 }
 
 for key, value in defaults.items():
@@ -2126,34 +2229,34 @@ def cocktail_visual_html(color, fill=100, mini=False):
     # to its own glass silhouette so none can spill outside the vessel.
     specs = {
         "pink": {
-            "body": "M 30 80 C 40 126 74 164 120 174 C 166 164 200 126 210 80 Q 120 60 30 80 Z",
+            "body": "M 30 80 C 38 119 69 160 112 172 Q 120 175 128 172 C 171 160 202 119 210 80 Q 120 60 30 80 Z",
             "rim_y": 80, "rim_rx": 90, "rim_ry": 11,
             "floor": 171, "usable": 88, "left": 30, "width": 180,
-            "stem": "M 116 170 L 117 251 Q 120 256 123 251 L 124 170 Z",
+            "stem": "M 116 170 L 117 257 Q 120 261 123 257 L 124 170 Z",
             "base_y": 260, "base_rx": 39, "base_ry": 6,
             "shine": "M 48 91 C 58 124 79 150 98 159",
         },
         "green": {
-            "body": "M 70 68 Q 120 57 170 68 L 158 201 Q 156 215 140 220 L 100 220 Q 84 215 82 201 Z",
+            "body": "M 69 68 Q 120 56 171 68 L 160 198 Q 159 214 142 220 L 98 220 Q 81 214 80 198 Z",
             "rim_y": 68, "rim_rx": 51, "rim_ry": 10,
             "floor": 214, "usable": 137, "left": 70, "width": 100,
-            "stem": "M 116 217 L 117 267 Q 120 270 123 267 L 124 217 Z",
+            "stem": "M 116 217 L 117 275 Q 120 279 123 275 L 124 217 Z",
             "base_y": 278, "base_rx": 45, "base_ry": 6,
             "shine": "M 82 82 L 91 193 Q 92 205 101 209",
         },
         "orange": {
-            "body": "M 48 116 Q 120 98 192 116 C 188 158 176 198 153 214 Q 120 229 87 214 C 64 198 52 158 48 116 Z",
+            "body": "M 48 116 Q 120 96 192 116 C 188 153 177 191 154 210 Q 120 232 86 210 C 63 191 52 153 48 116 Z",
             "rim_y": 116, "rim_rx": 72, "rim_ry": 12,
             "floor": 219, "usable": 94, "left": 49, "width": 142,
-            "stem": "M 116 217 L 117 269 Q 120 272 123 269 L 124 217 Z",
+            "stem": "M 116 217 L 117 277 Q 120 281 123 277 L 124 217 Z",
             "base_y": 280, "base_rx": 46, "base_ry": 6,
             "shine": "M 62 128 C 68 166 77 191 94 204",
         },
         "navy": {
-            "body": "M 34 80 Q 120 52 206 80 L 128 155 Q 120 163 112 155 Z",
+            "body": "M 34 80 Q 120 50 206 80 L 129 154 Q 120 164 111 154 Z",
             "rim_y": 80, "rim_rx": 86, "rim_ry": 12,
             "floor": 156, "usable": 67, "left": 36, "width": 168,
-            "stem": "M 117 157 L 118 238 Q 120 241 122 238 L 123 157 Z",
+            "stem": "M 117 157 L 118 247 Q 120 251 122 247 L 123 157 Z",
             "base_y": 250, "base_rx": 48, "base_ry": 6,
             "shine": "M 49 82 Q 87 72 113 82 L 118 105",
         },
@@ -2294,8 +2397,12 @@ def cocktail_visual_html(color, fill=100, mini=False):
         '<stop offset="0" stop-color="#ffffff" stop-opacity=".17"/><stop offset=".22" stop-color="#ffffff" stop-opacity=".02"/>'
         '<stop offset=".76" stop-color="#ffffff" stop-opacity=".015"/><stop offset="1" stop-color="#ffffff" stop-opacity=".11"/></linearGradient>'
         f'<linearGradient id="{uid}-stem" x1="0" y1="0" x2="1" y2="0">'
-        '<stop offset="0" stop-color="#cbbba5" stop-opacity=".68"/><stop offset=".45" stop-color="#fff2dc" stop-opacity=".9"/>'
-        '<stop offset="1" stop-color="#a18d77" stop-opacity=".74"/></linearGradient>'
+        '<stop offset="0" stop-color="#9d8974" stop-opacity=".72"/><stop offset=".24" stop-color="#fff8e9" stop-opacity=".94"/>'
+        '<stop offset=".55" stop-color="#eadbc8" stop-opacity=".72"/><stop offset=".82" stop-color="#fffaf0" stop-opacity=".9"/>'
+        '<stop offset="1" stop-color="#9a856e" stop-opacity=".78"/></linearGradient>'
+        f'<linearGradient id="{uid}-foot" x1="0" y1="0" x2="0" y2="1">'
+        '<stop offset="0" stop-color="#fff4e2" stop-opacity=".32"/><stop offset=".45" stop-color="#bca78f" stop-opacity=".16"/>'
+        '<stop offset="1" stop-color="#4b392b" stop-opacity=".72"/></linearGradient>'
         f'<radialGradient id="{uid}-pearl" cx="30%" cy="25%">'
         '<stop offset="0" stop-color="#fffef8"/><stop offset=".55" stop-color="#f7dfc5"/><stop offset="1" stop-color="#c68b91"/></radialGradient>'
         f'<radialGradient id="{uid}-cream" cx="32%" cy="20%">'
@@ -2306,8 +2413,9 @@ def cocktail_visual_html(color, fill=100, mini=False):
         '</defs>'
         f'<ellipse cx="120" cy="{base_y + 4}" rx="{base_rx + 6}" ry="4" fill="#000000" fill-opacity=".20"/>'
         f'<path d="{stem}" fill="url(#{uid}-stem)" stroke="#f2dfc7" stroke-opacity=".58" stroke-width=".8"/>'
-        f'<ellipse cx="120" cy="{base_y}" rx="{base_rx}" ry="{base_ry}" fill="#281911" fill-opacity=".56" stroke="#e8d7c0" stroke-opacity=".62" stroke-width="1.5"/>'
-        f'<ellipse cx="120" cy="{base_y-1}" rx="{base_rx-7}" ry="{max(2,base_ry-2)}" fill="none" stroke="#fff1da" stroke-opacity=".15" stroke-width=".8"/>'
+        f'<ellipse cx="120" cy="{base_y}" rx="{base_rx}" ry="{base_ry}" fill="url(#{uid}-foot)" stroke="#e8d7c0" stroke-opacity=".72" stroke-width="1.5"/>'
+        f'<ellipse cx="120" cy="{base_y-1}" rx="{base_rx-7}" ry="{max(2,base_ry-2)}" fill="none" stroke="#fff1da" stroke-opacity=".30" stroke-width=".8"/>'
+        f'<ellipse cx="120" cy="{base_y-2}" rx="7" ry="2.2" fill="#fff5e5" fill-opacity=".28"/>'
         f'<g clip-path="url(#{uid}-clip)">'
         + liquid_block + sparkles +
         '</g>'
@@ -2459,6 +2567,86 @@ def get_ai_recommendations(mood_key):
             break
 
     return rank_by_korea_popularity(results, limit=8), used_ai
+
+
+# Recommendations run in the background so the guest can sip the drink while songs load.
+_COCKTAIL_RECOMMENDATION_POOL = ThreadPoolExecutor(max_workers=2)
+
+def start_cocktail_recommendations(mood_key):
+    """Start one background recommendation task for the selected mood."""
+    existing = st.session_state.get("cocktail_recommendation_future")
+    existing_mood = st.session_state.get("cocktail_recommendation_future_mood")
+    if existing is not None and not existing.done() and existing_mood == mood_key:
+        return
+    st.session_state.cocktail_recommendations = []
+    st.session_state.cocktail_recommendation_requested = True
+    st.session_state.cocktail_ai_used = False
+    st.session_state.cocktail_recommendation_future = _COCKTAIL_RECOMMENDATION_POOL.submit(
+        get_ai_recommendations, mood_key
+    )
+    st.session_state.cocktail_recommendation_future_mood = mood_key
+
+@st.fragment(run_every="2s")
+def render_cocktail_recommendations(mood_key):
+    """Poll background search without blocking the drink controls outside this fragment."""
+    future = st.session_state.get("cocktail_recommendation_future")
+    if not st.session_state.cocktail_recommendations and future is not None and future.done():
+        try:
+            recs, used_ai = future.result()
+            st.session_state.cocktail_recommendations = recs
+            st.session_state.cocktail_ai_used = used_ai
+        except Exception:
+            st.session_state.cocktail_recommendations = []
+        st.session_state.cocktail_recommendation_future = None
+        st.session_state.cocktail_recommendation_future_mood = None
+        future = None
+
+    recs = st.session_state.cocktail_recommendations
+    st.markdown("<div class='recommendation-title'>TONIGHT'S RECORDS</div>", unsafe_allow_html=True)
+
+    if not recs and st.session_state.get("cocktail_recommendation_requested", False):
+        if future is not None or st.session_state.get("cocktail_recommendation_future") is not None:
+            st.markdown(
+                '<div class="ai-note" style="font-size:11px;line-height:1.8;margin:8px 0 12px;">'
+                'CONCIERGE IS CHOOSING RECORDS…<br>노래를 찾는 동안 편하게 칵테일을 즐겨보세요.'
+                '</div>', unsafe_allow_html=True
+            )
+        else:
+            st.markdown(
+                '<div class="no-result" style="margin-top:20px;">'
+                '오늘 밤에 맞는 레코드를 찾지 못했어요. 잠시 후 다시 시도해 주세요.'
+                '</div>', unsafe_allow_html=True
+            )
+        return
+
+    if recs and st.session_state.get("cocktail_ai_used", False):
+        st.markdown('<div class="ai-note">AI CONCIERGE · MOOD MATCHED · KOREA POPULAR FIRST</div>', unsafe_allow_html=True)
+    elif recs:
+        st.markdown('<div class="ai-note">CONCIERGE · FALLBACK MENU · KOREA POPULAR FIRST</div>', unsafe_allow_html=True)
+
+    for index, result in enumerate(recs[:5]):
+        artwork = result.get("artworkUrl100", "")
+        track = escape(result.get("trackName", "제목 없음"))
+        artist = escape(result.get("artistName", "아티스트 없음"))
+        album = escape(result.get("collectionName", "앨범 정보 없음"))
+        with st.container(border=True):
+            image_col, text_col = st.columns([0.8, 3.4], gap="small", vertical_alignment="center")
+            with image_col:
+                if artwork:
+                    st.image(artwork, width=68)
+            with text_col:
+                st.markdown(
+                    f'<div class="compact-rec-title">{track}</div>'
+                    f'<div class="compact-rec-meta">{artist}<br>{album}</div>',
+                    unsafe_allow_html=True
+                )
+            if result.get("previewUrl"):
+                st.audio(result["previewUrl"])
+            if st.button("TAKE TO MY ROOM", key=f"cocktail_take_{index}_{result.get('trackId')}", use_container_width=True):
+                add_to_room(result)
+                st.session_state.my_room_view = "lp"
+                st.session_state.page = "my_room"
+                st.rerun()
 
 # =========================================================
 # RECORD HELPERS
@@ -6950,6 +7138,9 @@ elif st.session_state.page == "choice":
                         st.session_state.cocktail_sips = 0
                         st.session_state.cocktail_recommendations = []
                         st.session_state.cocktail_recommendation_requested = False
+                        st.session_state.cocktail_recommendation_future = None
+                        st.session_state.cocktail_recommendation_future_mood = None
+                        start_cocktail_recommendations(key)
                         st.rerun()
 
         else:
@@ -6957,6 +7148,9 @@ elif st.session_state.page == "choice":
                 st.session_state.cocktail_mood = None
                 st.session_state.cocktail_sips = 0
                 st.session_state.cocktail_recommendations = []
+                st.session_state.cocktail_recommendation_future = None
+                st.session_state.cocktail_recommendation_future_mood = None
+                st.session_state.cocktail_recommendation_requested = False
                 st.rerun()
 
             mood_key = st.session_state.cocktail_mood
@@ -6973,9 +7167,8 @@ elif st.session_state.page == "choice":
                 unsafe_allow_html=True
             )
 
-            # 칵테일과 마시기 버튼을 먼저 보여줍니다. 추천은 사용자가 원할 때 시작합니다.
-            # Streamlit의 동기 실행 특성상 추천 API 호출 중 화면 상호작용을 막지 않도록
-            # 음료를 먼저 제공하고 추천 요청은 별도 버튼으로 분리했습니다.
+            # 추천은 음료 선택 직후 백그라운드에서 자동으로 시작되므로,
+            # 노래를 불러오는 동안에도 음료를 마시는 버튼을 사용할 수 있습니다.
             recs = st.session_state.cocktail_recommendations
             drink_col, info_col = st.columns([1.02, 1.28], gap="large", vertical_alignment="top")
 
@@ -7013,69 +7206,8 @@ elif st.session_state.page == "choice":
                     unsafe_allow_html=True
                 )
 
-                if not st.session_state.cocktail_recommendations:
-                    st.markdown(
-                        '<div class="ai-note" style="font-size:11px;line-height:1.8;margin:8px 0 12px;">'
-                        '칵테일을 먼저 즐겨보세요. 준비되면 아래 버튼으로 오늘의 레코드를 불러올 수 있어요.'
-                        '</div>',
-                        unsafe_allow_html=True
-                    )
-                    if st.button("오늘의 노래 추천받기", key="start_cocktail_recommendations", use_container_width=True):
-                        with st.spinner("CONCIERGE IS CHOOSING RECORDS..."):
-                            recs, used_ai = get_ai_recommendations(mood_key)
-                        st.session_state.cocktail_recommendations = recs
-                        st.session_state.cocktail_ai_used = used_ai
-                        st.session_state.cocktail_recommendation_requested = True
-                        st.rerun()
-
-                st.markdown(
-                    '<div class="recommendation-title">TONIGHT\'S RECORDS</div>',
-                    unsafe_allow_html=True
-                )
-                if recs and st.session_state.get("cocktail_ai_used", False):
-                    st.markdown('<div class="ai-note">AI CONCIERGE · MOOD MATCHED · KOREA POPULAR FIRST</div>', unsafe_allow_html=True)
-                elif recs:
-                    st.markdown('<div class="ai-note">CONCIERGE · FALLBACK MENU · KOREA POPULAR FIRST</div>', unsafe_allow_html=True)
-
-                if recs:
-                    for index, result in enumerate(recs[:5]):
-                        artwork = result.get("artworkUrl100", "")
-                        track = escape(result.get("trackName", "제목 없음"))
-                        artist = escape(result.get("artistName", "아티스트 없음"))
-                        album = escape(result.get("collectionName", "앨범 정보 없음"))
-
-                        with st.container(border=True):
-                            image_col, text_col = st.columns([0.8, 3.4], gap="small", vertical_alignment="center")
-                            with image_col:
-                                if artwork:
-                                    st.image(artwork, width=68)
-                            with text_col:
-                                st.markdown(
-                                    f'<div class="compact-rec-title">{track}</div>'
-                                    f'<div class="compact-rec-meta">{artist}<br>{album}</div>',
-                                    unsafe_allow_html=True
-                                )
-
-                            if result.get("previewUrl"):
-                                st.audio(result["previewUrl"])
-
-                            if st.button(
-                                "TAKE TO MY ROOM",
-                                key=f"cocktail_take_{index}_{result.get('trackId')}",
-                                use_container_width=True
-                            ):
-                                add_to_room(result)
-                                st.session_state.my_room_view = "lp"
-                                st.session_state.page = "my_room"
-                                st.rerun()
-                elif st.session_state.get("cocktail_recommendation_requested", False):
-                    st.markdown(
-                        '<div class="no-result" style="margin-top:20px;">'
-                        '오늘 밤에 맞는 레코드를 찾지 못했어요.<br>'
-                        '다시 추천을 요청하면 다른 레코드를 찾아볼게요.'
-                        '</div>',
-                        unsafe_allow_html=True
-                    )
+                # Recommendations start automatically when a drink is selected and load in the background.
+                render_cocktail_recommendations(mood_key)
 
             st.write("")
             if st.button("← BACK TO ROOM SERVICE", key="recommend_back", use_container_width=True):
