@@ -4,6 +4,8 @@ import urllib.parse
 import urllib.request
 import json
 import re
+import base64
+from pathlib import Path
 from html import escape
 from concurrent.futures import ThreadPoolExecutor
 
@@ -6761,9 +6763,30 @@ def render_room_lobby():
     </style>
     """, unsafe_allow_html=True)
 
+    # 사용자가 저장소에 올린 객실 사진을 우선 사용한다.
+    # room_background.jpg는 main.py와 같은 폴더(저장소 루트)에 둔다.
+    room_image_path = Path(__file__).resolve().parent / "room_background.jpg"
+    room_image_mime = "image/jpeg"
+    room_image_b64 = ROOM_BACKGROUND_JPEG_B64  # 사진 파일이 없을 때를 위한 기존 배경
+    if room_image_path.is_file():
+        try:
+            room_image_bytes = room_image_path.read_bytes()
+            room_image_b64 = base64.b64encode(room_image_bytes).decode("ascii")
+            # 확장자만 .jpg로 바꾼 PNG/WebP 파일도 가능한 한 올바르게 표시한다.
+            if room_image_bytes.startswith(b"\x89PNG\r\n\x1a\n"):
+                room_image_mime = "image/png"
+            elif room_image_bytes[:4] == b"RIFF" and room_image_bytes[8:12] == b"WEBP":
+                room_image_mime = "image/webp"
+            else:
+                room_image_mime = "image/jpeg"
+        except OSError:
+            # 파일을 읽지 못하면 기존 내장 배경으로 안전하게 대체한다.
+            room_image_b64 = ROOM_BACKGROUND_JPEG_B64
+            room_image_mime = "image/webp"
+
     with st.container(key="room_fullscreen"):
         st.markdown(
-            f'<div class="room-photo-background" style="background-image:url(data:image/webp;base64,{ROOM_BACKGROUND_JPEG_B64});"></div>'
+            f'<div class="room-photo-background" style="background-image:url(data:{room_image_mime};base64,{room_image_b64});"></div>'
             '<div class="room-corner-brand">RECORD HOTEL<span>MY ROOM · PRIVATE SUITE</span></div>'
             '<div class="room-bottom-note">오늘도, 당신의 방은 따뜻합니다.</div>',
             unsafe_allow_html=True
