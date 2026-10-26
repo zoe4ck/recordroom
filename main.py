@@ -6452,23 +6452,28 @@ def render_room_lobby():
     """Full-screen guest room with small, furniture-aligned interactive hotspots."""
     st.markdown("""
     <style>
-      [data-testid="stSidebar"] { display:none !important; }
-      [data-testid="stHeader"] { display:none !important; }
-      .main .block-container { max-width:none !important; padding:0 !important; margin:0 !important; }
+      /* 객실 화면에서도 왼쪽 내비게이션을 유지하고, 본문 안에서만 객실을 표시 */
+      [data-testid="stHeader"] { background:transparent !important; }
+      .main .block-container { max-width:none !important; padding:0.75rem 1rem 1rem !important; margin:0 !important; }
 
       .st-key-room_fullscreen {
-        position:relative !important; width:100vw !important;
-        height:calc(100vh - 2px) !important; min-height:620px !important;
-        margin-left:calc(50% - 50vw) !important; padding:0 !important;
+        position:relative !important; width:100% !important; max-width:100% !important;
+        height:calc(100vh - 130px) !important; min-height:560px !important;
+        margin:0 !important; padding:0 !important;
         overflow:hidden !important; background:#100905 !important;
+        isolation:isolate !important;
       }
       .st-key-room_fullscreen > div[data-testid="stVerticalBlock"] {
         position:relative !important; height:100% !important; min-height:620px !important;
         gap:0 !important;
       }
       .room-photo-background {
-        position:absolute; inset:0; width:100%; height:100%; z-index:0;
-        background-size:cover; background-position:center center; background-repeat:no-repeat;
+        position:absolute !important; inset:0 !important; width:100% !important; height:100% !important;
+        z-index:1 !important; display:block !important; opacity:1 !important;
+        background-size:cover !important; background-position:center center !important; background-repeat:no-repeat !important;
+      }
+      .st-key-room_fullscreen > div[data-testid="stVerticalBlock"] > div:first-child {
+        position:static !important; z-index:auto !important; background:transparent !important;
       }
       .room-photo-background:after {
         content:""; position:absolute; inset:0;
@@ -6550,15 +6555,15 @@ def render_room_lobby():
       .st-key-room_fullscreen .st-key-room_hotspot_checkout div[data-testid="stButton"] > button:hover {
         background:rgba(50,31,17,.9) !important; border-color:#e4bc7e !important; color:#fff0d3 !important;
       }
-      .room-corner-brand { position:absolute; z-index:3; top:22px; left:28px; color:#e1bc85;
+      .room-corner-brand { position:absolute; z-index:4; top:22px; left:28px; color:#e1bc85;
         font-family:'Cormorant Garamond',Georgia,serif; font-size:17px; letter-spacing:3px;
         text-shadow:0 2px 8px #000; pointer-events:none; }
       .room-corner-brand span { display:block; margin-top:5px; font:10px Georgia,serif; letter-spacing:3px; color:#b18c61; }
-      .room-bottom-note { position:absolute; z-index:3; left:28px; bottom:22px; color:#d6b88f;
+      .room-bottom-note { position:absolute; z-index:4; left:28px; bottom:22px; color:#d6b88f;
         font-family:'Noto Serif KR',serif; font-size:12px; text-shadow:0 2px 8px #000; pointer-events:none; }
       @media (max-width: 760px) {
-        .st-key-room_fullscreen { height:calc(100vh - 2px) !important; min-height:600px !important; }
-        .room-photo-background { background-position:52% center; }
+        .st-key-room_fullscreen { height:calc(100vh - 110px) !important; min-height:540px !important; }
+        .room-photo-background { background-position:52% center !important; }
         .st-key-room_hotspot_fireplace { left:26% !important; top:51% !important; width:13% !important; height:18% !important; }
         .st-key-room_hotspot_lp { left:51% !important; top:44% !important; width:19% !important; height:14% !important; }
         .st-key-room_hotspot_bookshelf { left:78% !important; top:9% !important; width:21% !important; height:55% !important; }
