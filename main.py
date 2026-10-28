@@ -7433,4 +7433,3 @@ elif st.session_state.page == "my_room":
                     st.rerun()
             if st.button("← BACK TO ROOM SERVICE", key="my_room_back_shelf", use_container_width=True):
                 go_room_service()
-
