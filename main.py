@@ -2784,7 +2784,7 @@ def render_room_lobby():
         margin-left:calc(50% - 50vw) !important; padding:0 !important;
         overflow:hidden !important; background-color:#100905 !important;
         background-image:url("__ROOM_BACKGROUND_URI__") !important;
-        background-size:cover !important; background-position:45% center !important;
+        background-size:cover !important; background-position:30% center !important;
         background-repeat:no-repeat !important;
       }
       .st-key-room_fullscreen > div[data-testid="stVerticalBlock"] {
@@ -2793,7 +2793,7 @@ def render_room_lobby():
       }
       .room-photo-background {
         position:absolute; inset:0; width:100%; height:100%; z-index:0;
-        background-size:cover; background-position:45% center; background-repeat:no-repeat;
+        background-size:cover; background-position:30% center !important; background-repeat:no-repeat;
       }
       .room-photo-background:after {
         content:""; position:absolute; inset:0;
@@ -2808,12 +2808,12 @@ def render_room_lobby():
         padding:0 !important; margin:0 !important; min-width:0 !important;
       }
       .st-key-room_hotspot_fireplace {
-        left:27.5% !important; top:53% !important;
-        width:10.5% !important; height:17.5% !important;
+        left:24.5% !important; top:62% !important;
+        width:15% !important; height:22% !important;
       }
       .st-key-room_hotspot_lp {
-        left:21% !important; top:43% !important;
-        width:11.5% !important; height:10.5% !important;
+        left:0.5% !important; top:65% !important;
+        width:19% !important; height:14% !important;
       }
       .st-key-room_hotspot_bookshelf {
         left:0.5% !important; top:8.5% !important;
@@ -2883,9 +2883,9 @@ def render_room_lobby():
         font-family:'Noto Serif KR',serif; font-size:12px; text-shadow:0 2px 8px #000; pointer-events:none; }
       @media (max-width: 760px) {
         .st-key-room_fullscreen { height:calc(100vh - 2px) !important; min-height:600px !important; }
-        .room-photo-background { background-position:45% center; }
-        .st-key-room_hotspot_fireplace { left:24% !important; top:54% !important; width:12% !important; height:17% !important; }
-        .st-key-room_hotspot_lp { left:19% !important; top:44% !important; width:14% !important; height:11% !important; }
+        .room-photo-background { background-position:30% center !important; }
+        .st-key-room_hotspot_fireplace { left:21% !important; top:63% !important; width:16% !important; height:22% !important; }
+        .st-key-room_hotspot_lp { left:0.5% !important; top:64% !important; width:20% !important; height:15% !important; }
         .st-key-room_hotspot_bookshelf { left:0.5% !important; top:9% !important; width:18% !important; height:55% !important; }
         .room-corner-brand { top:15px; left:15px; font-size:13px; }
         .room-bottom-note { left:15px; bottom:15px; font-size:10px; }
