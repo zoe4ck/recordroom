@@ -3189,14 +3189,53 @@ document.getElementById("stop").onclick = stopAll;
 # LOGIN WARNING DIALOG
 # =========================================================
 
-@st.dialog("LOGIN NOTICE")
+@st.dialog(" ", width="small")
 def show_login_warning_dialog():
     warning_text = st.session_state.get("auth_warning_message", "로그인 정보를 확인해 주세요.")
-    st.error(warning_text, icon="⚠️")
+    # Keep the first and second failure notices in the same centered dialog system
+    # as the third-failure notice. Only the background shade and copy change.
+    st.markdown(
+        """<style>
+        [data-testid="stDialog"] {
+            position:fixed !important; inset:0 !important; width:100vw !important;
+            height:100vh !important; display:flex !important; align-items:center !important;
+            justify-content:center !important; padding:20px !important; z-index:999999 !important;
+        }
+        [data-testid="stDialog"] > div,
+        [data-testid="stDialog"] [role="dialog"] {
+            position:relative !important; top:auto !important; left:auto !important;
+            transform:none !important; margin:0 auto !important;
+            width:min(460px, calc(100vw - 40px)) !important; max-width:460px !important;
+            background:#090909 !important; border:1px solid #6b6258 !important;
+            box-shadow:0 0 0 1px #211b16, 0 24px 100px rgba(0,0,0,.55) !important;
+        }
+        [data-testid="stDialog"] [data-testid="stDialogContent"] {
+            background:#090909 !important; color:#eee !important; padding:30px 28px 26px !important;
+        }
+        [data-testid="stDialog"] [data-testid="stMarkdownContainer"] p { color:#eee !important; }
+        [data-testid="stDialog"] div[data-testid="stButton"] > button {
+            min-height:44px !important; background:#171513 !important; color:#eee !important;
+            border:1px solid #8a7c6b !important; border-radius:2px !important;
+            letter-spacing:2px !important;
+        }
+        [data-testid="stDialog"] div[data-testid="stButton"] > button:hover {
+            background:#30251d !important; border-color:#c4a27d !important;
+        }
+        </style>""",
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        '<div style="text-align:center;padding:8px 4px 18px;">'
+        '<div style="font-size:10px;letter-spacing:4px;color:#9b8063;margin-bottom:20px;">'
+        'RECORD HOTEL&nbsp;&nbsp; / &nbsp;&nbsp; CHECK-IN</div>'
+        '<div style="font-family:Georgia,serif;font-size:21px;line-height:1.5;color:#f2eee8;">'
+        '투숙객 정보를 확인할 수 없습니다.</div>'
+        f'<div style="font-size:13px;line-height:1.8;color:#b9b0a5;margin-top:12px;">{warning_text}</div>'
+        '</div>', unsafe_allow_html=True
+    )
     if st.button("확인", key="close_login_warning", use_container_width=True):
         st.session_state.auth_warning_open = False
         st.rerun()
-
 
 @st.dialog(" ", width="small")
 def show_login_easter_egg_dialog():
@@ -3251,17 +3290,14 @@ def show_login_easter_egg_dialog():
         '<div style="font-family:Georgia,serif;font-size:11px;letter-spacing:3px;color:#777;margin-bottom:16px;">'
         'GUEST RECORD / STATUS: PENDING</div>'
         '<div style="font-family:Georgia,serif;font-size:25px;line-height:1.55;color:#f2eee8;">'
-        '확인 절차가 완료되었습니다.</div>'
+        '기록을 확인해 주십시오.</div>'
         '<div style="font-size:14px;line-height:2;color:#b9b0a5;margin-top:14px;">'
-        '입력하신 정보와 일치하는 투숙객은 없습니다.<br>'
-        '다만 현재 해당 객실에는 투숙객이 머물고 있습니다.<br>'
-        '프런트 기록상 해당 객실은 공실입니다.</div>'
+        '해당 객실은 공실로 기록되어 있습니다.<br>'
+        '현재 투숙객은 확인되지 않습니다.</div>'
         '<div style="height:1px;background:#40372e;margin:24px 10px 18px;"></div>'
         '<div style="font-size:12px;letter-spacing:1px;color:#9b8063;line-height:1.8;">'
-        '객실 확인을 위해 직접 이동하지 마십시오.<br>'
-        '해당 객실은 현재 운영하지 않습니다.<br>'
-        '이전 근무자의 기록은 수정하지 마십시오.<br><br>'
-        '재확인을 요청하시겠습니까?</div>'
+        '객실로 이동하지 마십시오.<br>'
+        '기록을 다시 확인하시겠습니까?</div>'
         '</div>', unsafe_allow_html=True
     )
     yes_col, no_col = st.columns(2)
