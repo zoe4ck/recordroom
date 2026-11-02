@@ -2784,7 +2784,7 @@ def render_room_lobby():
         margin-left:calc(50% - 50vw) !important; padding:0 !important;
         overflow:hidden !important; background-color:#100905 !important;
         background-image:url("__ROOM_BACKGROUND_URI__") !important;
-        background-size:cover !important; background-position:30% center !important;
+        background-size:110% auto !important; background-position:0% center !important;
         background-repeat:no-repeat !important;
       }
       .st-key-room_fullscreen > div[data-testid="stVerticalBlock"] {
@@ -2793,7 +2793,7 @@ def render_room_lobby():
       }
       .room-photo-background {
         position:absolute; inset:0; width:100%; height:100%; z-index:0;
-        background-size:cover; background-position:30% center !important; background-repeat:no-repeat;
+        background-size:110% auto !important; background-position:0% center !important; background-repeat:no-repeat;
       }
       .room-photo-background:after {
         content:""; position:absolute; inset:0;
@@ -2808,16 +2808,16 @@ def render_room_lobby():
         padding:0 !important; margin:0 !important; min-width:0 !important;
       }
       .st-key-room_hotspot_fireplace {
-        left:24.5% !important; top:62% !important;
-        width:15% !important; height:22% !important;
+        left:29% !important; top:63.5% !important;
+        width:16.5% !important; height:24% !important;
       }
       .st-key-room_hotspot_lp {
-        left:0.5% !important; top:65% !important;
-        width:19% !important; height:14% !important;
+        left:3.5% !important; top:66.5% !important;
+        width:21% !important; height:15.5% !important;
       }
       .st-key-room_hotspot_bookshelf {
-        left:0.5% !important; top:8.5% !important;
-        width:18% !important; height:57% !important;
+        left:3.5% !important; top:4.5% !important;
+        width:20% !important; height:63% !important;
       }
       .st-key-room_hotspot_checkout { right:2.4% !important; top:2.5% !important; width:118px !important; }
 
@@ -2883,10 +2883,11 @@ def render_room_lobby():
         font-family:'Noto Serif KR',serif; font-size:12px; text-shadow:0 2px 8px #000; pointer-events:none; }
       @media (max-width: 760px) {
         .st-key-room_fullscreen { height:calc(100vh - 2px) !important; min-height:600px !important; }
-        .room-photo-background { background-position:30% center !important; }
-        .st-key-room_hotspot_fireplace { left:21% !important; top:63% !important; width:16% !important; height:22% !important; }
-        .st-key-room_hotspot_lp { left:0.5% !important; top:64% !important; width:20% !important; height:15% !important; }
-        .st-key-room_hotspot_bookshelf { left:0.5% !important; top:9% !important; width:18% !important; height:55% !important; }
+        .room-photo-background { background-size:cover !important; background-position:0% center !important; }
+        .st-key-room_fullscreen { background-size:cover !important; background-position:0% center !important; }
+        .st-key-room_hotspot_fireplace { left:29% !important; top:63% !important; width:17% !important; height:23% !important; }
+        .st-key-room_hotspot_lp { left:8% !important; top:64.5% !important; width:22% !important; height:15.5% !important; }
+        .st-key-room_hotspot_bookshelf { left:8% !important; top:9% !important; width:21% !important; height:55% !important; }
         .room-corner-brand { top:15px; left:15px; font-size:13px; }
         .room-bottom-note { left:15px; bottom:15px; font-size:10px; }
       }
@@ -3523,48 +3524,77 @@ elif st.session_state.page == "my_room":
             if st.button("← BACK TO ROOM SERVICE", key="my_room_back_lp", use_container_width=True):
                 go_room_service()
 
-        elif view == "bookshelf":
+
             st.markdown(
-                '<div class="room-service-container"><div class="room-service-title">BOOKSHELF</div>'
-                '<div class="room-service-subtitle">책장에 두고 싶은 책을 모아두세요.</div></div>',
+                '<div class="room-service-container"><div class="room-service-title">THE LITTLE LIBRARY</div>'
+                '<div class="room-service-subtitle">책장에 꽂힌 책을 골라 펼쳐보세요.</div></div>',
                 unsafe_allow_html=True
             )
-            with st.form("add_room_book_form", clear_on_submit=True):
-                book_title = st.text_input("책 제목", placeholder="예: 책 제목을 입력하세요")
-                book_author = st.text_input("작가", placeholder="작가 이름")
-                book_note = st.text_input("짧은 메모 (선택)", placeholder="이 책을 고른 이유")
-                submitted_book = st.form_submit_button("책장에 추가")
-                if submitted_book:
-                    if book_title.strip():
-                        st.session_state.room_books.append({"title": book_title.strip(), "author": book_author.strip(), "note": book_note.strip()})
+            # A decorative shelf with clickable book spines. The book interiors are
+            # intentionally sample pages because no specific book text was supplied.
+            shelf_books = [
+                ("01", "#7d3941", "THE ART OF SLOW LIVING"),
+                ("02", "#345b52", "A SMALL BOOK OF DREAMS"),
+                ("03", "#b27b48", "LETTERS TO THE MOON"),
+                ("04", "#394968", "THE BLUE HOUR"),
+                ("05", "#8a624e", "GARDEN OF MEMORIES"),
+                ("06", "#6e7049", "SOMEDAY, SOMEWHERE"),
+                ("07", "#a34f55", "NOTES ON LOVE"),
+                ("08", "#5b4b70", "THE QUIET PLACE"),
+            ]
+            st.markdown('''
+            <style>
+            .library-shelf { max-width:900px; margin:12px auto 22px; padding:24px 22px 17px;
+              background:linear-gradient(180deg,#3a2118,#21120e); border:1px solid rgba(210,164,105,.35);
+              border-radius:5px; box-shadow:0 18px 35px rgba(0,0,0,.28),inset 0 1px rgba(255,220,170,.12); }
+            .library-shelf-row { display:flex; align-items:flex-end; justify-content:center; gap:8px;
+              min-height:190px; padding:8px 8px 12px; border-bottom:13px solid #6b3e28;
+              box-shadow:0 8px 10px rgba(0,0,0,.28); }
+            .library-book { width:68px; height:166px; border-radius:3px 5px 2px 2px; border:1px solid rgba(255,230,190,.25);
+              box-shadow:inset 7px 0 8px rgba(0,0,0,.2),2px 3px 5px rgba(0,0,0,.35); position:relative; }
+            .library-book:before { content:''; position:absolute; left:8px; top:0; bottom:0; width:1px; background:rgba(255,255,255,.18); }
+            .library-book:after { content:''; position:absolute; left:8px; right:8px; top:13px; height:1px; background:rgba(255,230,190,.35); }
+            .library-shelf-caption { color:#c6a27a; text-align:center; font:11px Georgia,serif; letter-spacing:3px; margin-top:14px; }
+            .open-book { max-width:760px; margin:22px auto; display:grid; grid-template-columns:1fr 1fr; min-height:260px;
+              background:#e8d8b9; color:#5c4635; border-radius:5px 12px 12px 5px; overflow:hidden;
+              box-shadow:0 18px 40px rgba(0,0,0,.35); border:1px solid #b99c76; }
+            .open-book-page { padding:30px 28px; font-family:Georgia,'Noto Serif KR',serif; line-height:2; font-size:14px;
+              background:linear-gradient(90deg,#e1cfad,#f3e7cf 9%,#eee0c3); }
+            .open-book-page + .open-book-page { border-left:1px solid rgba(120,83,50,.25); background:linear-gradient(90deg,#e6d6b8,#f4e8d1); }
+            .open-book-page small { display:block; text-align:center; letter-spacing:3px; margin-bottom:20px; color:#987858; }
+            @media(max-width:600px){.library-shelf-row{gap:4px;min-height:140px}.library-book{width:10%;height:120px}.open-book-page{padding:18px 13px;font-size:12px}}
+            </style>
+            <div class="library-shelf"><div class="library-shelf-row">
+            ''' + ''.join([f'<div class="library-book" style="background:linear-gradient(90deg,{c},#211812 92%);"></div>' for _,c,_ in shelf_books]) + '''
+            </div><div class="library-shelf-caption">A COLLECTION OF QUIET MOMENTS</div></div>
+            ''', unsafe_allow_html=True)
+            book_cols = st.columns(8)
+            for book_index, (number, color, title) in enumerate(shelf_books):
+                with book_cols[book_index]:
+                    if st.button("📖", key=f"library_book_{book_index}", help="책 펼쳐보기", use_container_width=True):
+                        st.session_state.open_library_book = book_index
                         st.rerun()
-                    else:
-                        st.warning("책 제목을 입력해 주세요.")
-
-            if not st.session_state.room_books:
+            selected_book = st.session_state.get("open_library_book")
+            if selected_book is not None:
+                number, color, title = shelf_books[selected_book]
                 st.markdown(
-                    '<div class="room-record-empty">아직 책장에 등록한 책이 없습니다.<br>위에서 실제 책 제목과 작가를 추가해 주세요.</div>',
-                    unsafe_allow_html=True
+                    '<div class="open-book">'
+                    '<div class="open-book-page"><small>CHAPTER ' + number + '</small>'
+                    '<div style="text-align:center;font-size:20px;margin:18px 0 24px;">' + title + '</div>'
+                    '어떤 날은 아무것도 하지 않는 시간이 가장 좋은 선물이 된다. '
+                    '창밖의 불빛을 바라보며 천천히 페이지를 넘긴다. '
+                    '오늘의 마음을 서두르지 않고 가만히 들여다본다.'
+                    '</div><div class="open-book-page"><small>· · ·</small>'
+                    '작은 순간들은 오래도록 마음에 남는다. '
+                    '따뜻한 차 한 잔, 좋아하는 음악, 그리고 나만의 조용한 공간. '
+                    '이 페이지를 덮은 뒤에도 그 여유가 이어지기를.'
+                    '<div style="text-align:right;margin-top:28px;color:#987858;">— RECORD HOTEL</div>'
+                    '</div></div>', unsafe_allow_html=True
                 )
-            else:
-                for book_index, book in enumerate(st.session_state.room_books):
-                    book_col, detail_col, remove_col = st.columns([1, 5, 1.2], vertical_alignment="center")
-                    with book_col:
-                        st.markdown('<div style="font-size:32px;text-align:center;">📖</div>', unsafe_allow_html=True)
-                    with detail_col:
-                        st.markdown(
-                            '<div class="room-record-title">' + escape(book.get("title", "책")) + '</div>'
-                            '<div class="room-record-meta">' + escape(book.get("author", "")) + '</div>'
-                            + ('<div class="room-record-meta">' + escape(book.get("note", "")) + '</div>' if book.get("note") else ''),
-                            unsafe_allow_html=True
-                        )
-                    with remove_col:
-                        if st.button("꺼내기", key=f"remove_room_book_{book_index}", use_container_width=True):
-                            st.session_state.room_books.pop(book_index)
-                            st.rerun()
-                    st.markdown('<div style="height:1px;background:rgba(199,157,109,0.10);margin:8px 0 16px 0;"></div>', unsafe_allow_html=True)
-
-            st.caption("참고: 현재 책 목록은 이 앱 세션에 저장됩니다. 계정별로 영구 저장하는 기능은 별도 DB 연동 단계에서 추가할 수 있어요.")
+                if st.button("책 덮기", key="close_library_book", use_container_width=True):
+                    st.session_state.open_library_book = None
+                    st.rerun()
+            st.caption("책 표지와 페이지는 객실 분위기를 위한 샘플 디자인입니다.")
 
             # Keep the existing saved-record collection available separately from physical books.
             st.markdown('<div class="room-tabs" style="margin-top:34px;">MY RECORDS · 객실에 가져온 음반</div>', unsafe_allow_html=True)
