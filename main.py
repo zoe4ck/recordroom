@@ -1364,6 +1364,37 @@ div[data-testid="stButton"] > button:hover {
     .drink-visual { transform:scale(.82); margin-bottom:-35px; }
     .drink-stage { min-height:380px; padding-bottom:0; }
 }
+
+/* MYSTERY HOTEL ATMOSPHERE */
+:root { color-scheme: dark; }
+[data-testid="stAppViewContainer"] { position:relative; }
+[data-testid="stAppViewContainer"]:before {
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.13;
+  background-image:repeating-linear-gradient(0deg,transparent 0,transparent 3px,rgba(221,181,125,.035) 4px),
+    radial-gradient(ellipse at 50% 0%,rgba(190,126,70,.12),transparent 62%);
+  mix-blend-mode:screen;
+}
+[data-testid="stSidebar"] { box-shadow: inset -12px 0 30px rgba(0,0,0,.32); }
+[data-testid="stButton"] > button { transition:all .22s ease !important; }
+[data-testid="stButton"] > button:hover { letter-spacing:1.4px !important; box-shadow:0 0 16px rgba(178,126,75,.13) !important; }
+.mystery-rule-card {
+  max-width:760px; margin:24px auto 12px; padding:18px 24px;
+  background:linear-gradient(135deg,rgba(31,19,14,.94),rgba(17,11,9,.96));
+  border:1px solid rgba(157,111,69,.34); border-left:2px solid #8d583b;
+  color:#b69b7b; box-shadow:0 12px 30px rgba(0,0,0,.24);
+  font:12px/2 'Noto Serif KR',serif; letter-spacing:.35px;
+}
+.mystery-rule-card .rule-heading { color:#c59a6b; font:11px Georgia,serif; letter-spacing:3px; margin-bottom:8px; }
+.mystery-rule-card .rule-line { border-top:1px solid rgba(160,119,79,.2); margin:8px 0; }
+.mystery-alert {
+  max-width:650px; margin:18px auto; padding:20px 22px;
+  color:#d5b89a; background:linear-gradient(135deg,rgba(48,20,17,.97),rgba(20,10,9,.98));
+  border:1px solid rgba(160,72,59,.7); box-shadow:0 0 26px rgba(105,24,20,.22);
+  text-align:center; font:12px/2 'Noto Serif KR',serif; letter-spacing:.6px;
+}
+.mystery-alert strong { display:block; color:#d18b78; font:12px Georgia,serif; letter-spacing:3px; margin-bottom:9px; }
+.mystery-alert em { color:#8d6b60; font-style:normal; font-size:10px; }
+
 </style>
 """
 
@@ -1445,6 +1476,7 @@ defaults = {
     "logged_in": False,
     "current_user": None,
     "auth_mode": "login",
+    "auth_fail_count": 0,
     "my_room_checkin_open": False,
     "current_record": None,
     "room_records": [],
@@ -1550,11 +1582,13 @@ def login_user(email, password):
             return False, "로그인 정보를 확인해 주세요."
         st.session_state.logged_in = True
         st.session_state.current_user = user
+        st.session_state.auth_fail_count = 0
         return True, "CHECK-IN 완료"
     except Exception as e:
         message = str(e).strip()
         lower_message = message.lower()
         if "invalid login credentials" in lower_message:
+            st.session_state.auth_fail_count = int(st.session_state.get("auth_fail_count", 0)) + 1
             return False, "이메일 또는 비밀번호가 올바르지 않습니다."
         if "email not confirmed" in lower_message:
             return False, "이메일 인증이 아직 완료되지 않았습니다. 가입한 이메일의 인증 메일을 확인해 주세요."
@@ -1610,7 +1644,11 @@ with st.sidebar:
         unsafe_allow_html=True
     )
     st.markdown(
-        '<div class="sidebar-rule"></div>',
+        '<div class="sidebar-rule"></div>'
+        '<div style="margin:0 8px 24px;padding:12px 11px;border:1px solid rgba(157,111,69,.22);'
+        'background:rgba(10,7,6,.28);color:#8e765f;font:10px/1.9 Georgia,serif;letter-spacing:1px;">'
+        'GUEST NOTICE<br>AFTER 02:00, PLEASE DO NOT ANSWER THE ROOM PHONE.<br>'
+        '<span style="color:#594538;">— MANAGEMENT</span></div>',
         unsafe_allow_html=True
     )
 
@@ -3143,7 +3181,14 @@ if st.session_state.page == "lobby":
             '<div class="welcome-line"></div>'
             '<div class="welcome-description">'
             '음악을 듣고, 발견하고, 잠시 머무는 작은 방'
-            '</div></div>',
+            '</div></div>'
+            '<div class="mystery-rule-card"><div class="rule-heading">A NOTICE TO ALL GUESTS</div>'
+            '1. 복도 끝 객실의 문은 두드리지 마십시오. 해당 객실은 현재 비어 있습니다.'
+            '<div class="rule-line"></div>'
+            '2. 새벽 2시 이후 프런트에서 객실 번호를 물으면 대답하지 말고 객실로 돌아가십시오.'
+            '<div class="rule-line"></div>'
+            '3. 체크인 기록에 본인이 입력하지 않은 이름이 있어도 직원에게 문의하지 마십시오.'
+            '</div>',
             unsafe_allow_html=True
         )
         left, center, right = st.columns([2, 1, 2])
@@ -3472,6 +3517,15 @@ elif st.session_state.page == "my_room":
                             st.rerun()
                         else:
                             st.error(message)
+                            if int(st.session_state.get("auth_fail_count", 0)) >= 3:
+                                st.markdown(
+                                    '<div class="mystery-alert"><strong>FRONT DESK · SECURITY NOTICE</strong>'
+                                    '로그인 시도가 세 차례 기록되었습니다.<br>'
+                                    '잠시 후 다시 시도해 주세요.<br><br>'
+                                    '그리고 확인해 주십시오.<br>방금 입력한 객실 번호는 본인이 정한 것이 맞습니까?'
+                                    '<br><em>이 안내문은 객실 기록에 자동으로 남습니다.</em></div>',
+                                    unsafe_allow_html=True
+                                )
             else:
                 if st.button("CREATE ROOM KEY", key="signup_submit", use_container_width=True):
                     if not email.strip() or not password:
@@ -3574,12 +3628,12 @@ elif st.session_state.page == "my_room":
             <div class="library-shelf"><div class="library-shelf-row">
             ''' + ''.join([f'<div class="library-book" style="background:linear-gradient(90deg,{c},#211812 92%);"></div>' for _,c,_ in shelf_books]) + '''
             </div><div class="library-shelf-caption">PRIVATE COLLECTION · GUEST ACCESS</div></div>
-            <div class="library-note">일부 도서는 객실 내에서만 열람할 수 있습니다.</div>
+            <div class="library-note">열람 중인 책은 반드시 원래 위치에 돌려놓으십시오.</div>
             ''', unsafe_allow_html=True)
             book_cols = st.columns(8)
             for book_index, (number, color, title) in enumerate(shelf_books):
                 with book_cols[book_index]:
-                    if st.button("📖", key=f"library_book_{book_index}", help="책 펼쳐보기", use_container_width=True):
+                    if st.button(f"{number} · OPEN", key=f"library_book_{book_index}", help="책 펼쳐보기", use_container_width=True):
                         st.session_state.open_library_book = book_index
                         st.rerun()
             selected_book = st.session_state.get("open_library_book")
