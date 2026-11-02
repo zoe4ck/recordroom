@@ -1504,6 +1504,7 @@ defaults = {
     "current_user": None,
     "auth_mode": "login",
     "auth_fail_count": 0,
+    "auth_easter_egg_open": False,
     "my_room_checkin_open": False,
     "current_record": None,
     "room_records": [],
@@ -3512,6 +3513,40 @@ elif st.session_state.page == "my_room":
             if st.session_state.auth_mode == "signup":
                 password_confirm = st.text_input("ROOM KEY AGAIN", type="password", placeholder="비밀번호를 다시 입력하세요", key="auth_password_confirm")
 
+            if st.session_state.auth_mode == "login" and st.session_state.get("auth_easter_egg_open", False):
+                st.markdown(
+                    '<style>body{background:#000!important;} '
+                    '[data-testid="stAppViewContainer"],[data-testid="stHeader"],'
+                    '[data-testid="stSidebar"]{background:#000!important;} '
+                    '[data-testid="stAppViewContainer"] [data-testid="stMain"]{background:#000!important;} '
+                    '</style>', unsafe_allow_html=True
+                )
+                st.markdown(
+                    '<div style="min-height:68vh;background:#000;color:#ddd;display:flex;'
+                    'flex-direction:column;align-items:center;justify-content:center;text-align:center;'
+                    'padding:28px 18px;font-family:Georgia,serif;">'
+                    '<div style="font-size:10px;letter-spacing:3px;color:#777;margin-bottom:30px;">'
+                    'RECORD HOTEL · FRONT DESK</div>'
+                    '<div style="font-size:23px;letter-spacing:1px;margin-bottom:12px;">'
+                    '정말 다시 시도하시겠습니까?</div>'
+                    '<div style="font:12px/2 sans-serif;color:#777;">'
+                    '이 요청은 기록됩니다.</div></div>', unsafe_allow_html=True
+                )
+                choice_left, choice_right = st.columns(2)
+                with choice_left:
+                    if st.button("예", key="easter_yes", use_container_width=True):
+                        st.session_state.auth_fail_count = 0
+                        st.session_state.auth_easter_egg_open = False
+                        st.rerun()
+                with choice_right:
+                    if st.button("아니오", key="easter_no", use_container_width=True):
+                        st.session_state.auth_easter_egg_open = False
+                        st.session_state.auth_fail_count = 0
+                        st.session_state.my_room_checkin_open = False
+                        st.session_state.page = "lobby"
+                        st.rerun()
+                st.stop()
+
             if st.session_state.auth_mode == "login":
                 if st.button("ENTER MY ROOM", key="login_submit", use_container_width=True):
                     if not email.strip() or not password:
@@ -3519,36 +3554,33 @@ elif st.session_state.page == "my_room":
                     else:
                         ok, message = login_user(email.strip(), password)
                         if ok:
+                            st.session_state.auth_fail_count = 0
+                            st.session_state.auth_easter_egg_open = False
                             st.session_state.my_room_view = "room"
                             st.success(message)
                             st.rerun()
                         else:
-                            st.error(message)
-                            # 실패 횟수에 따라 화면을 어둡게 하고, 세 번째에는 검은 화면으로 전환합니다.
                             fail_count = int(st.session_state.get("auth_fail_count", 0))
-                            if fail_count:
-                                darkness = {1: 0.10, 2: 0.34}.get(fail_count, 1)
-                                if fail_count < 3:
-                                    st.markdown(
-                                        f'<style>body::after{{content:"";position:fixed;inset:0;z-index:9990;'
-                                        f'background:rgba(0,0,0,{darkness});pointer-events:none;}}</style>',
-                                        unsafe_allow_html=True
-                                    )
-                                else:
-                                    st.markdown(
-                                        '<style>body::after{content:"";position:fixed;inset:0;z-index:9998;'
-                                        'background:#000;pointer-events:all;}</style>'
-                                        '<div style="position:fixed;inset:0;z-index:9999;background:#000;'
-                                        'display:flex;flex-direction:column;align-items:center;justify-content:center;'
-                                        'color:#d5d0c8;text-align:center;padding:28px;">'
-                                        '<div style="font:10px Georgia,serif;letter-spacing:3px;color:#777;margin-bottom:24px;">'
-                                        'RECORD HOTEL · FRONT DESK</div>'
-                                        '<div style="font:22px Georgia,serif;letter-spacing:1px;margin-bottom:14px;">'
-                                        '이 객실은 비어 있습니다.</div>'
-                                        '<div style="font:13px sans-serif;line-height:2;color:#999;">'
-                                        '그런데 안쪽에서 응답이 있었습니다.</div></div>',
-                                        unsafe_allow_html=True
-                                    )
+                            if fail_count >= 3:
+                                st.session_state.auth_easter_egg_open = True
+                                st.rerun()
+                            warning_messages = {
+                                1: "로그인 정보를 확인해 주세요.",
+                                2: "입력한 정보가 일치하지 않습니다. 다시 확인해 주세요.",
+                            }
+                            st.error(warning_messages.get(fail_count, message))
+                            if fail_count == 1:
+                                st.markdown(
+                                    '<style>body::after{content:"";position:fixed;inset:0;z-index:9990;'
+                                    'background:rgba(0,0,0,.10);pointer-events:none;}</style>',
+                                    unsafe_allow_html=True
+                                )
+                            elif fail_count == 2:
+                                st.markdown(
+                                    '<style>body::after{content:"";position:fixed;inset:0;z-index:9990;'
+                                    'background:rgba(0,0,0,.30);pointer-events:none;}</style>',
+                                    unsafe_allow_html=True
+                                )
             else:
                 if st.button("CREATE ROOM KEY", key="signup_submit", use_container_width=True):
                     if not email.strip() or not password:
