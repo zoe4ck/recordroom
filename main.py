@@ -1513,6 +1513,8 @@ defaults = {
     "cocktail_mood": None,
     "cocktail_sips": 0,
     "cocktail_recommendations": [],
+    "cocktail_recommendation_requested": False,
+    "cocktail_ai_used": False,
 }
 
 for key, value in defaults.items():
@@ -1545,6 +1547,7 @@ def go(page):
         st.session_state.cocktail_mood = None
         st.session_state.cocktail_sips = 0
         st.session_state.cocktail_recommendations = []
+        st.session_state.cocktail_recommendation_requested = False
     st.rerun()
 
 def go_room_service():
@@ -1554,6 +1557,7 @@ def go_room_service():
     st.session_state.cocktail_mood = None
     st.session_state.cocktail_sips = 0
     st.session_state.cocktail_recommendations = []
+    st.session_state.cocktail_recommendation_requested = False
     st.rerun()
 
 def go_my_room():
@@ -2340,7 +2344,7 @@ def cocktail_visual_html(color, fill=100, mini=False):
 
     # Draw base and stem first so the bowl visibly joins them rather than floating above them.
     svg = (
-        f'<svg class="cocktail-svg {"mini" if mini else "hero"}" viewBox="0 0 240 300" width="{(188 if color in {"green", "orange", "navy"} else 158) if mini else 240}" height="{(235 if color in {"green", "orange", "navy"} else 198) if mini else 300}" '
+        f'<svg class="cocktail-svg {"mini" if mini else "hero"}" viewBox="0 0 240 300" width="{(168 if color in {"green", "orange", "navy"} else 158) if mini else 240}" height="{(210 if color in {"green", "orange", "navy"} else 198) if mini else 300}" '
         'role="img" aria-label="' + {"pink":"Pink cocktail", "green":"Melon soda", "orange":"Orange juice", "navy":"Navy cocktail"}[color] + '">' 
         '<defs>'
         f'<linearGradient id="{uid}-liquid" x1="0" y1="0" x2="0" y2="1">'
@@ -3350,9 +3354,7 @@ elif st.session_state.page == "choice":
                 unsafe_allow_html=True
             )
 
-            # 칵테일과 마시기 버튼을 먼저 보여줍니다. 추천은 사용자가 원할 때 시작합니다.
-            # Streamlit의 동기 실행 특성상 추천 API 호출 중 화면 상호작용을 막지 않도록
-            # 음료를 먼저 제공하고 추천 요청은 별도 버튼으로 분리했습니다.
+            # 칵테일 화면에 진입하면 해당 기분에 맞는 음악 추천을 자동으로 한 번 실행합니다.
             recs = st.session_state.cocktail_recommendations
             drink_col, info_col = st.columns([1.02, 1.28], gap="large", vertical_alignment="top")
 
@@ -3390,20 +3392,17 @@ elif st.session_state.page == "choice":
                     unsafe_allow_html=True
                 )
 
-                if not st.session_state.cocktail_recommendations:
-                    st.markdown(
-                        '<div class="ai-note" style="font-size:11px;line-height:1.8;margin:8px 0 12px;">'
-                        '칵테일을 먼저 즐겨보세요. 준비되면 아래 버튼으로 오늘의 레코드를 불러올 수 있어요.'
-                        '</div>',
-                        unsafe_allow_html=True
-                    )
-                    if st.button("오늘의 노래 추천받기", key="start_cocktail_recommendations", use_container_width=True):
-                        with st.spinner("CONCIERGE IS CHOOSING RECORDS..."):
+                if not st.session_state.cocktail_recommendation_requested:
+                    st.session_state.cocktail_recommendation_requested = True
+                    try:
+                        with st.spinner("선택한 기분에 맞는 음악을 찾고 있습니다..."):
                             recs, used_ai = get_ai_recommendations(mood_key)
                         st.session_state.cocktail_recommendations = recs
                         st.session_state.cocktail_ai_used = used_ai
-                        st.session_state.cocktail_recommendation_requested = True
-                        st.rerun()
+                    except Exception:
+                        st.session_state.cocktail_recommendations = []
+                        st.session_state.cocktail_ai_used = False
+                    st.rerun()
 
                 st.markdown(
                     '<div class="recommendation-title">TONIGHT\'S RECORDS</div>',
@@ -3525,15 +3524,31 @@ elif st.session_state.page == "my_room":
                             st.rerun()
                         else:
                             st.error(message)
-                            if int(st.session_state.get("auth_fail_count", 0)) >= 3:
-                                st.markdown(
-                                    '<div class="mystery-alert"><strong>FRONT DESK · SECURITY NOTICE</strong>'
-                                    '로그인 시도가 세 차례 기록되었습니다.<br>'
-                                    '잠시 후 다시 시도해 주세요.<br><br>'
-                                    '그리고 확인해 주십시오.<br>방금 입력한 객실 번호는 본인이 정한 것이 맞습니까?'
-                                    '<br><em>이 안내문은 객실 기록에 자동으로 남습니다.</em></div>',
-                                    unsafe_allow_html=True
-                                )
+                            # 실패 횟수에 따라 화면을 어둡게 하고, 세 번째에는 검은 화면으로 전환합니다.
+                            fail_count = int(st.session_state.get("auth_fail_count", 0))
+                            if fail_count:
+                                darkness = {1: 0.10, 2: 0.34}.get(fail_count, 1)
+                                if fail_count < 3:
+                                    st.markdown(
+                                        f'<style>body::after{{content:"";position:fixed;inset:0;z-index:9990;'
+                                        f'background:rgba(0,0,0,{darkness});pointer-events:none;}}</style>',
+                                        unsafe_allow_html=True
+                                    )
+                                else:
+                                    st.markdown(
+                                        '<style>body::after{content:"";position:fixed;inset:0;z-index:9998;'
+                                        'background:#000;pointer-events:all;}</style>'
+                                        '<div style="position:fixed;inset:0;z-index:9999;background:#000;'
+                                        'display:flex;flex-direction:column;align-items:center;justify-content:center;'
+                                        'color:#d5d0c8;text-align:center;padding:28px;">'
+                                        '<div style="font:10px Georgia,serif;letter-spacing:3px;color:#777;margin-bottom:24px;">'
+                                        'RECORD HOTEL · FRONT DESK</div>'
+                                        '<div style="font:22px Georgia,serif;letter-spacing:1px;margin-bottom:14px;">'
+                                        '이 객실은 비어 있습니다.</div>'
+                                        '<div style="font:13px sans-serif;line-height:2;color:#999;">'
+                                        '그런데 안쪽에서 응답이 있었습니다.</div></div>',
+                                        unsafe_allow_html=True
+                                    )
             else:
                 if st.button("CREATE ROOM KEY", key="signup_submit", use_container_width=True):
                     if not email.strip() or not password:
