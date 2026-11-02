@@ -707,6 +707,16 @@ div[data-testid="stButton"] > button:hover {
 /* =========================================================
    COCKTAIL BAR
    ========================================================= */
+/* Cocktail menu alignment and garnish scale */
+.st-key-cocktail_menu_grid { max-width:1080px !important; margin:0 auto !important; padding:0 12px !important; }
+.st-key-cocktail_menu_grid [data-testid="stHorizontalBlock"] { align-items:stretch !important; justify-content:center !important; gap:22px !important; }
+.st-key-cocktail_menu_grid [data-testid="column"] { min-width:0 !important; }
+.st-key-cocktail_menu_grid .order-slip { min-height:360px; padding:24px 16px 20px; }
+.st-key-cocktail_menu_grid .mini-drink { width:132px; height:158px; margin:18px auto 4px; }
+.st-key-cocktail_menu_grid .mini-drink .cocktail-svg { overflow:visible; }
+.st-key-cocktail_menu_grid .slip-desc { max-width:205px; }
+@media(max-width:700px) { .st-key-cocktail_menu_grid [data-testid="stHorizontalBlock"] { gap:10px !important; } .st-key-cocktail_menu_grid .order-slip { min-height:320px; padding:18px 8px; } }
+
 .cocktail-header {
     width: min(1120px, 92vw);
     margin: 0 auto;
@@ -2313,7 +2323,7 @@ def cocktail_visual_html(color, fill=100, mini=False):
 
     # Draw base and stem first so the bowl visibly joins them rather than floating above them.
     svg = (
-        f'<svg class="cocktail-svg {"mini" if mini else "hero"}" viewBox="0 0 240 300" width="{158 if mini else 240}" height="{198 if mini else 300}" '
+        f'<svg class="cocktail-svg {"mini" if mini else "hero"}" viewBox="0 0 240 300" width="{(188 if color in {"green", "orange", "navy"} else 158) if mini else 240}" height="{(235 if color in {"green", "orange", "navy"} else 198) if mini else 300}" '
         'role="img" aria-label="' + {"pink":"Pink cocktail", "green":"Melon soda", "orange":"Orange juice", "navy":"Navy cocktail"}[color] + '">' 
         '<defs>'
         f'<linearGradient id="{uid}-liquid" x1="0" y1="0" x2="0" y2="1">'
@@ -3283,30 +3293,31 @@ elif st.session_state.page == "choice":
         )
 
         if st.session_state.cocktail_mood is None:
-            mood_cols = st.columns(4, gap="medium")
-            for col, (key, config) in zip(mood_cols, MOOD_CONFIG.items()):
-                with col:
-                    mini_visual = cocktail_visual_html(config["color"], mini=True)
-                    st.markdown(
-                        f'<div class="order-slip {config["color"]}">'
-                        f'<div class="slip-no">ORDER NO. {list(MOOD_CONFIG).index(key)+1:02d}</div>'
-                        f'<div class="slip-label">{config["label"]}</div>'
-                        + mini_visual
-                        + f'<div class="slip-drink">{config["drink"]}</div>'
-                        + f'<div class="slip-desc">{config["description"]}</div>'
-                        + '</div>',
-                        unsafe_allow_html=True
-                    )
-                    st.markdown('<div class="cocktail-order-button-gap"></div>', unsafe_allow_html=True)
-                    if st.button("ORDER THIS", key=f"order_mood_{key}", use_container_width=True):
-                        st.session_state.cocktail_mood = key
-                        st.session_state.cocktail_sips = 0
-                        st.session_state.cocktail_recommendations = []
-                        st.session_state.cocktail_recommendation_requested = False
-                        st.rerun()
+            with st.container(key="cocktail_menu_grid"):
+                mood_cols = st.columns(4, gap="medium")
+                for col, (key, config) in zip(mood_cols, MOOD_CONFIG.items()):
+                    with col:
+                        mini_visual = cocktail_visual_html(config["color"], mini=True)
+                        st.markdown(
+                            f'<div class="order-slip {config["color"]}">'
+                            f'<div class="slip-no">ORDER NO. {list(MOOD_CONFIG).index(key)+1:02d}</div>'
+                            f'<div class="slip-label">{config["label"]}</div>'
+                            + mini_visual
+                            + f'<div class="slip-drink">{config["drink"]}</div>'
+                            + f'<div class="slip-desc">{config["description"]}</div>'
+                            + '</div>',
+                            unsafe_allow_html=True
+                        )
+                        st.markdown('<div class="cocktail-order-button-gap"></div>', unsafe_allow_html=True)
+                        if st.button("ORDER THIS", key=f"order_mood_{key}", use_container_width=True):
+                            st.session_state.cocktail_mood = key
+                            st.session_state.cocktail_sips = 0
+                            st.session_state.cocktail_recommendations = []
+                            st.session_state.cocktail_recommendation_requested = False
+                            st.rerun()
 
         else:
-            if st.button("← BACK TO COCKTAIL BAR", key="cocktail_back_top", use_container_width=True):
+            if st.button("← 칵테일 메뉴로 돌아가기", key="cocktail_back_top", use_container_width=True):
                 st.session_state.cocktail_mood = None
                 st.session_state.cocktail_sips = 0
                 st.session_state.cocktail_recommendations = []
@@ -3601,7 +3612,9 @@ elif st.session_state.page == "my_room":
               font:11px Georgia,'Noto Serif KR',serif; letter-spacing:1.2px; }
             .library-book:hover { filter:brightness(1.18); transform:translateY(-3px); }
             .library-shelf-row { display:none !important; }
-            div[class*="st-key-library_book_"] button { height:170px!important; min-height:170px!important; writing-mode:vertical-rl!important; border-radius:4px 6px 2px 2px!important; border:1px solid rgba(235,205,160,.35)!important; color:#ead9b9!important; font-family:Georgia,serif!important; letter-spacing:2px!important; background:linear-gradient(90deg,#17100d,#76513a 24%,#2b1b14 88%)!important; box-shadow:inset 5px 0 7px #0008,2px 4px 8px #0008!important; }
+            .st-key-library_book_0, .st-key-library_book_1, .st-key-library_book_2, .st-key-library_book_3, .st-key-library_book_4, .st-key-library_book_5, .st-key-library_book_6, .st-key-library_book_7 { min-width:0!important; }
+            div[class*="st-key-library_book_"] { max-width:58px!important; margin:0 auto!important; }
+            div[class*="st-key-library_book_"] button { width:100%!important; height:218px!important; min-height:218px!important; padding:8px 4px!important; writing-mode:vertical-rl!important; border-radius:4px 6px 2px 2px!important; border:1px solid rgba(235,205,160,.35)!important; color:#ead9b9!important; font-family:Georgia,serif!important; letter-spacing:2px!important; background:linear-gradient(90deg,#17100d,#76513a 24%,#2b1b14 88%)!important; box-shadow:inset 5px 0 7px #0008,2px 4px 8px #0008!important; }
             div[class*="st-key-library_book_"] button:hover { filter:brightness(1.35); transform:translateY(-5px); }
             div.st-key-library_book_0 button {background:linear-gradient(90deg,#24100f,#713b36 28%,#281613)!important}
             div.st-key-library_book_1 button {background:linear-gradient(90deg,#17201c,#34564d 28%,#17201c)!important}
@@ -3611,10 +3624,10 @@ elif st.session_state.page == "my_room":
             div.st-key-library_book_5 button {background:linear-gradient(90deg,#202114,#666746 28%,#202114)!important}
             div.st-key-library_book_6 button {background:linear-gradient(90deg,#2a1518,#87464a 28%,#2a1518)!important}
             div.st-key-library_book_7 button {background:linear-gradient(90deg,#1b1725,#51465d 28%,#1b1725)!important}
-            .open-book { max-width:760px; margin:22px auto; display:grid; grid-template-columns:1fr 1fr; min-height:260px;
+            .open-book { max-width:760px; margin:22px auto; display:grid; grid-template-columns:1fr 1fr; min-height:340px;
               background:#e8d8b9; color:#5c4635; border-radius:5px 12px 12px 5px; overflow:hidden;
               box-shadow:0 18px 40px rgba(0,0,0,.35); border:1px solid #b99c76; }
-            .open-book-page { padding:30px 28px; font-family:Georgia,'Noto Serif KR',serif; line-height:2; font-size:14px;
+            .open-book-page { padding:36px 30px; font-family:Georgia,'Noto Serif KR',serif; line-height:2.05; font-size:14px;
               background:linear-gradient(90deg,#e1cfad,#f3e7cf 9%,#eee0c3); }
             .open-book-page + .open-book-page { border-left:1px solid rgba(120,83,50,.25); background:linear-gradient(90deg,#e6d6b8,#f4e8d1); }
             .open-book-page small { display:block; text-align:center; letter-spacing:3px; margin-bottom:20px; color:#987858; }
@@ -3643,25 +3656,25 @@ elif st.session_state.page == "my_room":
                     '<div class="open-book-page"><small>RECORD HOTEL · ARCHIVE ' + number + '</small>'
                     '<div style="text-align:center;font-size:20px;margin:18px 0 24px;">' + ["투숙객 명단", "복도 이용 수칙", "분실물 보관 기록", "새벽의 룸서비스", "객실 안내서", "호텔의 역사", "야간 근무 일지", "퇴실 절차"][selected_book] + '</div>'
                     + [
-                    '프런트에서 받은 명단에는 오늘 체크인한 투숙객이 모두 적혀 있다. 마지막 줄에는 당신의 이름이 있다. 체크인 시간은 내일 오전 3시 17분이다. 아직 도착하지 않은 투숙객의 이름은 적지 않는 것이 이 호텔의 규칙.',
-                    '밤 11시 이후에는 복도 거울을 오래 바라보지 마십시오. 거울 속 복도가 실제보다 길어 보인다면 즉시 시선을 돌리십시오. 거울 속에서 누군가 걸어오더라도 먼저 인사하지 마십시오.',
-                    '분실물 보관실에는 우산, 장갑, 열쇠가 보관되어 있다. 주인을 알 수 없는 물건은 객실로 가져가지 않는다. 특히 열쇠에 자신의 이름이 적혀 있다면 만지지 마십시오.',
-                    '새벽 2시 40분 이후 문을 두드리는 룸서비스는 주문하지 않은 것입니다. 문을 열지 말고 주문한 적이 없다고 한 번만 말하십시오. 같은 질문이 반복되어도 대답하지 마십시오.',
-                    '객실 전화기의 내선 0번은 프런트입니다. 프런트가 먼저 객실로 전화하는 일은 없습니다. 표시창에 자신의 객실 번호가 나타나면 수화기를 들지 마십시오.',
-                    '오래된 사진에는 현재 존재하지 않는 창문이 하나 더 보인다. 사진을 직원에게 보여주지 마십시오. 그 창문은 막힌 것이 아니라 안쪽에서 열리지 않게 잠근 것입니다.',
-                    '야간 직원은 매시간 객실 수를 확인한다. 객실 수가 하나 늘어도 확인하러 가지 않는다. 하나 줄어도 확인하러 가지 않는다. 숫자는 기록만 하고 문은 두드리지 않는다.',
-                    '퇴실할 때 직원이 당신의 이름을 모른다면 알려주지 말고 기록을 확인해 달라고 요청하십시오. 기록에 이름이 없다면 조용히 호텔을 떠나십시오.'
+                    '체크인 명단은 매일 자정에 새로 인쇄한다. 오늘자 명단의 마지막 줄에는 아직 도착하지 않은 투숙객 한 명이 적혀 있다. 체크인 예정 시각은 오전 3시 17분. 객실 번호는 공란으로 남겨 둔다.',
+                    '복도 끝 거울은 엘리베이터를 비추지 않는다. 야간 근무자는 거울에 엘리베이터 문이 보이더라도 확인하러 가지 않는다. 거울 앞에서 발소리가 멈추면 순찰을 중단하고 프런트로 돌아간다.',
+                    '분실물은 접수 날짜와 객실 번호만 기록한다. 주인이 확인되지 않은 열쇠는 폐기하지 않는다. 같은 열쇠가 다음 날 다시 접수되기 때문이다. 열쇠에 적힌 객실은 현재 사용 중인 객실 목록에 없다.',
+                    '오전 2시 40분 이후에는 룸서비스를 운영하지 않는다. 해당 시간에 배달 기록이 생성되면 삭제하지 말고 보관한다. 문을 두드리는 소리가 나더라도 주문 내역을 확인하기 전에는 문을 열지 않는다.',
+                    '내선 0번은 프런트로 연결된다. 객실에서 프런트로 건 전화는 통화 기록에 남는다. 반대로 객실에서 걸려 온 전화가 표시되면 받지 말고 시간을 기록한다. 해당 객실은 비어 있어야 한다.',
+                    '개관 당시 촬영한 객실 사진에는 창문이 하나 더 있다. 현재 도면에는 해당 창문이 표시되어 있지 않다. 벽을 수리한 기록도 없다. 사진 촬영 날짜는 호텔 개관 2년 전으로 확인된다.',
+                    '야간 객실 점검은 층별 객실 수를 세는 것으로 끝낸다. 지난달부터 4층의 객실 수가 매일 한 개씩 다르게 기록된다. 도면과 실제 복도에는 변화가 없다. 해당 층의 점검표는 폐기하지 말 것.',
+                    '퇴실 기록에 이름이 없으면 프런트 직원에게 이름을 말하지 않는다. 숙박 기록을 다시 확인해 달라고 요청하고, 확인이 끝날 때까지 로비에 머문다. 기록이 이미 처리되었다고 안내받으면 객실로 돌아가지 않는다.'
                     ][selected_book] +
                     '</div><div class="open-book-page"><small>CONTINUED · DO NOT COPY</small>'
                     + [
-                    '명단을 다시 보니 마지막 줄 아래에 한 줄이 더 생겼다. 이름은 읽을 수 없지만 객실 번호는 당신의 방과 같다. 잉크는 아직 마르지 않았다.',
-                    '직원이 묻는다면 거울은 원래 하나뿐이었다고 답하십시오. 이 호텔에는 거울이 두 개 있었던 적이 없습니다.',
-                    '오늘 접수된 물건은 젖은 사진 한 장. 사진 뒷면에는 아직 투숙하지 않은 당신의 모습이 찍혀 있다.',
-                    '문밖의 직원이 당신의 목소리를 흉내 낼 수 있습니다. 그 목소리가 안쪽에서 들린다면, 문을 열지 마십시오.',
-                    '어젯밤 3시 17분, 객실 전화가 울렸다. 수화기 너머에서는 누군가 말했다. "문 좀 열어주세요. 제가 안에 있어요."',
-                    '사진 뒷면에는 이렇게 적혀 있다. 창문을 막은 것이 아닙니다. 안에서 누군가 계속 밖을 보고 있었기 때문입니다.',
-                    '오늘 새벽 객실 수는 101개였다. 이 호텔의 객실은 100개다. 일지 마지막에는 "한 명은 이미 나갔다"고 적혀 있다.',
-                    '문을 나서기 전 뒤돌아보지 마십시오. 누군가 당신의 이름을 부르더라도 대답하지 마십시오. 이 호텔은 퇴실한 손님을 다시 부르지 않습니다.'
+                    '다음 날 아침 명단에는 같은 이름이 두 번 인쇄되어 있었다. 한 줄에는 체크인 시간이, 다른 한 줄에는 퇴실 시간이 적혀 있었다. 두 기록의 객실 번호는 같았다.',
+                    '수리 업체가 거울 뒷면을 확인했다. 벽과 거울 사이에는 빈 공간이 없었다. 그런데 거울 표면 안쪽에서 손바닥 자국 네 개가 발견됐다.',
+                    '사진 뒷면에는 객실 번호와 날짜가 적혀 있다. 날짜는 사흘 뒤다. 사진 속 침대 옆 탁자에는 오늘 접수된 열쇠가 놓여 있다.',
+                    '다음 날 근무자가 복도 CCTV를 확인했다. 문 앞에는 아무도 없었다. 녹음에는 문 안쪽에서 직원에게 문을 열어 달라고 말하는 목소리가 남아 있었다.',
+                    '통화 기록에는 발신 번호가 객실 내부 전화로 표시되어 있다. 해당 전화기는 전원이 분리된 상태였고, 수화기는 받침대 위에 놓여 있었다.',
+                    '사진을 촬영한 직원은 개관 전에 퇴사했다. 인사 기록에는 퇴사 날짜만 남아 있다. 퇴사 사유와 마지막 근무 장소는 공란이다.',
+                    '다음 근무자가 객실 수를 다시 확인했다. 100개였다. 다만 4층 점검표에는 어젯밤과 같은 필체로 서명이 하나 추가되어 있었다.',
+                    '퇴실 처리 다음 날, 같은 이름으로 신규 예약이 접수되었다. 예약 요청 사항은 한 줄이었다. "지난번과 같은 객실로 부탁합니다."'
                     ][selected_book] +
                     '<div style="text-align:right;margin-top:28px;color:#987858;">— 야간 보관 기록</div>'
                     '</div></div>', unsafe_allow_html=True
