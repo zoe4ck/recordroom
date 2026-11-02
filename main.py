@@ -711,10 +711,12 @@ div[data-testid="stButton"] > button:hover {
 .st-key-cocktail_menu_grid { max-width:1080px !important; margin:0 auto !important; padding:0 12px !important; }
 .st-key-cocktail_menu_grid [data-testid="stHorizontalBlock"] { align-items:stretch !important; justify-content:center !important; gap:22px !important; }
 .st-key-cocktail_menu_grid [data-testid="column"] { min-width:0 !important; }
-.st-key-cocktail_menu_grid .order-slip { min-height:360px; padding:24px 16px 20px; }
-.st-key-cocktail_menu_grid .mini-drink { width:132px; height:158px; margin:18px auto 4px; }
+.st-key-cocktail_menu_grid .order-slip { min-height:360px; height:360px; padding:22px 16px 18px; display:flex; flex-direction:column; align-items:center; }
+.st-key-cocktail_menu_grid .slip-no { flex:0 0 auto; }
+.st-key-cocktail_menu_grid .slip-content { flex:1 1 auto; width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:4px 0 8px; }
+.st-key-cocktail_menu_grid .mini-drink { width:132px; height:158px; margin:8px auto 2px; }
 .st-key-cocktail_menu_grid .mini-drink .cocktail-svg { overflow:visible; }
-.st-key-cocktail_menu_grid .slip-desc { max-width:205px; }
+.st-key-cocktail_menu_grid .slip-desc { max-width:205px; margin-left:auto; margin-right:auto; }
 @media(max-width:700px) { .st-key-cocktail_menu_grid [data-testid="stHorizontalBlock"] { gap:10px !important; } .st-key-cocktail_menu_grid .order-slip { min-height:320px; padding:18px 8px; } }
 
 .cocktail-header {
@@ -1387,6 +1389,8 @@ div[data-testid="stButton"] > button:hover {
 [data-testid="stSidebar"] { box-shadow: inset -12px 0 30px rgba(0,0,0,.32); }
 [data-testid="stButton"] > button { transition:all .22s ease !important; }
 [data-testid="stButton"] > button:hover { letter-spacing:1.4px !important; box-shadow:0 0 16px rgba(178,126,75,.13) !important; }
+.letter-notice-section { margin-top:28px; }
+.letter-notice-section .mystery-rule-card { margin:0; max-width:none; }
 .mystery-rule-card {
   max-width:760px; margin:24px auto 12px; padding:18px 24px;
   background:linear-gradient(135deg,rgba(31,19,14,.94),rgba(17,11,9,.96));
@@ -3175,14 +3179,7 @@ if st.session_state.page == "lobby":
             '<div class="welcome-line"></div>'
             '<div class="welcome-description">'
             '음악을 듣고, 발견하고, 잠시 머무는 작은 방'
-            '</div></div>'
-            '<div class="mystery-rule-card"><div class="rule-heading">A NOTICE TO ALL GUESTS</div>'
-            '1. 복도 끝 객실의 문은 두드리지 마십시오. 해당 객실은 현재 비어 있습니다.'
-            '<div class="rule-line"></div>'
-            '2. 새벽 2시 이후 프런트에서 객실 번호를 물으면 대답하지 말고 객실로 돌아가십시오.'
-            '<div class="rule-line"></div>'
-            '3. 체크인 기록에 본인이 입력하지 않은 이름이 있어도 직원에게 문의하지 마십시오.'
-            '</div>',
+            '</div></div>',
             unsafe_allow_html=True
         )
         left, center, right = st.columns([2, 1, 2])
@@ -3200,7 +3197,14 @@ if st.session_state.page == "lobby":
             'ROOM SERVICE에서 음악을 검색하거나 취향에 맞는 추천을 받아보세요.<br><br>'
             'MY ROOM에서는 선택한 음악을 감상하고 나만의 공간을 둘러볼 수 있습니다.<br><br>'
             '원하는 메뉴를 선택해 이용을 시작하세요.'
-            '</div><div class="letter-sign">RECORD HOTEL</div>'
+            '</div>'
+            '<div class="letter-notice-section"><div class="mystery-rule-card"><div class="rule-heading">A NOTICE TO ALL GUESTS</div>'
+            '1. 복도 끝 객실의 문은 두드리지 마십시오. 해당 객실은 현재 비어 있습니다.'
+            '<div class="rule-line"></div>'
+            '2. 새벽 2시 이후 프런트에서 객실 번호를 물으면 대답하지 말고 객실로 돌아가십시오.'
+            '<div class="rule-line"></div>'
+            '3. 체크인 기록에 본인이 입력하지 않은 이름이 있어도 직원에게 문의하지 마십시오.'
+            '</div></div><div class="letter-sign">RECORD HOTEL</div>'
             '</div></div>'
         )
         st.markdown(letter_html, unsafe_allow_html=True)
@@ -3301,11 +3305,12 @@ elif st.session_state.page == "choice":
                         st.markdown(
                             f'<div class="order-slip {config["color"]}">'
                             f'<div class="slip-no">ORDER NO. {list(MOOD_CONFIG).index(key)+1:02d}</div>'
-                            f'<div class="slip-label">{config["label"]}</div>'
+                            '<div class="slip-content">'
+                            + f'<div class="slip-label">{config["label"]}</div>'
                             + mini_visual
                             + f'<div class="slip-drink">{config["drink"]}</div>'
                             + f'<div class="slip-desc">{config["description"]}</div>'
-                            + '</div>',
+                            + '</div></div>',
                             unsafe_allow_html=True
                         )
                         st.markdown('<div class="cocktail-order-button-gap"></div>', unsafe_allow_html=True)
