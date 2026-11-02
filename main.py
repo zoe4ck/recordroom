@@ -3197,6 +3197,36 @@ def show_login_warning_dialog():
         st.session_state.auth_warning_open = False
         st.rerun()
 
+
+@st.dialog(" ", width="small")
+def show_login_easter_egg_dialog():
+    st.markdown(
+        '<div style="text-align:center;padding:12px 4px 18px;">'
+        '<div style="font-size:10px;letter-spacing:3px;color:#888;margin-bottom:22px;">'
+        'RECORD HOTEL · FRONT DESK</div>'
+        '<div style="font-family:Georgia,serif;font-size:23px;line-height:1.5;color:#f0eee9;">'
+        '정말 다시 시도하시겠습니까?</div>'
+        '<div style="font-size:12px;color:#888;margin-top:12px;">이 선택은 기록됩니다.</div>'
+        '</div>', unsafe_allow_html=True
+    )
+    yes_col, no_col = st.columns(2)
+    with yes_col:
+        if st.button("예", key="easter_yes", use_container_width=True):
+            st.session_state.auth_fail_count = 0
+            st.session_state.auth_easter_egg_open = False
+            st.session_state.auth_warning_open = False
+            st.session_state.auth_warning_message = ""
+            st.rerun()
+    with no_col:
+        if st.button("아니오", key="easter_no", use_container_width=True):
+            st.session_state.auth_easter_egg_open = False
+            st.session_state.auth_fail_count = 0
+            st.session_state.auth_warning_open = False
+            st.session_state.auth_warning_message = ""
+            st.session_state.my_room_checkin_open = False
+            st.session_state.page = "lobby"
+            st.rerun()
+
 # =========================================================
 # MAIN
 # =========================================================
@@ -3537,46 +3567,51 @@ elif st.session_state.page == "my_room":
                     )
 
             if st.session_state.auth_mode == "login" and st.session_state.get("auth_easter_egg_open", False):
+                # Third failed attempt: make the entire browser viewport black,
+                # then show the confirmation dialog in the true center.
                 st.markdown(
-                    '<style>\n'
-                    'html,body,[data-testid="stAppViewContainer"],[data-testid="stMain"],'
-                    '[data-testid="stHeader"],[data-testid="stSidebar"]{background:#000!important;}\n'
-                    '[data-testid="stMain"]{color:#eee!important;}\n'
-                    '[data-testid="stAppViewContainer"]:after{content:"";position:fixed;inset:0;'
-                    'background:#000;z-index:0;pointer-events:none;}\n'
-                    '[data-testid="stMainBlockContainer"]{position:relative;z-index:2;}\n'
-                    'div[data-testid="stButton"]>button{background:#111!important;color:#eee!important;'
-                    'border:1px solid #777!important;}\n'
-                    '</style>', unsafe_allow_html=True
+                    """<style>
+                    html, body, #root, .stApp,
+                    [data-testid="stApp"],
+                    [data-testid="stAppViewContainer"],
+                    [data-testid="stMain"],
+                    [data-testid="stMainBlockContainer"],
+                    [data-testid="stHeader"],
+                    [data-testid="stSidebar"],
+                    [data-testid="stBottom"] {
+                        background: #000 !important;
+                        background-color: #000 !important;
+                    }
+                    html, body, #root, .stApp,
+                    [data-testid="stAppViewContainer"] {
+                        min-height: 100vh !important;
+                        height: 100% !important;
+                    }
+                    [data-testid="stHeader"], [data-testid="stSidebar"] {
+                        visibility: hidden !important;
+                    }
+                    [data-testid="stMainBlockContainer"] {
+                        min-height: 100vh !important;
+                        padding-top: 0 !important;
+                        padding-bottom: 0 !important;
+                    }
+                    [data-testid="stDialog"] [data-testid="stDialogContent"] {
+                        background: #101010 !important;
+                        color: #eee !important;
+                        border: 1px solid #555 !important;
+                    }
+                    [data-testid="stDialog"] [data-testid="stMarkdownContainer"] p {
+                        color: #eee !important;
+                    }
+                    [data-testid="stDialog"] div[data-testid="stButton"] > button {
+                        background: #171717 !important;
+                        color: #eee !important;
+                        border: 1px solid #777 !important;
+                    }
+                    </style>""",
+                    unsafe_allow_html=True
                 )
-                st.markdown(
-                    '<div style="min-height:52vh;background:#000;color:#ddd;display:flex;'
-                    'flex-direction:column;align-items:center;justify-content:flex-end;text-align:center;'
-                    'padding:28px 18px 22px;font-family:Georgia,serif;">'
-                    '<div style="font-size:10px;letter-spacing:3px;color:#777;margin-bottom:30px;">'
-                    'RECORD HOTEL · FRONT DESK</div>'
-                    '<div style="font-size:23px;letter-spacing:1px;margin-bottom:12px;">'
-                    '정말 다시 시도하시겠습니까?</div>'
-                    '<div style="font:12px/2 sans-serif;color:#777;">'
-                    '선택을 기다리고 있습니다.</div></div>', unsafe_allow_html=True
-                )
-                choice_left, choice_right = st.columns(2)
-                with choice_left:
-                    if st.button("예", key="easter_yes", use_container_width=True):
-                        st.session_state.auth_fail_count = 0
-                        st.session_state.auth_easter_egg_open = False
-                        st.session_state.auth_warning_open = False
-                        st.session_state.auth_warning_message = ""
-                        st.rerun()
-                with choice_right:
-                    if st.button("아니오", key="easter_no", use_container_width=True):
-                        st.session_state.auth_easter_egg_open = False
-                        st.session_state.auth_fail_count = 0
-                        st.session_state.auth_warning_open = False
-                        st.session_state.auth_warning_message = ""
-                        st.session_state.my_room_checkin_open = False
-                        st.session_state.page = "lobby"
-                        st.rerun()
+                show_login_easter_egg_dialog()
                 st.stop()
 
             email = st.text_input("EMAIL", placeholder="guest@example.com", key="auth_email")
