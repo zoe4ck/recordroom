@@ -709,15 +709,30 @@ div[data-testid="stButton"] > button:hover {
    ========================================================= */
 /* Cocktail menu alignment and garnish scale */
 .st-key-cocktail_menu_grid { max-width:1080px !important; margin:0 auto !important; padding:0 12px !important; }
-.st-key-cocktail_menu_grid [data-testid="stHorizontalBlock"] { align-items:stretch !important; justify-content:center !important; gap:22px !important; }
+.st-key-cocktail_menu_grid [data-testid="stHorizontalBlock"] { align-items:stretch !important; justify-content:center !important; gap:18px !important; }
 .st-key-cocktail_menu_grid [data-testid="column"] { min-width:0 !important; }
-.st-key-cocktail_menu_grid .order-slip { min-height:360px; height:360px; padding:22px 16px 18px; display:flex; flex-direction:column; align-items:center; }
-.st-key-cocktail_menu_grid .slip-no { flex:0 0 auto; }
-.st-key-cocktail_menu_grid .slip-content { flex:1 1 auto; width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:4px 0 8px; }
-.st-key-cocktail_menu_grid .mini-drink { width:132px; height:158px; margin:8px auto 2px; }
+.st-key-cocktail_menu_grid .order-slip {
+    min-height:360px; padding:20px 14px 18px; display:flex; flex-direction:column;
+    align-items:center; text-align:center; box-sizing:border-box;
+    background:linear-gradient(155deg,rgba(247,238,219,.075),rgba(247,238,219,.018));
+    border-color:rgba(199,157,109,.38);
+}
+.st-key-cocktail_menu_grid .slip-no { width:100%; text-align:center; flex:0 0 auto; }
+.st-key-cocktail_menu_grid .slip-content {
+    width:100%; flex:1; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; text-align:center; padding:8px 0 2px; box-sizing:border-box;
+}
+.st-key-cocktail_menu_grid .slip-label { margin:0 0 2px !important; min-height:48px; display:flex; align-items:center; justify-content:center; }
+.st-key-cocktail_menu_grid .mini-drink { width:132px; height:158px; margin:5px auto 0 !important; flex:0 0 auto; }
 .st-key-cocktail_menu_grid .mini-drink .cocktail-svg { overflow:visible; }
-.st-key-cocktail_menu_grid .slip-desc { max-width:205px; margin-left:auto; margin-right:auto; }
-@media(max-width:700px) { .st-key-cocktail_menu_grid [data-testid="stHorizontalBlock"] { gap:10px !important; } .st-key-cocktail_menu_grid .order-slip { min-height:320px; padding:18px 8px; } }
+.st-key-cocktail_menu_grid .slip-drink { margin-top:4px !important; }
+.st-key-cocktail_menu_grid .slip-desc { max-width:205px; min-height:40px; margin:7px auto 0 !important; display:flex; align-items:flex-start; justify-content:center; }
+@media(max-width:700px) {
+ .st-key-cocktail_menu_grid [data-testid="stHorizontalBlock"] { gap:10px !important; }
+ .st-key-cocktail_menu_grid .order-slip { min-height:320px; padding:18px 8px; }
+ .st-key-cocktail_menu_grid .mini-drink { transform:scale(.9); transform-origin:center; margin:0 auto !important; }
+ .st-key-cocktail_menu_grid .slip-label { min-height:42px; font-size:14px; }
+}
 
 .cocktail-header {
     width: min(1120px, 92vw);
@@ -1389,8 +1404,6 @@ div[data-testid="stButton"] > button:hover {
 [data-testid="stSidebar"] { box-shadow: inset -12px 0 30px rgba(0,0,0,.32); }
 [data-testid="stButton"] > button { transition:all .22s ease !important; }
 [data-testid="stButton"] > button:hover { letter-spacing:1.4px !important; box-shadow:0 0 16px rgba(178,126,75,.13) !important; }
-.letter-notice-section { margin-top:28px; }
-.letter-notice-section .mystery-rule-card { margin:0; max-width:none; }
 .mystery-rule-card {
   max-width:760px; margin:24px auto 12px; padding:18px 24px;
   background:linear-gradient(135deg,rgba(31,19,14,.94),rgba(17,11,9,.96));
@@ -3193,18 +3206,13 @@ if st.session_state.page == "lobby":
             '<div class="letter-date">RECORD HOTEL · GUEST GUIDE</div>'
             '<div class="letter-title">WELCOME</div>'
             '<div class="letter-body">'
-            '이곳은 음악을 찾고, 듣고, 저장할 수 있는 개인 공간입니다.<br><br>'
-            'ROOM SERVICE에서 음악을 검색하거나 취향에 맞는 추천을 받아보세요.<br><br>'
-            'MY ROOM에서는 선택한 음악을 감상하고 나만의 공간을 둘러볼 수 있습니다.<br><br>'
-            '원하는 메뉴를 선택해 이용을 시작하세요.'
-            '</div>'
-            '<div class="letter-notice-section"><div class="mystery-rule-card"><div class="rule-heading">A NOTICE TO ALL GUESTS</div>'
-            '1. 복도 끝 객실의 문은 두드리지 마십시오. 해당 객실은 현재 비어 있습니다.'
-            '<div class="rule-line"></div>'
-            '2. 새벽 2시 이후 프런트에서 객실 번호를 물으면 대답하지 말고 객실로 돌아가십시오.'
-            '<div class="rule-line"></div>'
-            '3. 체크인 기록에 본인이 입력하지 않은 이름이 있어도 직원에게 문의하지 마십시오.'
-            '</div></div><div class="letter-sign">RECORD HOTEL</div>'
+            'RECORD HOTEL에 오신 것을 환영합니다. 이곳에서 머무는 동안 음악을 듣고, 마음에 드는 곡을 발견하며 편안한 시간을 보내시기 바랍니다. '
+            'ROOM SERVICE에서는 음악을 검색하거나 취향에 맞는 추천을 받을 수 있으며, MY ROOM에서는 선택한 음악을 감상할 수 있습니다. '
+            '다만 투숙 중에는 몇 가지 안내 사항을 지켜주시기 바랍니다. 복도 끝 객실은 현재 비어 있으므로 문을 두드리지 마십시오. '
+            '새벽 2시 이후 프런트에서 객실 번호를 묻더라도 대답하지 말고 곧바로 객실로 돌아가십시오. '
+            '또한 체크인 기록에서 본인이 입력하지 않은 이름을 발견하더라도 직원에게 문의하지 마십시오. '
+            '안내 사항을 확인해 주셔서 감사합니다. 편안한 투숙이 되시길 바랍니다.'
+            '</div><div class="letter-sign">RECORD HOTEL</div>'
             '</div></div>'
         )
         st.markdown(letter_html, unsafe_allow_html=True)
@@ -3306,7 +3314,7 @@ elif st.session_state.page == "choice":
                             f'<div class="order-slip {config["color"]}">'
                             f'<div class="slip-no">ORDER NO. {list(MOOD_CONFIG).index(key)+1:02d}</div>'
                             '<div class="slip-content">'
-                            + f'<div class="slip-label">{config["label"]}</div>'
+                            f'<div class="slip-label">{config["label"]}</div>'
                             + mini_visual
                             + f'<div class="slip-drink">{config["drink"]}</div>'
                             + f'<div class="slip-desc">{config["description"]}</div>'
