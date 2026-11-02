@@ -2146,28 +2146,28 @@ MOOD_CONFIG = {
         "label": "조금 위로가 필요해요",
         "drink": "핑크 칵테일",
         "color": "pink",
-        "description": "마음을 가라앉히고 천천히 쉬어 가는 음악",
+        "description": "잔을 비운 뒤에도 얼음이 남아 있다면, 프런트에 알리지 마세요.",
         "fallback": ["Korean sad ballad", "Korean emotional R&B", "IU ballad", "Korean indie melancholy"],
     },
     "refresh": {
         "label": "산뜻하게 기분 전환",
         "drink": "멜론 소다",
         "color": "green",
-        "description": "가볍고 청량한 분위기로 전환하는 음악",
+        "description": "잔에 거품이 멈춘 뒤에는 창밖을 확인하지 않는 편이 좋습니다.",
         "fallback": ["K-pop refreshing", "Korean upbeat pop", "Korean pop summer", "K-pop bright"],
     },
     "excited": {
         "label": "신나는 노래가 필요해요",
         "drink": "오렌지 주스",
         "color": "orange",
-        "description": "리듬을 타면서 기분을 끌어올리는 음악",
+        "description": "오렌지 조각은 장식입니다. 누군가 먼저 가져갔다면 새것을 요청하지 마세요.",
         "fallback": ["K-pop dance", "Korean hip hop", "K-pop party", "Korean upbeat R&B"],
     },
     "quiet": {
         "label": "조용히 쉬고 싶어요",
         "drink": "네이비 칵테일",
         "color": "navy",
-        "description": "차분하게 집중하고 편하게 쉴 수 있는 음악",
+        "description": "마지막 한 모금은 남겨두세요. 이 객실의 주문은 두 잔으로 기록되어 있습니다.",
         "fallback": ["Korean indie acoustic", "Korean chill R&B", "Korean lo-fi", "Korean soft pop"],
     },
 }
@@ -3200,13 +3200,68 @@ def show_login_warning_dialog():
 
 @st.dialog(" ", width="small")
 def show_login_easter_egg_dialog():
+    # Force the dialog itself to the viewport center, not the upper center.
     st.markdown(
-        '<div style="text-align:center;padding:12px 4px 18px;">'
-        '<div style="font-size:10px;letter-spacing:3px;color:#888;margin-bottom:22px;">'
-        'RECORD HOTEL · FRONT DESK</div>'
-        '<div style="font-family:Georgia,serif;font-size:23px;line-height:1.5;color:#f0eee9;">'
-        '정말 다시 시도하시겠습니까?</div>'
-        '<div style="font-size:12px;color:#888;margin-top:12px;">이 선택은 기록됩니다.</div>'
+        """<style>
+        html, body, #root, .stApp,
+        [data-testid="stApp"], [data-testid="stAppViewContainer"],
+        [data-testid="stMain"], [data-testid="stMainBlockContainer"],
+        [data-testid="stHeader"], [data-testid="stSidebar"],
+        [data-testid="stBottom"] {
+            background:#000 !important; background-color:#000 !important;
+        }
+        html, body, #root, .stApp, [data-testid="stAppViewContainer"] {
+            min-height:100vh !important; height:100% !important;
+        }
+        [data-testid="stHeader"], [data-testid="stSidebar"] { visibility:hidden !important; }
+        [data-testid="stMainBlockContainer"] { min-height:100vh !important; padding:0 !important; }
+        [data-testid="stDialog"] {
+            position:fixed !important; inset:0 !important; width:100vw !important;
+            height:100vh !important; display:flex !important; align-items:center !important;
+            justify-content:center !important; padding:20px !important;
+            background:rgba(0,0,0,1) !important; z-index:999999 !important;
+        }
+        [data-testid="stDialog"] > div,
+        [data-testid="stDialog"] [role="dialog"] {
+            position:relative !important; top:auto !important; left:auto !important;
+            transform:none !important; margin:0 auto !important;
+            width:min(460px, calc(100vw - 40px)) !important;
+            max-width:460px !important; background:#090909 !important;
+            border:1px solid #6b6258 !important; box-shadow:0 0 0 1px #211b16, 0 24px 100px rgba(0,0,0,.95) !important;
+        }
+        [data-testid="stDialog"] [data-testid="stDialogContent"] {
+            background:#090909 !important; color:#eee !important; padding:34px 30px 28px !important;
+        }
+        [data-testid="stDialog"] [data-testid="stMarkdownContainer"] p { color:#eee !important; }
+        [data-testid="stDialog"] div[data-testid="stButton"] > button {
+            min-height:46px !important; background:#171513 !important; color:#eee !important;
+            border:1px solid #8a7c6b !important; border-radius:2px !important;
+            letter-spacing:2px !important;
+        }
+        [data-testid="stDialog"] div[data-testid="stButton"] > button:hover {
+            background:#30251d !important; border-color:#c4a27d !important;
+        }
+        </style>""",
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        '<div style="text-align:center;padding:10px 4px 24px;">'
+        '<div style="font-size:10px;letter-spacing:4px;color:#9b8063;margin-bottom:26px;">'
+        'RECORD HOTEL&nbsp;&nbsp; / &nbsp;&nbsp; NIGHT REGISTER</div>'
+        '<div style="font-family:Georgia,serif;font-size:11px;letter-spacing:3px;color:#777;margin-bottom:16px;">'
+        'GUEST RECORD / STATUS: PENDING</div>'
+        '<div style="font-family:Georgia,serif;font-size:25px;line-height:1.55;color:#f2eee8;">'
+        '확인 절차가 완료되었습니다.</div>'
+        '<div style="font-size:14px;line-height:2;color:#b9b0a5;margin-top:14px;">'
+        '입력하신 정보와 일치하는 투숙객은 없습니다.<br>'
+        '다만 현재 해당 객실에는 투숙객이 머물고 있습니다.<br>'
+        '프런트 기록상 해당 객실은 공실입니다.</div>'
+        '<div style="height:1px;background:#40372e;margin:24px 10px 18px;"></div>'
+        '<div style="font-size:12px;letter-spacing:1px;color:#9b8063;line-height:1.8;">'
+        '객실 확인을 위해 직접 이동하지 마십시오.<br>'
+        '해당 객실은 현재 운영하지 않습니다.<br>'
+        '이전 근무자의 기록은 수정하지 마십시오.<br><br>'
+        '재확인을 요청하시겠습니까?</div>'
         '</div>', unsafe_allow_html=True
     )
     yes_col, no_col = st.columns(2)
@@ -3431,8 +3486,8 @@ elif st.session_state.page == "choice":
                 st.markdown(
                     '<div class="concierge-card">'
                     '<div class="concierge-label">NIGHT CONCIERGE</div>'
-                    '<div class="concierge-title">오늘의 한 잔 옆에<br>어울리는 레코드를 골랐어요.</div>'
-                    '<div class="concierge-copy">현재 대한민국에서 인기 있는 음악을 우선으로, 선택한 기분과 장르에 맞는 실제 Apple 음악 카탈로그의 곡을 골라옵니다.</div>'
+                    '<div class="concierge-title">주문하신 음료와 함께<br>기록된 레코드입니다.</div>'
+                    '<div class="concierge-copy">이 레코드는 객실 기록과 함께 보관됩니다. 재생이 끝나면 바늘을 원위치에 놓아주세요. 다음 손님을 위해서입니다.</div>'
                     '</div>',
                     unsafe_allow_html=True
                 )
@@ -3440,7 +3495,7 @@ elif st.session_state.page == "choice":
                 if not st.session_state.cocktail_recommendation_requested:
                     st.session_state.cocktail_recommendation_requested = True
                     try:
-                        with st.spinner("선택한 기분에 맞는 음악을 찾고 있습니다..."):
+                        with st.spinner("보관 기록에서 해당 객실의 레코드를 확인하고 있습니다..."):
                             recs, used_ai = get_ai_recommendations(mood_key)
                         st.session_state.cocktail_recommendations = recs
                         st.session_state.cocktail_ai_used = used_ai
