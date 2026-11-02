@@ -1436,7 +1436,7 @@ supabase = get_supabase()
 # =========================================================
 
 defaults = {
-    "page": "main",
+    "page": "lobby",
     "main_entered": False,
     "choice_mode": None,
     "room_service_step": "search",
@@ -1460,6 +1460,10 @@ for key, value in defaults.items():
     if key not in st.session_state:
         st.session_state[key] = value
 
+# Migrate an already-open session from the former internal page key.
+if st.session_state.page == "main":
+    st.session_state.page = "lobby"
+
 # One-time migration for guests who were already signed in when the room lobby was added.
 if not st.session_state.room_lobby_migration_v1:
     if st.session_state.logged_in and st.session_state.my_room_view == "fireplace":
@@ -1472,7 +1476,7 @@ if not st.session_state.room_lobby_migration_v1:
 
 def go(page):
     st.session_state.page = page
-    if page != "main":
+    if page != "lobby":
         st.session_state.main_entered = False
     if page != "choice":
         st.session_state.choice_mode = None
@@ -1610,8 +1614,8 @@ with st.sidebar:
         unsafe_allow_html=True
     )
 
-    if st.button("MAIN", key="nav_main"):
-        go("main")
+    if st.button("LOBBY", key="nav_lobby"):
+        go("lobby")
 
     if st.button("ROOM SERVICE", key="nav_choice"):
         go("choice")
@@ -2782,9 +2786,9 @@ def render_room_lobby():
         position:relative !important; width:100vw !important;
         height:calc(100vh - 2px) !important; min-height:620px !important;
         margin-left:calc(50% - 50vw) !important; padding:0 !important;
-        overflow:hidden !important; background-color:#100905 !important;
+        overflow:hidden !important; background-color:#100b09 !important;
         background-image:url("__ROOM_BACKGROUND_URI__") !important;
-        background-size:110% auto !important; background-position:0% center !important;
+        background-size:110% auto !important; background-position:-65% center !important;
         background-repeat:no-repeat !important;
       }
       .st-key-room_fullscreen > div[data-testid="stVerticalBlock"] {
@@ -2793,7 +2797,7 @@ def render_room_lobby():
       }
       .room-photo-background {
         position:absolute; inset:0; width:100%; height:100%; z-index:0;
-        background-size:110% auto !important; background-position:0% center !important; background-repeat:no-repeat;
+        background-size:110% auto !important; background-position:-65% center !important; background-repeat:no-repeat;
       }
       .room-photo-background:after {
         content:""; position:absolute; inset:0;
@@ -2808,15 +2812,15 @@ def render_room_lobby():
         padding:0 !important; margin:0 !important; min-width:0 !important;
       }
       .st-key-room_hotspot_fireplace {
-        left:29% !important; top:63.5% !important;
+        left:35.5% !important; top:63.5% !important;
         width:16.5% !important; height:24% !important;
       }
       .st-key-room_hotspot_lp {
-        left:3.5% !important; top:66.5% !important;
+        left:10% !important; top:66.5% !important;
         width:21% !important; height:15.5% !important;
       }
       .st-key-room_hotspot_bookshelf {
-        left:3.5% !important; top:4.5% !important;
+        left:10% !important; top:4.5% !important;
         width:20% !important; height:63% !important;
       }
       .st-key-room_hotspot_checkout { right:2.4% !important; top:2.5% !important; width:118px !important; }
@@ -2883,11 +2887,11 @@ def render_room_lobby():
         font-family:'Noto Serif KR',serif; font-size:12px; text-shadow:0 2px 8px #000; pointer-events:none; }
       @media (max-width: 760px) {
         .st-key-room_fullscreen { height:calc(100vh - 2px) !important; min-height:600px !important; }
-        .room-photo-background { background-size:cover !important; background-position:0% center !important; }
-        .st-key-room_fullscreen { background-size:cover !important; background-position:0% center !important; }
-        .st-key-room_hotspot_fireplace { left:29% !important; top:63% !important; width:17% !important; height:23% !important; }
-        .st-key-room_hotspot_lp { left:8% !important; top:64.5% !important; width:22% !important; height:15.5% !important; }
-        .st-key-room_hotspot_bookshelf { left:8% !important; top:9% !important; width:21% !important; height:55% !important; }
+        .room-photo-background { background-size:cover !important; background-position:8% center !important; }
+        .st-key-room_fullscreen { background-size:cover !important; background-position:8% center !important; }
+        .st-key-room_hotspot_fireplace { left:35% !important; top:63% !important; width:17% !important; height:23% !important; }
+        .st-key-room_hotspot_lp { left:14% !important; top:64.5% !important; width:22% !important; height:15.5% !important; }
+        .st-key-room_hotspot_bookshelf { left:14% !important; top:9% !important; width:21% !important; height:55% !important; }
         .room-corner-brand { top:15px; left:15px; font-size:13px; }
         .room-bottom-note { left:15px; bottom:15px; font-size:10px; }
       }
@@ -3129,7 +3133,7 @@ document.getElementById("stop").onclick = stopAll;
 # MAIN
 # =========================================================
 
-if st.session_state.page == "main":
+if st.session_state.page == "lobby":
 
     if not st.session_state.main_entered:
         st.markdown(
@@ -3150,15 +3154,14 @@ if st.session_state.page == "main":
     else:
         letter_html = (
             '<div class="letter-wrap"><div class="letter-paper">'
-            '<div class="letter-date">SEPTEMBER 28, 2026</div>'
-            '<div class="letter-title">DEAR, GUEST</div>'
+            '<div class="letter-date">RECORD HOTEL · GUEST GUIDE</div>'
+            '<div class="letter-title">WELCOME</div>'
             '<div class="letter-body">'
-            '이곳에는 조금 오래 머물러도 괜찮습니다.<br><br>'
-            '누군가에게는 스쳐 지나갈 한 곡이, 누군가에게는 오래 기억될 밤이 되기도 하니까요.<br><br>'
-            '이 호텔에서는 당신이 원하는 음악을 찾아 객실로 가져갈 수 있습니다.<br><br>'
-            '그리고 음악이 필요한 밤에는, 당신만의 방에서 조용히 음악을 틀어보세요.<br><br>'
-            '문은 이미 열려 있습니다.'
-            '</div><div class="letter-sign">— RECORD HOTEL</div>'
+            '이곳은 음악을 찾고, 듣고, 저장할 수 있는 개인 공간입니다.<br><br>'
+            'ROOM SERVICE에서 음악을 검색하거나 취향에 맞는 추천을 받아보세요.<br><br>'
+            'MY ROOM에서는 선택한 음악을 감상하고 나만의 공간을 둘러볼 수 있습니다.<br><br>'
+            '원하는 메뉴를 선택해 이용을 시작하세요.'
+            '</div><div class="letter-sign">RECORD HOTEL</div>'
             '</div></div>'
         )
         st.markdown(letter_html, unsafe_allow_html=True)
@@ -3430,7 +3433,7 @@ elif st.session_state.page == "my_room":
                         st.rerun()
             with st.container(key="checkin_gate_back"):
                 if st.button("← BACK TO LOBBY", key="my_room_back_gate", use_container_width=True):
-                    st.session_state.page = "main"
+                    st.session_state.page = "lobby"
                     st.session_state.my_room_checkin_open = False
                     st.rerun()
         else:
@@ -3525,9 +3528,10 @@ elif st.session_state.page == "my_room":
                 go_room_service()
 
 
+        elif view == "bookshelf":
             st.markdown(
                 '<div class="room-service-container"><div class="room-service-title">THE LITTLE LIBRARY</div>'
-                '<div class="room-service-subtitle">책장에 꽂힌 책을 골라 펼쳐보세요.</div></div>',
+                '<div class="room-service-subtitle">열람 가능한 도서는 아래에서 선택할 수 있습니다.</div></div>',
                 unsafe_allow_html=True
             )
             # A decorative shelf with clickable book spines. The book interiors are
@@ -3545,8 +3549,8 @@ elif st.session_state.page == "my_room":
             st.markdown('''
             <style>
             .library-shelf { max-width:900px; margin:12px auto 22px; padding:24px 22px 17px;
-              background:linear-gradient(180deg,#3a2118,#21120e); border:1px solid rgba(210,164,105,.35);
-              border-radius:5px; box-shadow:0 18px 35px rgba(0,0,0,.28),inset 0 1px rgba(255,220,170,.12); }
+              background:linear-gradient(180deg,#302018,#17100d); border:1px solid rgba(178,137,91,.42);
+              border-radius:2px; box-shadow:0 18px 35px rgba(0,0,0,.42),inset 0 1px rgba(255,220,170,.10); }
             .library-shelf-row { display:flex; align-items:flex-end; justify-content:center; gap:8px;
               min-height:190px; padding:8px 8px 12px; border-bottom:13px solid #6b3e28;
               box-shadow:0 8px 10px rgba(0,0,0,.28); }
@@ -3554,7 +3558,10 @@ elif st.session_state.page == "my_room":
               box-shadow:inset 7px 0 8px rgba(0,0,0,.2),2px 3px 5px rgba(0,0,0,.35); position:relative; }
             .library-book:before { content:''; position:absolute; left:8px; top:0; bottom:0; width:1px; background:rgba(255,255,255,.18); }
             .library-book:after { content:''; position:absolute; left:8px; right:8px; top:13px; height:1px; background:rgba(255,230,190,.35); }
-            .library-shelf-caption { color:#c6a27a; text-align:center; font:11px Georgia,serif; letter-spacing:3px; margin-top:14px; }
+            .library-shelf-caption { color:#a98b6b; text-align:center; font:10px Georgia,serif; letter-spacing:3px; margin-top:14px; }
+            .library-note { max-width:900px; margin:0 auto 16px; color:#9b856e; text-align:center;
+              font:11px Georgia,'Noto Serif KR',serif; letter-spacing:1.2px; }
+            .library-book:hover { filter:brightness(1.18); transform:translateY(-3px); }
             .open-book { max-width:760px; margin:22px auto; display:grid; grid-template-columns:1fr 1fr; min-height:260px;
               background:#e8d8b9; color:#5c4635; border-radius:5px 12px 12px 5px; overflow:hidden;
               box-shadow:0 18px 40px rgba(0,0,0,.35); border:1px solid #b99c76; }
@@ -3566,7 +3573,8 @@ elif st.session_state.page == "my_room":
             </style>
             <div class="library-shelf"><div class="library-shelf-row">
             ''' + ''.join([f'<div class="library-book" style="background:linear-gradient(90deg,{c},#211812 92%);"></div>' for _,c,_ in shelf_books]) + '''
-            </div><div class="library-shelf-caption">A COLLECTION OF QUIET MOMENTS</div></div>
+            </div><div class="library-shelf-caption">PRIVATE COLLECTION · GUEST ACCESS</div></div>
+            <div class="library-note">일부 도서는 객실 내에서만 열람할 수 있습니다.</div>
             ''', unsafe_allow_html=True)
             book_cols = st.columns(8)
             for book_index, (number, color, title) in enumerate(shelf_books):
@@ -3594,7 +3602,7 @@ elif st.session_state.page == "my_room":
                 if st.button("책 덮기", key="close_library_book", use_container_width=True):
                     st.session_state.open_library_book = None
                     st.rerun()
-            st.caption("책 표지와 페이지는 객실 분위기를 위한 샘플 디자인입니다.")
+            st.caption("선택한 책을 누르면 열리고, ‘책 덮기’를 누르면 책장으로 돌아갑니다.")
 
             # Keep the existing saved-record collection available separately from physical books.
             st.markdown('<div class="room-tabs" style="margin-top:34px;">MY RECORDS · 객실에 가져온 음반</div>', unsafe_allow_html=True)
