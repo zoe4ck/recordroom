@@ -1635,30 +1635,14 @@ def logout_user():
 # =========================================================
 
 with st.sidebar:
-    st.markdown(
-        '<div class="sidebar-title">RECORD HOTEL</div>',
-        unsafe_allow_html=True
-    )
-    st.markdown(
-        '<div class="sidebar-subtitle">A QUIET PLACE FOR MUSIC</div>',
-        unsafe_allow_html=True
-    )
-    st.markdown(
-        '<div class="sidebar-rule"></div>'
-        '<div style="margin:0 8px 24px;padding:12px 11px;border:1px solid rgba(157,111,69,.22);'
-        'background:rgba(10,7,6,.28);color:#8e765f;font:10px/1.9 Georgia,serif;letter-spacing:1px;">'
-        'GUEST NOTICE<br>AFTER 02:00, PLEASE DO NOT ANSWER THE ROOM PHONE.<br>'
-        '<span style="color:#594538;">— MANAGEMENT</span></div>',
-        unsafe_allow_html=True
-    )
-
-    if st.button("LOBBY", key="nav_lobby"):
+    # 사이드바에는 이동할 페이지 이름만 간결하게 표시합니다.
+    if st.button("LOBBY", key="nav_lobby", use_container_width=True):
         go("lobby")
 
-    if st.button("ROOM SERVICE", key="nav_choice"):
+    if st.button("ROOM SERVICE", key="nav_choice", use_container_width=True):
         go("choice")
 
-    if st.button("MY ROOM", key="nav_my_room"):
+    if st.button("MY ROOM", key="nav_my_room", use_container_width=True):
         go("my_room")
 
 # =========================================================
@@ -3616,6 +3600,17 @@ elif st.session_state.page == "my_room":
             .library-note { max-width:900px; margin:0 auto 16px; color:#9b856e; text-align:center;
               font:11px Georgia,'Noto Serif KR',serif; letter-spacing:1.2px; }
             .library-book:hover { filter:brightness(1.18); transform:translateY(-3px); }
+            .library-shelf-row { display:none !important; }
+            div[class*="st-key-library_book_"] button { height:170px!important; min-height:170px!important; writing-mode:vertical-rl!important; border-radius:4px 6px 2px 2px!important; border:1px solid rgba(235,205,160,.35)!important; color:#ead9b9!important; font-family:Georgia,serif!important; letter-spacing:2px!important; background:linear-gradient(90deg,#17100d,#76513a 24%,#2b1b14 88%)!important; box-shadow:inset 5px 0 7px #0008,2px 4px 8px #0008!important; }
+            div[class*="st-key-library_book_"] button:hover { filter:brightness(1.35); transform:translateY(-5px); }
+            div.st-key-library_book_0 button {background:linear-gradient(90deg,#24100f,#713b36 28%,#281613)!important}
+            div.st-key-library_book_1 button {background:linear-gradient(90deg,#17201c,#34564d 28%,#17201c)!important}
+            div.st-key-library_book_2 button {background:linear-gradient(90deg,#352516,#9a7047 28%,#352516)!important}
+            div.st-key-library_book_3 button {background:linear-gradient(90deg,#171e2a,#39465c 28%,#171e2a)!important}
+            div.st-key-library_book_4 button {background:linear-gradient(90deg,#241912,#70513f 28%,#241912)!important}
+            div.st-key-library_book_5 button {background:linear-gradient(90deg,#202114,#666746 28%,#202114)!important}
+            div.st-key-library_book_6 button {background:linear-gradient(90deg,#2a1518,#87464a 28%,#2a1518)!important}
+            div.st-key-library_book_7 button {background:linear-gradient(90deg,#1b1725,#51465d 28%,#1b1725)!important}
             .open-book { max-width:760px; margin:22px auto; display:grid; grid-template-columns:1fr 1fr; min-height:260px;
               background:#e8d8b9; color:#5c4635; border-radius:5px 12px 12px 5px; overflow:hidden;
               box-shadow:0 18px 40px rgba(0,0,0,.35); border:1px solid #b99c76; }
@@ -3633,30 +3628,45 @@ elif st.session_state.page == "my_room":
             book_cols = st.columns(8)
             for book_index, (number, color, title) in enumerate(shelf_books):
                 with book_cols[book_index]:
-                    if st.button(f"{number} · OPEN", key=f"library_book_{book_index}", help="책 펼쳐보기", use_container_width=True):
-                        st.session_state.open_library_book = book_index
+                    if st.button(number, key=f"library_book_{book_index}", help="이 책을 꺼내 펼치기", use_container_width=True):
+                        current_book = st.session_state.get("open_library_book")
+                        st.session_state.open_library_book = None if current_book == book_index else book_index
                         st.rerun()
             selected_book = st.session_state.get("open_library_book")
+            if selected_book is not None and not (0 <= selected_book < len(shelf_books)):
+                st.session_state.open_library_book = None
+                selected_book = None
             if selected_book is not None:
                 number, color, title = shelf_books[selected_book]
                 st.markdown(
                     '<div class="open-book">'
-                    '<div class="open-book-page"><small>CHAPTER ' + number + '</small>'
-                    '<div style="text-align:center;font-size:20px;margin:18px 0 24px;">' + title + '</div>'
-                    '어떤 날은 아무것도 하지 않는 시간이 가장 좋은 선물이 된다. '
-                    '창밖의 불빛을 바라보며 천천히 페이지를 넘긴다. '
-                    '오늘의 마음을 서두르지 않고 가만히 들여다본다.'
-                    '</div><div class="open-book-page"><small>· · ·</small>'
-                    '작은 순간들은 오래도록 마음에 남는다. '
-                    '따뜻한 차 한 잔, 좋아하는 음악, 그리고 나만의 조용한 공간. '
-                    '이 페이지를 덮은 뒤에도 그 여유가 이어지기를.'
-                    '<div style="text-align:right;margin-top:28px;color:#987858;">— RECORD HOTEL</div>'
+                    '<div class="open-book-page"><small>RECORD HOTEL · ARCHIVE ' + number + '</small>'
+                    '<div style="text-align:center;font-size:20px;margin:18px 0 24px;">' + ["투숙객 명단", "복도 이용 수칙", "분실물 보관 기록", "새벽의 룸서비스", "객실 안내서", "호텔의 역사", "야간 근무 일지", "퇴실 절차"][selected_book] + '</div>'
+                    + [
+                    '프런트에서 받은 명단에는 오늘 체크인한 투숙객이 모두 적혀 있다. 마지막 줄에는 당신의 이름이 있다. 체크인 시간은 내일 오전 3시 17분이다. 아직 도착하지 않은 투숙객의 이름은 적지 않는 것이 이 호텔의 규칙.',
+                    '밤 11시 이후에는 복도 거울을 오래 바라보지 마십시오. 거울 속 복도가 실제보다 길어 보인다면 즉시 시선을 돌리십시오. 거울 속에서 누군가 걸어오더라도 먼저 인사하지 마십시오.',
+                    '분실물 보관실에는 우산, 장갑, 열쇠가 보관되어 있다. 주인을 알 수 없는 물건은 객실로 가져가지 않는다. 특히 열쇠에 자신의 이름이 적혀 있다면 만지지 마십시오.',
+                    '새벽 2시 40분 이후 문을 두드리는 룸서비스는 주문하지 않은 것입니다. 문을 열지 말고 주문한 적이 없다고 한 번만 말하십시오. 같은 질문이 반복되어도 대답하지 마십시오.',
+                    '객실 전화기의 내선 0번은 프런트입니다. 프런트가 먼저 객실로 전화하는 일은 없습니다. 표시창에 자신의 객실 번호가 나타나면 수화기를 들지 마십시오.',
+                    '오래된 사진에는 현재 존재하지 않는 창문이 하나 더 보인다. 사진을 직원에게 보여주지 마십시오. 그 창문은 막힌 것이 아니라 안쪽에서 열리지 않게 잠근 것입니다.',
+                    '야간 직원은 매시간 객실 수를 확인한다. 객실 수가 하나 늘어도 확인하러 가지 않는다. 하나 줄어도 확인하러 가지 않는다. 숫자는 기록만 하고 문은 두드리지 않는다.',
+                    '퇴실할 때 직원이 당신의 이름을 모른다면 알려주지 말고 기록을 확인해 달라고 요청하십시오. 기록에 이름이 없다면 조용히 호텔을 떠나십시오.'
+                    ][selected_book] +
+                    '</div><div class="open-book-page"><small>CONTINUED · DO NOT COPY</small>'
+                    + [
+                    '명단을 다시 보니 마지막 줄 아래에 한 줄이 더 생겼다. 이름은 읽을 수 없지만 객실 번호는 당신의 방과 같다. 잉크는 아직 마르지 않았다.',
+                    '직원이 묻는다면 거울은 원래 하나뿐이었다고 답하십시오. 이 호텔에는 거울이 두 개 있었던 적이 없습니다.',
+                    '오늘 접수된 물건은 젖은 사진 한 장. 사진 뒷면에는 아직 투숙하지 않은 당신의 모습이 찍혀 있다.',
+                    '문밖의 직원이 당신의 목소리를 흉내 낼 수 있습니다. 그 목소리가 안쪽에서 들린다면, 문을 열지 마십시오.',
+                    '어젯밤 3시 17분, 객실 전화가 울렸다. 수화기 너머에서는 누군가 말했다. "문 좀 열어주세요. 제가 안에 있어요."',
+                    '사진 뒷면에는 이렇게 적혀 있다. 창문을 막은 것이 아닙니다. 안에서 누군가 계속 밖을 보고 있었기 때문입니다.',
+                    '오늘 새벽 객실 수는 101개였다. 이 호텔의 객실은 100개다. 일지 마지막에는 "한 명은 이미 나갔다"고 적혀 있다.',
+                    '문을 나서기 전 뒤돌아보지 마십시오. 누군가 당신의 이름을 부르더라도 대답하지 마십시오. 이 호텔은 퇴실한 손님을 다시 부르지 않습니다.'
+                    ][selected_book] +
+                    '<div style="text-align:right;margin-top:28px;color:#987858;">— 야간 보관 기록</div>'
                     '</div></div>', unsafe_allow_html=True
                 )
-                if st.button("책 덮기", key="close_library_book", use_container_width=True):
-                    st.session_state.open_library_book = None
-                    st.rerun()
-            st.caption("선택한 책을 누르면 열리고, ‘책 덮기’를 누르면 책장으로 돌아갑니다.")
+            st.caption("책등을 다시 누르면 책이 덮힙니다.")
 
             # Keep the existing saved-record collection available separately from physical books.
             st.markdown('<div class="room-tabs" style="margin-top:34px;">MY RECORDS · 객실에 가져온 음반</div>', unsafe_allow_html=True)
