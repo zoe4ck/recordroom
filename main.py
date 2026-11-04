@@ -1525,6 +1525,33 @@ div[data-testid="stButton"] > button {
     .fireplace { width: 92vw !important; height: 250px !important; border-width: 10px !important; }
 }
 
+
+/* RECORD HOTEL typography system: one consistent serif family throughout. */
+body, body p, body span, body div, body label, body button, body input,
+body textarea, body select, body h1, body h2, body h3, body h4, body h5,
+body h6, body li, body a, body strong, body em, body small,
+[data-testid="stAppViewContainer"] p,
+[data-testid="stAppViewContainer"] span:not([data-testid="stIconMaterial"]),
+[data-testid="stAppViewContainer"] div,
+[data-testid="stAppViewContainer"] label,
+[data-testid="stAppViewContainer"] button,
+[data-testid="stAppViewContainer"] input,
+[data-testid="stAppViewContainer"] textarea,
+[data-testid="stAppViewContainer"] select,
+[data-testid="stAppViewContainer"] h1,
+[data-testid="stAppViewContainer"] h2,
+[data-testid="stAppViewContainer"] h3,
+[data-testid="stAppViewContainer"] h4,
+[data-testid="stAppViewContainer"] h5,
+[data-testid="stAppViewContainer"] h6,
+[data-testid="stAppViewContainer"] li,
+[data-testid="stAppViewContainer"] a,
+[data-testid="stAppViewContainer"] strong,
+[data-testid="stAppViewContainer"] em,
+[data-testid="stAppViewContainer"] small {
+    font-family: "Cormorant Garamond", "Noto Serif KR", serif !important;
+}
+
 </style>
 """
 
@@ -3067,19 +3094,19 @@ def render_room_lobby():
             unsafe_allow_html=True
         )
         with st.container(key="room_hotspot_fireplace"):
-            if st.button("벽난로", key="room_click_fireplace", use_container_width=True):
+            if st.button("FIREPLACE", key="room_click_fireplace", use_container_width=True):
                 st.session_state.my_room_view = "fireplace"
                 st.rerun()
         with st.container(key="room_hotspot_lp"):
-            if st.button("레코드 플레이어", key="room_click_lp", use_container_width=True):
+            if st.button("LP PLAYER", key="room_click_lp", use_container_width=True):
                 st.session_state.my_room_view = "lp"
                 st.rerun()
         with st.container(key="room_hotspot_bookshelf"):
-            if st.button("서가", key="room_click_shelf", use_container_width=True):
+            if st.button("BOOKSHELF", key="room_click_shelf", use_container_width=True):
                 st.session_state.my_room_view = "bookshelf"
                 st.rerun()
         with st.container(key="room_hotspot_checkout"):
-            if st.button("퇴실 요청", key="room_scene_checkout", use_container_width=True):
+            if st.button("CHECK-OUT", key="room_scene_checkout", use_container_width=True):
                 logout_user()
 
 
@@ -3197,7 +3224,7 @@ def render_room_door():
         st.rerun()
     left, center, right = st.columns([1, 1.5, 1])
     with center:
-        if st.button("← 로비로 돌아가기", key="door_back_lobby", use_container_width=True):
+        if st.button("← BACK TO LOBBY", key="door_back_lobby", use_container_width=True):
             st.session_state.logged_in = False
             st.session_state.current_user = None
             st.session_state.page = "lobby"
@@ -3510,7 +3537,7 @@ def show_login_warning_dialog():
         f'<div style="font-size:13px;line-height:1.8;color:#b9b0a5;margin-top:12px;">{warning_text}</div>'
         '</div>', unsafe_allow_html=True
     )
-    if st.button("확인", key="close_login_warning", use_container_width=True):
+    if st.button("ACKNOWLEDGE", key="close_login_warning", use_container_width=True):
         st.session_state.auth_warning_open = False
         st.rerun()
 
@@ -3689,7 +3716,7 @@ def render_lobby_checkin():
         password_confirm = st.text_input("객실 키 재입력", type="password", placeholder="비밀번호를 다시 입력하세요", key="auth_password_confirm")
 
     if st.session_state.auth_mode == "login":
-        if st.button("객실 키 확인", key="login_submit", use_container_width=True):
+        if st.button("CHECK-IN", key="login_submit", use_container_width=True):
             if not email.strip() or not password:
                 st.warning("필수 항목이 비어 있습니다. 투숙객 정보를 모두 입력해 주십시오.")
             else:
@@ -3718,7 +3745,7 @@ def render_lobby_checkin():
                         st.session_state.auth_warning_open = True
                     st.rerun()
     else:
-        if st.button("투숙객 등록", key="signup_submit", use_container_width=True):
+        if st.button("CREATE ROOM KEY", key="signup_submit", use_container_width=True):
             if not email.strip() or not password:
                 st.warning("필수 항목이 비어 있습니다. 투숙객 정보를 모두 입력해 주십시오.")
             elif password != password_confirm:
@@ -3733,7 +3760,7 @@ def render_lobby_checkin():
                 else:
                     st.error(message)
 
-    if st.button("← 로비로 돌아가기", key="lobby_auth_back", use_container_width=True):
+    if st.button("← BACK TO LOBBY", key="lobby_auth_back", use_container_width=True):
         st.session_state.lobby_auth_open = False
         st.session_state.main_entered = False
         st.session_state.auth_warning_open = False
@@ -3771,7 +3798,7 @@ if st.session_state.page == "lobby":
             '</div></div>'
         )
         st.markdown(letter_html, unsafe_allow_html=True)
-        if st.button("객실로 이동", key="enter_my_room_after_letter", use_container_width=True):
+        if st.button("APPROACH YOUR ROOM", key="enter_my_room_after_letter", use_container_width=True):
             st.session_state.welcome_letter_open = False
             st.session_state.my_room_view = "door"
             st.session_state.page = "my_room"
@@ -3840,7 +3867,7 @@ elif st.session_state.page == "choice":
             '</div>',
             unsafe_allow_html=True
         )
-        if st.button("← 룸서비스로 돌아가기", key="room_service_back_top", use_container_width=True):
+        if st.button("← BACK TO ROOM SERVICE", key="room_service_back_top", use_container_width=True):
             st.session_state.choice_mode = None
             st.session_state.search_results = []
             st.session_state.search_text = ""
@@ -3856,7 +3883,7 @@ elif st.session_state.page == "choice":
                 label_visibility="collapsed", key="music_search_input"
             )
         with button_col:
-            search_clicked = st.button("기록 조회", key="music_search_button", use_container_width=True)
+            search_clicked = st.button("SEARCH", key="music_search_button", use_container_width=True)
 
         search_type = st.radio("조회 기준", ["자동", "가수", "곡"], horizontal=True, label_visibility="collapsed")
         type_map = {"자동": "auto", "가수": "artist", "곡": "song"}
@@ -3900,7 +3927,7 @@ elif st.session_state.page == "choice":
                             unsafe_allow_html=True
                         )
                         st.markdown('<div class="cocktail-order-button-gap"></div>', unsafe_allow_html=True)
-                        if st.button("이 음료를 요청합니다", key=f"order_mood_{key}", use_container_width=True):
+                        if st.button("ORDER THIS", key=f"order_mood_{key}", use_container_width=True):
                             st.session_state.cocktail_mood = key
                             st.session_state.cocktail_sips = 0
                             st.session_state.cocktail_recommendations = []
@@ -4028,7 +4055,7 @@ elif st.session_state.page == "choice":
                     )
 
             st.write("")
-            if st.button("← 룸서비스로 돌아가기", key="recommend_back", use_container_width=True):
+            if st.button("← BACK TO ROOM SERVICE", key="recommend_back", use_container_width=True):
                 go_room_service()
 
 # =========================================================
@@ -4055,7 +4082,7 @@ elif st.session_state.page == "my_room":
         elif view == "room":
             render_room_lobby()
             st.markdown('<div style="height:18px"></div>', unsafe_allow_html=True)
-            if st.button("← 룸서비스로 돌아가기", key="my_room_back_room", use_container_width=True):
+            if st.button("← BACK TO ROOM SERVICE", key="my_room_back_room", use_container_width=True):
                 go_room_service()
 
         elif view == "fireplace":
@@ -4063,10 +4090,10 @@ elif st.session_state.page == "my_room":
             st.markdown('<div style="height:18px"></div>', unsafe_allow_html=True)
             nav_left, nav_center, nav_right = st.columns([1,2,1])
             with nav_center:
-                if st.button("← 객실로 돌아가기", key="back_room_from_fire", use_container_width=True):
+                if st.button("← BACK TO MY ROOM", key="back_room_from_fire", use_container_width=True):
                     st.session_state.my_room_view = "room"
                     st.rerun()
-            if st.button("← 룸서비스로 돌아가기", key="my_room_back_fire", use_container_width=True):
+            if st.button("← BACK TO ROOM SERVICE", key="my_room_back_fire", use_container_width=True):
                 go_room_service()
 
         elif view == "lp":
@@ -4074,10 +4101,10 @@ elif st.session_state.page == "my_room":
             render_lp_player(st.session_state.current_record)
             nav_left, nav_center, nav_right = st.columns([1,2,1])
             with nav_center:
-                if st.button("← 객실로 돌아가기", key="back_room_from_lp", use_container_width=True):
+                if st.button("← BACK TO MY ROOM", key="back_room_from_lp", use_container_width=True):
                     st.session_state.my_room_view = "room"
                     st.rerun()
-            if st.button("← 룸서비스로 돌아가기", key="my_room_back_lp", use_container_width=True):
+            if st.button("← BACK TO ROOM SERVICE", key="my_room_back_lp", use_container_width=True):
                 go_room_service()
 
 
@@ -4202,19 +4229,19 @@ elif st.session_state.page == "my_room":
                             unsafe_allow_html=True
                         )
                     with record_action_col:
-                        if st.button("LP에서 재생", key=f"cabinet_play_{record_index}_{record.get('track_id')}", use_container_width=True):
+                        if st.button("PLAY ON LP", key=f"cabinet_play_{record_index}_{record.get('track_id')}", use_container_width=True):
                             st.session_state.current_record = record
                             st.session_state.my_room_view = "lp"
                             st.rerun()
-                        if st.button("보관함에서 반출", key=f"cabinet_return_{record_index}_{record.get('track_id')}", use_container_width=True):
+                        if st.button("RETURN", key=f"cabinet_return_{record_index}_{record.get('track_id')}", use_container_width=True):
                             remove_from_room(record.get("track_id"))
                             st.rerun()
 
             nav_left, nav_center, nav_right = st.columns([1,2,1])
             with nav_center:
-                if st.button("← 객실로 돌아가기", key="back_room_from_shelf", use_container_width=True):
+                if st.button("← BACK TO MY ROOM", key="back_room_from_shelf", use_container_width=True):
                     st.session_state.my_room_view = "room"
                     st.rerun()
-            if st.button("← 룸서비스로 돌아가기", key="my_room_back_shelf", use_container_width=True):
+            if st.button("← BACK TO ROOM SERVICE", key="my_room_back_shelf", use_container_width=True):
                 go_room_service()
 
