@@ -2987,49 +2987,120 @@ def render_room_lobby():
                 logout_user()
 
 
+# Interactive hotel key-card component. The card must physically overlap the reader.
+room_keycard_component = st.components.v2.component(
+    name="record_hotel_room_keycard_drag",
+    html="""
+      <div class="key-scene">
+        <div class="room-no">ROOM 207</div>
+        <div class="door-wrap">
+          <div class="door">
+            <div class="door-inset"></div>
+            <div class="handle"></div>
+            <div class="reader" id="key-reader">
+              <div class="reader-led"></div><div class="reader-slot"></div>
+              <div class="reader-label">KEY</div>
+            </div>
+          </div>
+        </div>
+        <div class="key-area">
+          <div class="key-hint">카드키를 마우스로 잡아 도어락에 끌어다 대세요.</div>
+          <div class="guest-card" id="guest-card" role="button" aria-label="호텔 객실 카드키를 드래그하세요" tabindex="0">
+            <div class="chip"></div><div class="card-small">RECORD HOTEL</div>
+            <div class="card-large">GUEST KEY</div><div class="card-room">ROOM 207</div>
+          </div>
+          <div class="drag-status" id="drag-status">PLEASE PRESENT YOUR ROOM KEY</div>
+        </div>
+        <div class="unlock-message" id="unlock-message">ACCESS GRANTED</div>
+      </div>
+    """,
+    css="""
+      .key-scene {box-sizing:border-box;min-height:610px;padding:28px 18px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;text-align:center;color:#d8bd98;background:radial-gradient(ellipse at 50% 45%,#493021 0%,#281911 48%,#120c09 100%);border:1px solid rgba(191,145,91,.18);font-family:Georgia,serif;}
+      .room-no {font-size:13px;letter-spacing:5px;color:#b9956c;margin-bottom:18px;}
+      .door-wrap {width:min(360px,85vw);height:340px;display:flex;align-items:center;justify-content:center;}
+      .door {width:100%;height:100%;position:relative;border:5px solid #4b3020;box-sizing:border-box;background:linear-gradient(90deg,#1a100c,#382316 18%,#28190f 50%,#3b2618 82%,#1a100c);box-shadow:inset 0 0 0 2px rgba(206,164,111,.14),0 22px 55px #080504;}
+      .door-inset {position:absolute;inset:18px;border:1px solid rgba(195,151,99,.28);pointer-events:none;}
+      .handle {position:absolute;right:34px;top:52%;width:12px;height:82px;border-radius:8px;background:linear-gradient(90deg,#6d4c2c,#d2ad72,#6d4c2c);box-shadow:0 2px 8px #090604;}
+      .reader {position:absolute;right:76px;top:47%;width:58px;height:88px;border-radius:6px;background:linear-gradient(135deg,#252321,#090909);border:1px solid #92704b;box-shadow:0 0 0 4px rgba(0,0,0,.18);transition:box-shadow .2s,border-color .2s;}
+      .reader.ready {border-color:#d6b477;box-shadow:0 0 18px rgba(224,181,111,.55),0 0 0 4px rgba(0,0,0,.18);}
+      .reader-led {width:8px;height:8px;border-radius:50%;background:#c69b61;margin:12px auto 8px;box-shadow:0 0 10px #d8a45c;}
+      .reader-slot {width:29px;height:3px;background:#8d765b;margin:0 auto;}
+      .reader-label {font:8px Georgia,serif;letter-spacing:2px;color:#8c795f;margin-top:10px;}
+      .key-area {position:relative;width:min(480px,94vw);min-height:160px;margin-top:8px;display:flex;flex-direction:column;align-items:center;}
+      .key-hint {font-family:'Noto Serif KR',serif;font-size:13px;letter-spacing:.5px;color:#c5a782;margin:0 8px 14px;}
+      .guest-card {width:190px;height:116px;box-sizing:border-box;border-radius:10px;position:relative;touch-action:none;user-select:none;cursor:grab;background:linear-gradient(135deg,#e0c99e,#b18b5d 58%,#765536);color:#302013;border:1px solid #ead8b6;box-shadow:0 12px 28px rgba(0,0,0,.48);transform:rotate(-4deg);z-index:3;transition:box-shadow .15s;}
+      .guest-card:before {content:'';position:absolute;inset:8px;border:1px solid rgba(67,43,24,.38);border-radius:5px;pointer-events:none;}
+      .guest-card.dragging {cursor:grabbing;box-shadow:0 20px 35px rgba(0,0,0,.65);transform:rotate(0deg) scale(1.04);}
+      .chip {position:absolute;left:18px;top:18px;width:25px;height:19px;border:1px solid #725637;border-radius:3px;background:linear-gradient(135deg,#b9a078,#d8c49b);}
+      .card-small {position:absolute;right:15px;top:19px;font-size:8px;letter-spacing:1.5px;}
+      .card-large {position:absolute;left:18px;bottom:29px;font-size:15px;letter-spacing:2.5px;}
+      .card-room {position:absolute;left:19px;bottom:14px;font-size:8px;letter-spacing:2px;}
+      .drag-status {font-size:10px;letter-spacing:2px;color:#80664c;margin-top:13px;}
+      .unlock-message {display:none;margin-top:10px;color:#e4c58f;font-size:14px;letter-spacing:4px;text-shadow:0 0 14px #d5a35d;}
+      .unlock-message.show {display:block;}
+      @media(max-width:600px){.key-scene{min-height:570px;padding:20px 10px}.door-wrap{height:300px}.reader{right:64px}.guest-card{width:178px;height:108px}}
+    """,
+    js="""
+      export default function(component) {
+        const { parentElement, setTriggerValue } = component;
+        const root = parentElement;
+        const card = root.querySelector('#guest-card');
+        const reader = root.querySelector('#key-reader');
+        const status = root.querySelector('#drag-status');
+        const message = root.querySelector('#unlock-message');
+        if (!card || card.dataset.bound === '1') return;
+        card.dataset.bound = '1';
+        let dragging = false, startX = 0, startY = 0, cardX = 0, cardY = 0;
+        const resetPosition = () => { card.style.position='relative'; card.style.left='0px'; card.style.top='0px'; card.style.margin='0 auto'; card.style.transform='rotate(-4deg)'; };
+        card.addEventListener('pointerdown', (e) => {
+          if (card.dataset.unlocked === '1') return;
+          e.preventDefault(); dragging = true; card.setPointerCapture(e.pointerId);
+          const rect = card.getBoundingClientRect();
+          startX=e.clientX; startY=e.clientY; cardX=rect.left; cardY=rect.top;
+          card.classList.add('dragging'); card.style.position='fixed'; card.style.left=rect.left+'px'; card.style.top=rect.top+'px'; card.style.margin='0'; card.style.width=rect.width+'px'; card.style.height=rect.height+'px'; card.style.zIndex='99999';
+          card.style.transform='rotate(0deg) scale(1.04)';
+        });
+        card.addEventListener('pointermove', (e) => {
+          if (!dragging) return;
+          card.style.left=(cardX + e.clientX-startX)+'px'; card.style.top=(cardY + e.clientY-startY)+'px';
+          const a=card.getBoundingClientRect(), b=reader.getBoundingClientRect();
+          const hit=!(a.right<b.left || a.left>b.right || a.bottom<b.top || a.top>b.bottom);
+          reader.classList.toggle('ready', hit);
+          status.textContent=hit ? 'CARD DETECTED · RELEASE TO UNLOCK' : 'MOVE THE CARD TO THE DOOR LOCK';
+        });
+        const finish = () => {
+          if (!dragging) return; dragging=false; card.classList.remove('dragging');
+          const a=card.getBoundingClientRect(), b=reader.getBoundingClientRect();
+          const hit=!(a.right<b.left || a.left>b.right || a.bottom<b.top || a.top>b.bottom);
+          if (hit) {
+            card.dataset.unlocked='1'; reader.classList.add('ready'); status.textContent='ROOM KEY ACCEPTED'; message.classList.add('show');
+            card.style.position='relative'; card.style.left='0'; card.style.top='0'; card.style.margin='0 auto'; card.style.zIndex='3';
+            setTimeout(() => setTriggerValue('unlocked', true), 650);
+          } else { reader.classList.remove('ready'); status.textContent='PLEASE PRESENT YOUR ROOM KEY'; resetPosition(); }
+        };
+        card.addEventListener('pointerup', finish);
+        card.addEventListener('pointercancel', finish);
+        card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); status.textContent='카드키를 도어락까지 드래그해 주세요.'; } });
+      }
+    """,
+)
+
+
 def render_room_door():
-    """A hotel-room door and key-card reader shown before the private room unlocks."""
+    """Show a draggable guest key card; unlock only when it overlaps the reader."""
     st.markdown("""
-    <style>
-      [data-testid="stSidebar"], [data-testid="stHeader"] {display:none !important;}
-      .main .block-container {max-width:920px !important; padding:34px 22px 24px !important;}
-      .door-stage {min-height:610px; display:flex; flex-direction:column; align-items:center; justify-content:center;
-        color:#d8bd98; text-align:center; position:relative; overflow:hidden; border:1px solid rgba(191,145,91,.18);
-        background:radial-gradient(ellipse at 50% 45%,#493021 0%,#281911 48%,#120c09 100%);}
-      .door-number {font:13px Georgia,serif; letter-spacing:5px; color:#b9956c; margin-bottom:20px;}
-      .door-panel {width:min(340px,76vw); height:390px; position:relative; border:5px solid #4b3020;
-        background:linear-gradient(90deg,#1a100c,#382316 18%,#28190f 50%,#3b2618 82%,#1a100c);
-        box-shadow:inset 0 0 0 2px rgba(206,164,111,.14),0 22px 55px #080504;}
-      .door-panel:before {content:""; position:absolute; inset:18px; border:1px solid rgba(195,151,99,.28);}
-      .door-handle {position:absolute; right:34px; top:52%; width:12px; height:82px; border-radius:8px;
-        background:linear-gradient(90deg,#6d4c2c,#d2ad72,#6d4c2c); box-shadow:0 2px 8px #090604;}
-      .reader {position:absolute; left:calc(50% - 24px); top:48%; width:48px; height:76px; border-radius:5px;
-        background:linear-gradient(135deg,#252321,#090909); border:1px solid #92704b; box-shadow:0 0 0 4px rgba(0,0,0,.18);}
-      .reader-light {width:7px;height:7px;border-radius:50%;background:#c69b61;margin:11px auto 7px;box-shadow:0 0 10px #d8a45c;}
-      .reader-slot {width:25px;height:2px;background:#8d765b;margin:0 auto;}
-      .door-card {width:180px;height:112px;border-radius:9px; margin:25px auto 0; position:relative;
-        background:linear-gradient(135deg,#d6bd91,#9e7950 58%,#6d4d31); color:#302013;
-        border:1px solid #e6d2ac; box-shadow:0 12px 28px rgba(0,0,0,.42); transform:rotate(-5deg);}
-      .door-card:before {content:"";position:absolute;inset:8px;border:1px solid rgba(67,43,24,.38);border-radius:5px;}
-      .card-chip {position:absolute;left:17px;top:18px;width:23px;height:18px;border:1px solid #725637;border-radius:3px;}
-      .card-name {position:absolute;left:17px;bottom:16px;text-align:left;font:11px Georgia,serif;letter-spacing:2px;}
-      .door-instruction {font:13px 'Noto Serif KR',serif;letter-spacing:1px;color:#c5a782;margin:25px 12px 4px;}
-      .door-caption {font:10px Georgia,serif;letter-spacing:2px;color:#80664c;margin-top:8px;}
-      div[data-testid="stButton"] button[kind="primary"] {background:#2c1b11 !important;color:#e2c49a !important;border:1px solid #a47d50 !important;letter-spacing:3px !important;}
-    </style>
-    <div class="door-stage">
-      <div class="door-number">ROOM 207</div>
-      <div class="door-panel"><div class="reader"><div class="reader-light"></div><div class="reader-slot"></div></div><div class="door-handle"></div></div>
-      <div class="door-card"><div class="card-chip"></div><div class="card-name">RECORD HOTEL<br>GUEST KEY</div></div>
-      <div class="door-instruction">객실 카드키를 도어락에 대어 주십시오.</div>
-      <div class="door-caption">PLEASE PRESENT YOUR ROOM KEY</div>
-    </div>
+      <style>
+        [data-testid="stSidebar"], [data-testid="stHeader"] {display:none !important;}
+        .main .block-container {max-width:920px !important;padding:34px 22px 24px !important;}
+        div[data-testid="stButton"] button {background:#2c1b11 !important;color:#e2c49a !important;border:1px solid #a47d50 !important;letter-spacing:3px !important;}
+      </style>
     """, unsafe_allow_html=True)
+    result = room_keycard_component(key="room_keycard_drag")
+    if getattr(result, "unlocked", False):
+        st.session_state.my_room_view = "room"
+        st.rerun()
     left, center, right = st.columns([1, 1.5, 1])
     with center:
-        if st.button("TAP KEY CARD · 객실 잠금 해제", key="tap_room_key", type="primary", use_container_width=True):
-            st.session_state.my_room_view = "room"
-            st.rerun()
         if st.button("← BACK TO LOBBY", key="door_back_lobby", use_container_width=True):
             st.session_state.logged_in = False
             st.session_state.current_user = None
