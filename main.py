@@ -2987,6 +2987,57 @@ def render_room_lobby():
                 logout_user()
 
 
+def render_room_door():
+    """A hotel-room door and key-card reader shown before the private room unlocks."""
+    st.markdown("""
+    <style>
+      [data-testid="stSidebar"], [data-testid="stHeader"] {display:none !important;}
+      .main .block-container {max-width:920px !important; padding:34px 22px 24px !important;}
+      .door-stage {min-height:610px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+        color:#d8bd98; text-align:center; position:relative; overflow:hidden; border:1px solid rgba(191,145,91,.18);
+        background:radial-gradient(ellipse at 50% 45%,#493021 0%,#281911 48%,#120c09 100%);}
+      .door-number {font:13px Georgia,serif; letter-spacing:5px; color:#b9956c; margin-bottom:20px;}
+      .door-panel {width:min(340px,76vw); height:390px; position:relative; border:5px solid #4b3020;
+        background:linear-gradient(90deg,#1a100c,#382316 18%,#28190f 50%,#3b2618 82%,#1a100c);
+        box-shadow:inset 0 0 0 2px rgba(206,164,111,.14),0 22px 55px #080504;}
+      .door-panel:before {content:""; position:absolute; inset:18px; border:1px solid rgba(195,151,99,.28);}
+      .door-handle {position:absolute; right:34px; top:52%; width:12px; height:82px; border-radius:8px;
+        background:linear-gradient(90deg,#6d4c2c,#d2ad72,#6d4c2c); box-shadow:0 2px 8px #090604;}
+      .reader {position:absolute; left:calc(50% - 24px); top:48%; width:48px; height:76px; border-radius:5px;
+        background:linear-gradient(135deg,#252321,#090909); border:1px solid #92704b; box-shadow:0 0 0 4px rgba(0,0,0,.18);}
+      .reader-light {width:7px;height:7px;border-radius:50%;background:#c69b61;margin:11px auto 7px;box-shadow:0 0 10px #d8a45c;}
+      .reader-slot {width:25px;height:2px;background:#8d765b;margin:0 auto;}
+      .door-card {width:180px;height:112px;border-radius:9px; margin:25px auto 0; position:relative;
+        background:linear-gradient(135deg,#d6bd91,#9e7950 58%,#6d4d31); color:#302013;
+        border:1px solid #e6d2ac; box-shadow:0 12px 28px rgba(0,0,0,.42); transform:rotate(-5deg);}
+      .door-card:before {content:"";position:absolute;inset:8px;border:1px solid rgba(67,43,24,.38);border-radius:5px;}
+      .card-chip {position:absolute;left:17px;top:18px;width:23px;height:18px;border:1px solid #725637;border-radius:3px;}
+      .card-name {position:absolute;left:17px;bottom:16px;text-align:left;font:11px Georgia,serif;letter-spacing:2px;}
+      .door-instruction {font:13px 'Noto Serif KR',serif;letter-spacing:1px;color:#c5a782;margin:25px 12px 4px;}
+      .door-caption {font:10px Georgia,serif;letter-spacing:2px;color:#80664c;margin-top:8px;}
+      div[data-testid="stButton"] button[kind="primary"] {background:#2c1b11 !important;color:#e2c49a !important;border:1px solid #a47d50 !important;letter-spacing:3px !important;}
+    </style>
+    <div class="door-stage">
+      <div class="door-number">ROOM 207</div>
+      <div class="door-panel"><div class="reader"><div class="reader-light"></div><div class="reader-slot"></div></div><div class="door-handle"></div></div>
+      <div class="door-card"><div class="card-chip"></div><div class="card-name">RECORD HOTEL<br>GUEST KEY</div></div>
+      <div class="door-instruction">객실 카드키를 도어락에 대어 주십시오.</div>
+      <div class="door-caption">PLEASE PRESENT YOUR ROOM KEY</div>
+    </div>
+    """, unsafe_allow_html=True)
+    left, center, right = st.columns([1, 1.5, 1])
+    with center:
+        if st.button("TAP KEY CARD · 객실 잠금 해제", key="tap_room_key", type="primary", use_container_width=True):
+            st.session_state.my_room_view = "room"
+            st.rerun()
+        if st.button("← BACK TO LOBBY", key="door_back_lobby", use_container_width=True):
+            st.session_state.logged_in = False
+            st.session_state.current_user = None
+            st.session_state.page = "lobby"
+            st.session_state.lobby_auth_open = False
+            st.rerun()
+
+
 def render_fireplace():
 
     st.markdown(
@@ -3542,9 +3593,9 @@ if st.session_state.page == "lobby":
             '</div></div>'
         )
         st.markdown(letter_html, unsafe_allow_html=True)
-        if st.button("ENTER MY ROOM", key="enter_my_room_after_letter", use_container_width=True):
+        if st.button("APPROACH YOUR ROOM", key="enter_my_room_after_letter", use_container_width=True):
             st.session_state.welcome_letter_open = False
-            st.session_state.my_room_view = "room"
+            st.session_state.my_room_view = "door"
             st.session_state.page = "my_room"
             st.rerun()
 
@@ -3820,7 +3871,10 @@ elif st.session_state.page == "my_room":
 
         view = st.session_state.my_room_view
 
-        if view == "room":
+        if view == "door":
+            render_room_door()
+
+        elif view == "room":
             render_room_lobby()
             st.markdown('<div style="height:18px"></div>', unsafe_allow_html=True)
             if st.button("← BACK TO ROOM SERVICE", key="my_room_back_room", use_container_width=True):
