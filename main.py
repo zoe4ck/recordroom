@@ -1552,6 +1552,67 @@ body h6, body li, body a, body strong, body em, body small,
     font-family: "Cormorant Garamond", "Noto Serif KR", serif !important;
 }
 
+
+/* FINAL GLOBAL TYPE + BUTTON FIT: keep every label readable inside its button. */
+[data-testid="stAppViewContainer"] :is(p, span, div, label, button, input, textarea, select, h1, h2, h3, h4, h5, h6, li, a, strong, em, small),
+[data-testid="stSidebar"] :is(p, span, div, label, button, input, textarea, select, h1, h2, h3, h4, h5, h6, li, a, strong, em, small) {
+    font-family: "Cormorant Garamond", "Noto Serif KR", serif !important;
+}
+
+/* Buttons wrap long English labels instead of clipping or overflowing. */
+div[data-testid="stButton"] > button,
+div[data-testid="stFormSubmitButton"] > button {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 44px !important;
+    height: auto !important;
+    padding: 9px 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+    line-height: 1.18 !important;
+    font-size: clamp(11px, 1.05vw, 14px) !important;
+    letter-spacing: clamp(.4px, .12vw, 1.4px) !important;
+    font-family: "Cormorant Garamond", "Noto Serif KR", serif !important;
+}
+div[data-testid="stButton"] > button p,
+div[data-testid="stButton"] > button span,
+div[data-testid="stFormSubmitButton"] > button p,
+div[data-testid="stFormSubmitButton"] > button span {
+    width: 100% !important;
+    margin: 0 !important;
+    line-height: 1.18 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    text-align: center !important;
+    font-family: "Cormorant Garamond", "Noto Serif KR", serif !important;
+}
+/* Preserve the tall, vertical book-spine controls. */
+div[class*="st-key-library_book_"] button {
+    display: block !important;
+    height: 218px !important;
+    min-height: 218px !important;
+    padding: 8px 4px !important;
+    writing-mode: vertical-rl !important;
+    overflow-wrap: normal !important;
+    font-size: 13px !important;
+    letter-spacing: 2px !important;
+}
+@media (max-width: 760px) {
+    div[data-testid="stButton"] > button,
+    div[data-testid="stFormSubmitButton"] > button {
+        min-height: 42px !important;
+        padding: 8px 7px !important;
+        font-size: 12px !important;
+        letter-spacing: .5px !important;
+    }
+}
+
 </style>
 """
 
@@ -2770,7 +2831,7 @@ def display_results(results):
         with col_action:
             if preview_url:
                 if st.button(
-                    "객실로 전달",
+                    "SEND TO ROOM",
                     key=f"take_record_{index}_{result.get('trackId')}",
                     use_container_width=True
                 ):
@@ -3606,14 +3667,14 @@ def show_login_easter_egg_dialog():
     )
     yes_col, no_col = st.columns(2)
     with yes_col:
-        if st.button("예", key="easter_yes", use_container_width=True):
+        if st.button("YES", key="easter_yes", use_container_width=True):
             st.session_state.auth_fail_count = 0
             st.session_state.auth_easter_egg_open = False
             st.session_state.auth_warning_open = False
             st.session_state.auth_warning_message = ""
             st.rerun()
     with no_col:
-        if st.button("아니오", key="easter_no", use_container_width=True):
+        if st.button("NO", key="easter_no", use_container_width=True):
             st.session_state.auth_easter_egg_open = False
             st.session_state.auth_fail_count = 0
             st.session_state.auth_warning_open = False
@@ -3842,12 +3903,12 @@ elif st.session_state.page == "choice":
         with st.container(key="room_service_actions"):
             left, right = st.columns(2, gap="large")
             with left:
-                if st.button("레코드 열람", key="listen_choice", use_container_width=True):
+                if st.button("LISTEN TO RECORDS", key="listen_choice", use_container_width=True):
                     st.session_state.choice_mode = "listen"
                     st.session_state.room_service_step = "search"
                     st.rerun()
             with right:
-                if st.button("컨시어지 추천", key="recommend_choice", use_container_width=True):
+                if st.button("CONCIERGE RECOMMENDATION", key="recommend_choice", use_container_width=True):
                     st.session_state.choice_mode = "recommend"
                     st.session_state.cocktail_mood = None
                     st.session_state.cocktail_sips = 0
@@ -3935,7 +3996,7 @@ elif st.session_state.page == "choice":
                             st.rerun()
 
         else:
-            if st.button("← 주문 목록으로 돌아가기", key="cocktail_back_top", use_container_width=True):
+            if st.button("← BACK TO DRINK MENU", key="cocktail_back_top", use_container_width=True):
                 st.session_state.cocktail_mood = None
                 st.session_state.cocktail_sips = 0
                 st.session_state.cocktail_recommendations = []
@@ -3974,12 +4035,12 @@ elif st.session_state.page == "choice":
                 st.write("")
                 sip_col, refill_col = st.columns(2, gap="small")
                 with sip_col:
-                    if st.button("한 모금 마시기", key="take_sip", use_container_width=True):
+                    if st.button("TAKE A SIP", key="take_sip", use_container_width=True):
                         if sips < 6:
                             st.session_state.cocktail_sips += 1
                         st.rerun()
                 with refill_col:
-                    if st.button("처음 상태로", key="refill_drink", use_container_width=True):
+                    if st.button("REFILL", key="refill_drink", use_container_width=True):
                         st.session_state.cocktail_sips = 0
                         st.rerun()
 
@@ -4037,7 +4098,7 @@ elif st.session_state.page == "choice":
                                 st.audio(result["previewUrl"])
 
                             if st.button(
-                                "객실로 전달",
+                                "SEND TO ROOM",
                                 key=f"cocktail_take_{index}_{result.get('trackId')}",
                                 use_container_width=True
                             ):
