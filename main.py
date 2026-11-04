@@ -723,14 +723,21 @@ div[data-testid="stButton"] > button:hover {
     justify-content:center; text-align:center; padding:8px 0 2px; box-sizing:border-box;
 }
 .st-key-cocktail_menu_grid .slip-label { margin:0 0 2px !important; min-height:48px; display:flex; align-items:center; justify-content:center; }
-.st-key-cocktail_menu_grid .mini-drink { width:132px; height:158px; margin:5px auto 0 !important; flex:0 0 auto; }
-.st-key-cocktail_menu_grid .mini-drink .cocktail-svg { overflow:visible; }
+.st-key-cocktail_menu_grid .mini-drink {
+    width:168px; height:210px; margin:5px auto 0 !important;
+    flex:0 0 auto; display:flex; align-items:center; justify-content:center;
+    position:relative; left:0; transform:none;
+}
+.st-key-cocktail_menu_grid .mini-drink .cocktail-svg {
+    display:block; margin:0 auto !important; overflow:visible;
+    flex:0 0 auto;
+}
 .st-key-cocktail_menu_grid .slip-drink { margin-top:4px !important; }
 .st-key-cocktail_menu_grid .slip-desc { max-width:205px; min-height:40px; margin:7px auto 0 !important; display:flex; align-items:flex-start; justify-content:center; }
 @media(max-width:700px) {
  .st-key-cocktail_menu_grid [data-testid="stHorizontalBlock"] { gap:10px !important; }
  .st-key-cocktail_menu_grid .order-slip { min-height:320px; padding:18px 8px; }
- .st-key-cocktail_menu_grid .mini-drink { transform:scale(.9); transform-origin:center; margin:0 auto !important; }
+ .st-key-cocktail_menu_grid .mini-drink { transform:scale(.9); transform-origin:center center; margin:0 auto !important; left:0; }
  .st-key-cocktail_menu_grid .slip-label { min-height:42px; font-size:14px; }
 }
 
@@ -1496,6 +1503,8 @@ supabase = get_supabase()
 defaults = {
     "page": "lobby",
     "main_entered": False,
+    "lobby_auth_open": False,
+    "welcome_letter_open": False,
     "choice_mode": None,
     "room_service_step": "search",
     "search_text": "",
@@ -3189,6 +3198,47 @@ document.getElementById("stop").onclick = stopAll;
 # LOGIN WARNING DIALOG
 # =========================================================
 
+def render_login_glitch(fail_count):
+    """Brief CRT-style static interference after a failed login attempt."""
+    strength = {1: 0.22, 2: 0.38}.get(int(fail_count), 0.52)
+    st.markdown(
+        f'''<style>
+        @keyframes hotelStaticBurst {{
+            0%   {{ opacity:0; transform:translateX(0); clip-path:inset(0 0 100% 0); }}
+            8%   {{ opacity:{strength}; clip-path:inset(8% 0 72% 0); transform:translateX(-3px); }}
+            16%  {{ opacity:{strength * 0.72}; clip-path:inset(48% 0 38% 0); transform:translateX(4px); }}
+            25%  {{ opacity:{strength}; clip-path:inset(76% 0 12% 0); transform:translateX(-2px); }}
+            38%  {{ opacity:{strength * 0.48}; clip-path:inset(20% 0 58% 0); transform:translateX(2px); }}
+            55%  {{ opacity:{strength * 0.25}; clip-path:inset(0 0 0 0); transform:translateX(0); }}
+            100% {{ opacity:0; clip-path:inset(0 0 0 0); transform:translateX(0); }}
+        }}
+        @keyframes hotelScanFlicker {{
+            0%, 100% {{ opacity:0; }}
+            12%, 28%, 44% {{ opacity:.18; }}
+            18%, 36% {{ opacity:.04; }}
+        }}
+        .hotel-login-glitch {{
+            position:fixed; inset:0; z-index:999998; pointer-events:none;
+            overflow:hidden; opacity:0;
+            background:repeating-linear-gradient(0deg,
+                rgba(225,235,235,.12) 0px, rgba(225,235,235,.12) 1px,
+                transparent 1px, transparent 4px),
+                repeating-linear-gradient(90deg,
+                rgba(180,205,210,.08) 0px, transparent 2px, transparent 7px);
+            mix-blend-mode:screen;
+            animation:hotelStaticBurst .78s steps(1,end) both;
+        }}
+        .hotel-login-glitch:after {{
+            content:""; position:absolute; inset:0;
+            background:repeating-linear-gradient(0deg, transparent 0 5px,
+                rgba(255,255,255,.16) 5px 6px, transparent 6px 11px);
+            animation:hotelScanFlicker .78s steps(1,end) both;
+        }}
+        </style>
+        <div class="hotel-login-glitch" aria-hidden="true"></div>''',
+        unsafe_allow_html=True,
+    )
+
 @st.dialog(" ", width="small")
 def show_login_warning_dialog():
     warning_text = st.session_state.get("auth_warning_message", "로그인 정보를 확인해 주세요.")
@@ -3204,7 +3254,7 @@ def show_login_warning_dialog():
         [data-testid="stDialog"] > div,
         [data-testid="stDialog"] [role="dialog"] {
             position:relative !important; top:auto !important; left:auto !important;
-            transform:none !important; margin:0 auto !important;
+            transform:translateX(22px) !important; margin:0 auto !important;
             width:min(460px, calc(100vw - 40px)) !important; max-width:460px !important;
             background:#090909 !important; border:1px solid #6b6258 !important;
             box-shadow:0 0 0 1px #211b16, 0 24px 100px rgba(0,0,0,.55) !important;
@@ -3263,7 +3313,7 @@ def show_login_easter_egg_dialog():
         [data-testid="stDialog"] > div,
         [data-testid="stDialog"] [role="dialog"] {
             position:relative !important; top:auto !important; left:auto !important;
-            transform:none !important; margin:0 auto !important;
+            transform:translateX(22px) !important; margin:0 auto !important;
             width:min(460px, calc(100vw - 40px)) !important;
             max-width:460px !important; background:#090909 !important;
             border:1px solid #6b6258 !important; box-shadow:0 0 0 1px #211b16, 0 24px 100px rgba(0,0,0,.95) !important;
@@ -3292,12 +3342,12 @@ def show_login_easter_egg_dialog():
         '<div style="font-family:Georgia,serif;font-size:25px;line-height:1.55;color:#f2eee8;">'
         '기록을 확인해 주십시오.</div>'
         '<div style="font-size:14px;line-height:2;color:#b9b0a5;margin-top:14px;">'
-        '해당 객실은 공실로 기록되어 있습니다.<br>'
-        '현재 투숙객은 확인되지 않습니다.</div>'
+        '입력하신 정보가 정확합니까?<br>'
+        '정말로 옳은 정보라고 확신하십니까?</div>'
         '<div style="height:1px;background:#40372e;margin:24px 10px 18px;"></div>'
         '<div style="font-size:12px;letter-spacing:1px;color:#9b8063;line-height:1.8;">'
-        '객실로 이동하지 마십시오.<br>'
-        '기록을 다시 확인하시겠습니까?</div>'
+        '확인 결과에 이의가 있으시면 다시 시도하십시오.<br>'
+        '단, 이전 기록은 변경되지 않습니다.</div>'
         '</div>', unsafe_allow_html=True
     )
     yes_col, no_col = st.columns(2)
@@ -3315,32 +3365,168 @@ def show_login_easter_egg_dialog():
             st.session_state.auth_warning_open = False
             st.session_state.auth_warning_message = ""
             st.session_state.my_room_checkin_open = False
+            st.session_state.lobby_auth_open = False
+            st.session_state.main_entered = False
             st.session_state.page = "lobby"
             st.rerun()
 
+
+def render_lobby_checkin():
+    """Render login/signup on the lobby screen."""
+    st.markdown(
+        '<div class="auth-box"><div class="auth-title">CHECK-IN</div>'
+        '<div class="auth-subtitle">ROOM KEY를 입력하거나 새로운 GUEST로 등록하세요.</div></div>',
+        unsafe_allow_html=True
+    )
+    auth_left, auth_right = st.columns(2)
+    with auth_left:
+        if st.button("CHECK-IN", key="auth_login_tab", use_container_width=True):
+            st.session_state.auth_mode = "login"
+            st.rerun()
+    with auth_right:
+        if st.button("NEW GUEST", key="auth_signup_tab", use_container_width=True):
+            st.session_state.auth_mode = "signup"
+            st.rerun()
+
+    if supabase is None and SUPABASE_CONFIG_ERROR:
+        st.error(SUPABASE_CONFIG_ERROR)
+    if st.session_state.auth_mode == "login" and st.session_state.get("auth_warning_open", False) and not st.session_state.get("auth_easter_egg_open", False):
+        show_login_warning_dialog()
+    # Keep the darkening effect tied to session state so it survives Streamlit reruns.
+    if st.session_state.auth_mode == "login" and not st.session_state.get("auth_easter_egg_open", False):
+        fail_count_for_shade = int(st.session_state.get("auth_fail_count", 0))
+        shade_opacity = {0: 0, 1: 0.10, 2: 0.30}.get(fail_count_for_shade, 0)
+        if shade_opacity:
+            st.markdown(
+                f'<style>\n'
+                f'[data-testid="stAppViewContainer"]:after{{content:"";position:fixed;inset:0;'
+                f'z-index:10;background:rgba(0,0,0,{shade_opacity});pointer-events:none;}}\n'
+                f'[data-testid="stAppViewContainer"] [data-testid="stMain"]{{position:relative;z-index:11;}}\n'
+                f'</style>', unsafe_allow_html=True
+            )
+            render_login_glitch(fail_count_for_shade)
+
+    if st.session_state.auth_mode == "login" and st.session_state.get("auth_easter_egg_open", False):
+        render_login_glitch(3)
+        # Third failed attempt: make the entire browser viewport black,
+        # then show the confirmation dialog in the true center.
+        st.markdown(
+            """<style>
+            html, body, #root, .stApp,
+            [data-testid="stApp"],
+            [data-testid="stAppViewContainer"],
+            [data-testid="stMain"],
+            [data-testid="stMainBlockContainer"],
+            [data-testid="stHeader"],
+            [data-testid="stSidebar"],
+            [data-testid="stBottom"] {
+                background: #000 !important;
+                background-color: #000 !important;
+            }
+            html, body, #root, .stApp,
+            [data-testid="stAppViewContainer"] {
+                min-height: 100vh !important;
+                height: 100% !important;
+            }
+            [data-testid="stHeader"], [data-testid="stSidebar"] {
+                visibility: hidden !important;
+            }
+            [data-testid="stMainBlockContainer"] {
+                min-height: 100vh !important;
+                padding-top: 0 !important;
+                padding-bottom: 0 !important;
+            }
+            [data-testid="stDialog"] [data-testid="stDialogContent"] {
+                background: #101010 !important;
+                color: #eee !important;
+                border: 1px solid #555 !important;
+            }
+            [data-testid="stDialog"] [data-testid="stMarkdownContainer"] p {
+                color: #eee !important;
+            }
+            [data-testid="stDialog"] div[data-testid="stButton"] > button {
+                background: #171717 !important;
+                color: #eee !important;
+                border: 1px solid #777 !important;
+            }
+            </style>""",
+            unsafe_allow_html=True
+        )
+        show_login_easter_egg_dialog()
+        st.stop()
+
+    email = st.text_input("EMAIL", placeholder="guest@example.com", key="auth_email")
+    password = st.text_input("ROOM KEY", type="password", placeholder="비밀번호", key="auth_password")
+    password_confirm = ""
+    if st.session_state.auth_mode == "signup":
+        password_confirm = st.text_input("ROOM KEY AGAIN", type="password", placeholder="비밀번호를 다시 입력하세요", key="auth_password_confirm")
+
+    if st.session_state.auth_mode == "login":
+        if st.button("ENTER MY ROOM", key="login_submit", use_container_width=True):
+            if not email.strip() or not password:
+                st.warning("이메일과 비밀번호를 입력해 주세요.")
+            else:
+                ok, message = login_user(email.strip(), password)
+                if ok:
+                    st.session_state.auth_fail_count = 0
+                    st.session_state.auth_easter_egg_open = False
+                    st.session_state.auth_warning_open = False
+                    st.session_state.auth_warning_message = ""
+                    st.session_state.my_room_view = "room"
+                    st.session_state.lobby_auth_open = False
+                    st.session_state.welcome_letter_open = True
+                    st.session_state.page = "lobby"
+                    st.rerun()
+                else:
+                    fail_count = int(st.session_state.get("auth_fail_count", 0))
+                    warning_messages = {
+                        1: "로그인 정보가 일치하지 않습니다. 입력 내용을 확인해 주세요.",
+                        2: "로그인에 다시 실패했습니다. 입력한 정보가 정확한지 확인하시겠습니까?",
+                    }
+                    if fail_count >= 3:
+                        st.session_state.auth_warning_open = False
+                        st.session_state.auth_easter_egg_open = True
+                    else:
+                        st.session_state.auth_warning_message = warning_messages.get(fail_count, message)
+                        st.session_state.auth_warning_open = True
+                    st.rerun()
+    else:
+        if st.button("CREATE ROOM KEY", key="signup_submit", use_container_width=True):
+            if not email.strip() or not password:
+                st.warning("이메일과 비밀번호를 입력해 주세요.")
+            elif password != password_confirm:
+                st.warning("두 비밀번호가 일치하지 않습니다.")
+            elif len(password) < 6:
+                st.warning("비밀번호는 6자 이상으로 입력해 주세요.")
+            else:
+                ok, message = signup_user(email.strip(), password)
+                if ok:
+                    st.success(message)
+                    st.rerun()
+                else:
+                    st.error(message)
+
+    if st.button("← BACK TO LOBBY", key="lobby_auth_back", use_container_width=True):
+        st.session_state.lobby_auth_open = False
+        st.session_state.main_entered = False
+        st.session_state.auth_warning_open = False
+        st.rerun()
 # =========================================================
 # MAIN
 # =========================================================
 
 if st.session_state.page == "lobby":
 
-    if not st.session_state.main_entered:
+    if st.session_state.get("lobby_auth_open", False) and not st.session_state.logged_in:
         st.markdown(
-            '<div class="welcome-area">'
-            '<div class="welcome-small">WELCOME TO</div>'
-            '<div class="welcome-title">RECORD HOTEL</div>'
-            '<div class="welcome-line"></div>'
-            '<div class="welcome-description">'
-            '음악을 듣고, 발견하고, 잠시 머무는 작은 방'
-            '</div></div>',
-            unsafe_allow_html=True
+            '<div class="section-area" style="margin-bottom:26px;">'
+            '<div class="section-title">CHECK-IN</div>'
+            '<div class="section-subtitle">투숙객 정보를 확인한 뒤 객실로 안내해 드립니다.</div>'
+            '</div>', unsafe_allow_html=True
         )
-        left, center, right = st.columns([2, 1, 2])
-        with center:
-            if st.button("ENTER HOTEL", key="enter_room", use_container_width=True):
-                st.session_state.main_entered = True
-                st.rerun()
-    else:
+        render_lobby_checkin()
+
+    elif st.session_state.get("welcome_letter_open", False) and st.session_state.logged_in:
         letter_html = (
             '<div class="letter-wrap"><div class="letter-paper">'
             '<div class="letter-date">RECORD HOTEL · GUEST GUIDE</div>'
@@ -3356,9 +3542,32 @@ if st.session_state.page == "lobby":
             '</div></div>'
         )
         st.markdown(letter_html, unsafe_allow_html=True)
-        if st.button("← BACK TO LOBBY", key="back_main_letter"):
-            st.session_state.main_entered = False
+        if st.button("ENTER MY ROOM", key="enter_my_room_after_letter", use_container_width=True):
+            st.session_state.welcome_letter_open = False
+            st.session_state.my_room_view = "room"
+            st.session_state.page = "my_room"
             st.rerun()
+
+    else:
+        st.markdown(
+            '<div class="welcome-area">'
+            '<div class="welcome-small">WELCOME TO</div>'
+            '<div class="welcome-title">RECORD HOTEL</div>'
+            '<div class="welcome-line"></div>'
+            '<div class="welcome-description">'
+            '음악을 듣고, 발견하고, 잠시 머무는 작은 방'
+            '</div></div>',
+            unsafe_allow_html=True
+        )
+        left, center, right = st.columns([2, 1, 2])
+        with center:
+            if st.button("ENTER HOTEL", key="enter_room", use_container_width=True):
+                st.session_state.main_entered = True
+                st.session_state.lobby_auth_open = True
+                st.session_state.auth_mode = "login"
+                st.session_state.auth_warning_open = False
+                st.session_state.auth_easter_egg_open = False
+                st.rerun()
 
 # =========================================================
 # ROOM SERVICE
@@ -3600,163 +3809,9 @@ elif st.session_state.page == "choice":
 elif st.session_state.page == "my_room":
 
     if not st.session_state.logged_in:
-        st.markdown(
-            '<div class="section-area" style="margin-bottom:30px;">'
-            '<div class="section-title">MY ROOM</div></div>',
-            unsafe_allow_html=True
-        )
-
-        if not st.session_state.my_room_checkin_open:
-            st.markdown(
-                '<div class="auth-box" style="margin-top:0;">'
-                '<div class="auth-subtitle">객실에 들어가려면 먼저 CHECK-IN이 필요합니다.</div>'
-                '</div>', unsafe_allow_html=True
-            )
-            gate_left, gate_center, gate_right = st.columns([2,1,2])
-            with gate_center:
-                with st.container(key="checkin_gate_action"):
-                    if st.button("CHECK-IN", key="open_checkin", use_container_width=True):
-                        st.session_state.my_room_checkin_open = True
-                        st.session_state.auth_mode = "login"
-                        st.rerun()
-            with st.container(key="checkin_gate_back"):
-                if st.button("← BACK TO LOBBY", key="my_room_back_gate", use_container_width=True):
-                    st.session_state.page = "lobby"
-                    st.session_state.my_room_checkin_open = False
-                    st.rerun()
-        else:
-            st.markdown(
-                '<div class="auth-box"><div class="auth-title">CHECK-IN</div>'
-                '<div class="auth-subtitle">ROOM KEY를 입력하거나 새로운 GUEST로 등록하세요.</div></div>',
-                unsafe_allow_html=True
-            )
-            auth_left, auth_right = st.columns(2)
-            with auth_left:
-                if st.button("CHECK-IN", key="auth_login_tab", use_container_width=True):
-                    st.session_state.auth_mode = "login"
-                    st.rerun()
-            with auth_right:
-                if st.button("NEW GUEST", key="auth_signup_tab", use_container_width=True):
-                    st.session_state.auth_mode = "signup"
-                    st.rerun()
-
-            if supabase is None and SUPABASE_CONFIG_ERROR:
-                st.error(SUPABASE_CONFIG_ERROR)
-            if st.session_state.auth_mode == "login" and st.session_state.get("auth_warning_open", False) and not st.session_state.get("auth_easter_egg_open", False):
-                show_login_warning_dialog()
-            # Keep the darkening effect tied to session state so it survives Streamlit reruns.
-            if st.session_state.auth_mode == "login" and not st.session_state.get("auth_easter_egg_open", False):
-                fail_count_for_shade = int(st.session_state.get("auth_fail_count", 0))
-                shade_opacity = {0: 0, 1: 0.10, 2: 0.30}.get(fail_count_for_shade, 0)
-                if shade_opacity:
-                    st.markdown(
-                        f'<style>\n'
-                        f'[data-testid="stAppViewContainer"]:after{{content:"";position:fixed;inset:0;'
-                        f'z-index:10;background:rgba(0,0,0,{shade_opacity});pointer-events:none;}}\n'
-                        f'[data-testid="stAppViewContainer"] [data-testid="stMain"]{{position:relative;z-index:11;}}\n'
-                        f'</style>', unsafe_allow_html=True
-                    )
-
-            if st.session_state.auth_mode == "login" and st.session_state.get("auth_easter_egg_open", False):
-                # Third failed attempt: make the entire browser viewport black,
-                # then show the confirmation dialog in the true center.
-                st.markdown(
-                    """<style>
-                    html, body, #root, .stApp,
-                    [data-testid="stApp"],
-                    [data-testid="stAppViewContainer"],
-                    [data-testid="stMain"],
-                    [data-testid="stMainBlockContainer"],
-                    [data-testid="stHeader"],
-                    [data-testid="stSidebar"],
-                    [data-testid="stBottom"] {
-                        background: #000 !important;
-                        background-color: #000 !important;
-                    }
-                    html, body, #root, .stApp,
-                    [data-testid="stAppViewContainer"] {
-                        min-height: 100vh !important;
-                        height: 100% !important;
-                    }
-                    [data-testid="stHeader"], [data-testid="stSidebar"] {
-                        visibility: hidden !important;
-                    }
-                    [data-testid="stMainBlockContainer"] {
-                        min-height: 100vh !important;
-                        padding-top: 0 !important;
-                        padding-bottom: 0 !important;
-                    }
-                    [data-testid="stDialog"] [data-testid="stDialogContent"] {
-                        background: #101010 !important;
-                        color: #eee !important;
-                        border: 1px solid #555 !important;
-                    }
-                    [data-testid="stDialog"] [data-testid="stMarkdownContainer"] p {
-                        color: #eee !important;
-                    }
-                    [data-testid="stDialog"] div[data-testid="stButton"] > button {
-                        background: #171717 !important;
-                        color: #eee !important;
-                        border: 1px solid #777 !important;
-                    }
-                    </style>""",
-                    unsafe_allow_html=True
-                )
-                show_login_easter_egg_dialog()
-                st.stop()
-
-            email = st.text_input("EMAIL", placeholder="guest@example.com", key="auth_email")
-            password = st.text_input("ROOM KEY", type="password", placeholder="비밀번호", key="auth_password")
-            password_confirm = ""
-            if st.session_state.auth_mode == "signup":
-                password_confirm = st.text_input("ROOM KEY AGAIN", type="password", placeholder="비밀번호를 다시 입력하세요", key="auth_password_confirm")
-
-            if st.session_state.auth_mode == "login":
-                if st.button("ENTER MY ROOM", key="login_submit", use_container_width=True):
-                    if not email.strip() or not password:
-                        st.warning("이메일과 비밀번호를 입력해 주세요.")
-                    else:
-                        ok, message = login_user(email.strip(), password)
-                        if ok:
-                            st.session_state.auth_fail_count = 0
-                            st.session_state.auth_easter_egg_open = False
-                            st.session_state.auth_warning_open = False
-                            st.session_state.auth_warning_message = ""
-                            st.session_state.my_room_view = "room"
-                            st.success(message)
-                            st.rerun()
-                        else:
-                            fail_count = int(st.session_state.get("auth_fail_count", 0))
-                            warning_messages = {
-                                1: "로그인 정보가 일치하지 않습니다. 입력 내용을 확인해 주세요.",
-                                2: "로그인에 다시 실패했습니다. 입력한 정보가 정확한지 확인하시겠습니까?",
-                            }
-                            if fail_count >= 3:
-                                st.session_state.auth_warning_open = False
-                                st.session_state.auth_easter_egg_open = True
-                            else:
-                                st.session_state.auth_warning_message = warning_messages.get(fail_count, message)
-                                st.session_state.auth_warning_open = True
-                            st.rerun()
-            else:
-                if st.button("CREATE ROOM KEY", key="signup_submit", use_container_width=True):
-                    if not email.strip() or not password:
-                        st.warning("이메일과 비밀번호를 입력해 주세요.")
-                    elif password != password_confirm:
-                        st.warning("두 비밀번호가 일치하지 않습니다.")
-                    elif len(password) < 6:
-                        st.warning("비밀번호는 6자 이상으로 입력해 주세요.")
-                    else:
-                        ok, message = signup_user(email.strip(), password)
-                        if ok:
-                            st.success(message)
-                            st.rerun()
-                        else:
-                            st.error(message)
-
-            if st.button("← BACK", key="my_room_back_auth", use_container_width=True):
-                st.session_state.my_room_checkin_open = False
-                st.rerun()
+        st.session_state.page = "lobby"
+        st.session_state.lobby_auth_open = True
+        st.rerun()
 
     else:
         user_email = ""
