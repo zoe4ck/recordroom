@@ -17,7 +17,7 @@ st.set_page_config(
     page_title="record hotel",
     page_icon="♫",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
 # =========================================================
@@ -1428,6 +1428,102 @@ div[data-testid="stButton"] > button:hover {
 }
 .mystery-alert strong { display:block; color:#d18b78; font:12px Georgia,serif; letter-spacing:3px; margin-bottom:9px; }
 .mystery-alert em { color:#8d6b60; font-style:normal; font-size:10px; }
+
+/* =========================================================
+   GLOBAL COMPACT LAYOUT · FIRST-SCREEN READABILITY
+   기존 호텔 분위기와 기능은 유지하고 불필요한 여백만 정리합니다.
+   ========================================================= */
+.main .block-container {
+    width: min(100%, 1240px) !important;
+    max-width: 1240px !important;
+    padding: 14px clamp(18px, 2.6vw, 34px) 22px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+[data-testid="stMainBlockContainer"] > div {
+    gap: 0.72rem !important;
+}
+[data-testid="stVerticalBlock"] {
+    gap: 0.72rem !important;
+}
+[data-testid="stHorizontalBlock"] {
+    gap: clamp(10px, 1.5vw, 22px) !important;
+}
+[data-testid="stMarkdownContainer"] p {
+    margin-bottom: 0.42rem !important;
+}
+[data-testid="stMarkdownContainer"] h1,
+[data-testid="stMarkdownContainer"] h2,
+[data-testid="stMarkdownContainer"] h3 {
+    margin-top: 0.45rem !important;
+    margin-bottom: 0.55rem !important;
+}
+[data-testid="stElementContainer"] {
+    margin-bottom: 0.12rem !important;
+}
+div[data-testid="stButton"] > button {
+    min-height: 40px !important;
+    padding: 0.42rem 0.8rem !important;
+    letter-spacing: 2px !important;
+}
+[data-testid="stTextInput"] input,
+[data-testid="stTextArea"] textarea,
+[data-testid="stSelectbox"] [data-baseweb="select"] {
+    min-height: 40px !important;
+}
+[data-testid="stSidebar"] > div:first-child { padding-top: 20px !important; }
+.sidebar-subtitle { margin-bottom: 24px !important; }
+[data-testid="stSidebar"] .stButton > button { padding: 10px 12px !important; }
+
+/* 주요 화면의 세로 공간을 줄여 첫 화면에 핵심 요소가 모이도록 조정 */
+.welcome-area { min-height: min(70vh, 610px) !important; padding: 12px 12px 0 !important; }
+.welcome-small { margin-bottom: 12px !important; font-size: 12px !important; }
+.welcome-title { font-size: clamp(48px, 6.2vw, 82px) !important; }
+.welcome-line { margin: 20px auto !important; }
+.welcome-description { font-size: 14px !important; line-height: 1.8 !important; }
+.section-area { padding: clamp(26px, 4.2vh, 42px) 16px 0 !important; }
+.section-title { font-size: clamp(34px, 3.6vw, 43px) !important; margin-bottom: 7px !important; }
+.section-subtitle { font-size: 13px !important; line-height: 1.7 !important; }
+.st-key-room_service_actions { margin-top: clamp(22px, 3.8vh, 38px) !important; }
+.st-key-room_service_actions div[data-testid="stButton"] > button { min-height: 54px !important; }
+.room-service-container, .fireplace-container { padding-top: 20px !important; }
+.room-service-title, .fireplace-title { font-size: clamp(34px, 3.5vw, 42px) !important; }
+.room-service-subtitle, .fireplace-subtitle { margin-top: 5px !important; line-height: 1.7 !important; }
+.listen-search { margin-top: 18px !important; }
+.result-title { margin: 20px 0 10px !important; font-size: 24px !important; }
+.result-card, .room-record-card { padding: 12px !important; margin: 8px 0 !important; }
+.record-stage { min-height: 360px !important; }
+.record-player { width: min(310px, 62vw) !important; height: min(310px, 62vw) !important; }
+.fireplace { margin: 28px auto 16px !important; height: min(320px, 38vh) !important; }
+.fireplace-note { line-height: 1.75 !important; }
+.auth-box { margin: 14px auto 10px !important; padding: 22px 28px !important; }
+.auth-title { font-size: 36px !important; }
+.auth-subtitle { margin: 7px 0 12px !important; line-height: 1.7 !important; }
+.letter-wrap { min-height: 0 !important; padding: 14px 12px !important; }
+.letter-paper { width: min(920px, 92vw) !important; min-height: 0 !important; padding: clamp(28px, 4vh, 42px) clamp(30px, 5vw, 58px) !important; }
+.letter-date { margin-bottom: 20px !important; }
+.letter-title { font-size: 30px !important; margin-bottom: 18px !important; }
+.letter-body { font-size: 15px !important; line-height: 1.9 !important; }
+.letter-sign { margin-top: 20px !important; line-height: 1.6 !important; }
+.cocktail-header { padding: 18px 0 12px !important; }
+.cocktail-title { font-size: clamp(38px, 4.5vw, 48px) !important; margin-top: 7px !important; }
+.cocktail-subtitle { margin-top: 8px !important; line-height: 1.65 !important; }
+.st-key-cocktail_menu_grid .order-slip { min-height: 300px !important; padding: 14px 10px 12px !important; }
+.st-key-cocktail_menu_grid .mini-drink { height: 176px !important; }
+.room-tabs { margin: 10px 0 !important; }
+
+@media (max-width: 760px) {
+    .main .block-container { padding: 10px 12px 18px !important; }
+    .welcome-area { min-height: 62vh !important; }
+    .welcome-title { font-size: clamp(40px, 10vw, 62px) !important; letter-spacing: 4px !important; }
+    .section-area { padding-top: 24px !important; }
+    .room-service-container, .listen-search, .fireplace-container { width: 96% !important; }
+    .letter-paper { width: 96vw !important; padding: 28px 22px !important; }
+    .letter-body { font-size: 13px !important; line-height: 1.8 !important; }
+    .st-key-cocktail_menu_grid .order-slip { min-height: 270px !important; }
+    .record-stage { min-height: 300px !important; }
+    .fireplace { width: 92vw !important; height: 250px !important; border-width: 10px !important; }
+}
 
 </style>
 """
@@ -3321,43 +3417,52 @@ document.getElementById("stop").onclick = stopAll;
 # =========================================================
 
 def render_login_glitch(fail_count):
-    """Brief CRT-style static interference after a failed login attempt."""
+    """Show a short CRT interference burst using CSS only (no visible HTML node)."""
     strength = {1: 0.22, 2: 0.38}.get(int(fail_count), 0.52)
     st.markdown(
-        f'''<style>
+        f"""<style>
         @keyframes hotelStaticBurst {{
-            0%   {{ opacity:0; transform:translateX(0); clip-path:inset(0 0 100% 0); }}
-            8%   {{ opacity:{strength}; clip-path:inset(8% 0 72% 0); transform:translateX(-3px); }}
-            16%  {{ opacity:{strength * 0.72}; clip-path:inset(48% 0 38% 0); transform:translateX(4px); }}
-            25%  {{ opacity:{strength}; clip-path:inset(76% 0 12% 0); transform:translateX(-2px); }}
-            38%  {{ opacity:{strength * 0.48}; clip-path:inset(20% 0 58% 0); transform:translateX(2px); }}
-            55%  {{ opacity:{strength * 0.25}; clip-path:inset(0 0 0 0); transform:translateX(0); }}
+            0%   {{ opacity:0; clip-path:inset(0 0 100% 0); transform:translateX(0); }}
+            7%   {{ opacity:{strength}; clip-path:inset(7% 0 78% 0); transform:translateX(-4px); }}
+            15%  {{ opacity:{strength * 0.82}; clip-path:inset(42% 0 48% 0); transform:translateX(5px); }}
+            24%  {{ opacity:{strength}; clip-path:inset(76% 0 13% 0); transform:translateX(-3px); }}
+            34%  {{ opacity:{strength * 0.62}; clip-path:inset(18% 0 61% 0); transform:translateX(3px); }}
+            48%  {{ opacity:{strength * 0.32}; clip-path:inset(0 0 0 0); transform:translateX(0); }}
             100% {{ opacity:0; clip-path:inset(0 0 0 0); transform:translateX(0); }}
         }}
         @keyframes hotelScanFlicker {{
             0%, 100% {{ opacity:0; }}
-            12%, 28%, 44% {{ opacity:.18; }}
-            18%, 36% {{ opacity:.04; }}
+            10%, 23%, 39% {{ opacity:.22; }}
+            17%, 31% {{ opacity:.05; }}
         }}
-        .hotel-login-glitch {{
-            position:fixed; inset:0; z-index:999998; pointer-events:none;
-            overflow:hidden; opacity:0;
-            background:repeating-linear-gradient(0deg,
-                rgba(225,235,235,.12) 0px, rgba(225,235,235,.12) 1px,
-                transparent 1px, transparent 4px),
+        body::after {{
+            content:"";
+            position:fixed;
+            inset:0;
+            z-index:999997;
+            pointer-events:none;
+            opacity:0;
+            background:
+                repeating-linear-gradient(0deg,
+                    rgba(235,242,242,.18) 0px, rgba(235,242,242,.18) 1px,
+                    transparent 1px, transparent 4px),
                 repeating-linear-gradient(90deg,
-                rgba(180,205,210,.08) 0px, transparent 2px, transparent 7px);
+                    rgba(180,205,210,.10) 0px, transparent 2px, transparent 7px);
             mix-blend-mode:screen;
-            animation:hotelStaticBurst .78s steps(1,end) both;
+            animation:hotelStaticBurst .82s steps(1,end) both;
         }}
-        .hotel-login-glitch:after {{
-            content:""; position:absolute; inset:0;
+        body::before {{
+            content:"";
+            position:fixed;
+            inset:0;
+            z-index:999996;
+            pointer-events:none;
+            opacity:0;
             background:repeating-linear-gradient(0deg, transparent 0 5px,
-                rgba(255,255,255,.16) 5px 6px, transparent 6px 11px);
-            animation:hotelScanFlicker .78s steps(1,end) both;
+                rgba(255,255,255,.18) 5px 6px, transparent 6px 11px);
+            animation:hotelScanFlicker .82s steps(1,end) both;
         }}
-        </style>
-        <div class="hotel-login-glitch" aria-hidden="true"></div>''',
+        </style>""",
         unsafe_allow_html=True,
     )
 
