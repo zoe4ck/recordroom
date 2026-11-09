@@ -42,26 +42,23 @@ html, body, [data-testid="stAppViewContainer"] {
     display: none !important;
 }
 
-/* 사이드바를 접은 뒤에도 다시 펼치는 버튼이 항상 보이도록 */
-[data-testid="stSidebarCollapsedControl"],
-[data-testid="collapsedControl"],
-[data-testid="stSidebarCollapseButton"] {
-    display: flex !important;
+/* 사이드바는 항상 펼친 상태로 고정 */
+section[data-testid="stSidebar"] {
+    display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
     pointer-events: auto !important;
-    z-index: 1000000 !important;
+    transform: translateX(0) !important;
+    width: 250px !important;
+    min-width: 250px !important;
+    max-width: 250px !important;
 }
 
-[data-testid="stSidebarCollapsedControl"] button,
-[data-testid="collapsedControl"] button,
-[data-testid="stSidebarCollapseButton"] button {
-    visibility: visible !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-    color: #d9a96f !important;
-    background: #170d09 !important;
-    border: 1px solid rgba(190,145,92,0.45) !important;
+/* 접기/펼치기 컨트롤을 감춰 사용자가 접을 수 없게 함 */
+[data-testid="stSidebarCollapseButton"],
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="collapsedControl"] {
+    display: none !important;
 }
 
 .main .block-container {
