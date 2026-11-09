@@ -42,6 +42,28 @@ html, body, [data-testid="stAppViewContainer"] {
     display: none !important;
 }
 
+/* 사이드바를 접은 뒤에도 다시 펼치는 버튼이 항상 보이도록 */
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="collapsedControl"],
+[data-testid="stSidebarCollapseButton"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: 1000000 !important;
+}
+
+[data-testid="stSidebarCollapsedControl"] button,
+[data-testid="collapsedControl"] button,
+[data-testid="stSidebarCollapseButton"] button {
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    color: #d9a96f !important;
+    background: #170d09 !important;
+    border: 1px solid rgba(190,145,92,0.45) !important;
+}
+
 .main .block-container {
     padding-top: 0 !important;
     max-width: 1400px !important;
