@@ -17,7 +17,7 @@ st.set_page_config(
     page_title="record hotel",
     page_icon="♫",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
 # =========================================================
@@ -1862,7 +1862,12 @@ def logout_user():
 # =========================================================
 
 with st.sidebar:
-    # 사이드바에는 이동할 페이지 이름만 간결하게 표시합니다.
+    st.markdown(
+        '<div class="sidebar-title">RECORD HOTEL</div>'
+        '<div class="sidebar-subtitle">GUEST NAVIGATION</div>'
+        '<div class="sidebar-rule"></div>',
+        unsafe_allow_html=True,
+    )
     if st.button("LOBBY", key="nav_lobby", use_container_width=True):
         go("lobby")
 
@@ -3027,7 +3032,6 @@ def render_room_lobby():
     room_background_uri = get_room_background_data_uri()
     st.markdown("""
     <style>
-      [data-testid="stSidebar"] { display:none !important; }
       [data-testid="stHeader"] { display:none !important; }
       .main .block-container { max-width:none !important; padding:0 !important; margin:0 !important; }
 
@@ -3061,16 +3065,16 @@ def render_room_lobby():
         padding:0 !important; margin:0 !important; min-width:0 !important;
       }
       .st-key-room_hotspot_fireplace {
-        left:35.5% !important; top:63.5% !important;
+        left:32.5% !important; top:63.5% !important;
         width:16.5% !important; height:24% !important;
       }
       .st-key-room_hotspot_lp {
-        left:10% !important; top:66.5% !important;
+        left:10% !important; top:63.5% !important;
         width:21% !important; height:15.5% !important;
       }
       .st-key-room_hotspot_bookshelf {
-        left:10% !important; top:4.5% !important;
-        width:20% !important; height:63% !important;
+        left:10% !important; top:6% !important;
+        width:17% !important; height:58% !important;
       }
       .st-key-room_hotspot_checkout { right:2.4% !important; top:2.5% !important; width:118px !important; }
 
@@ -3116,9 +3120,9 @@ def render_room_lobby():
         background:rgba(18,10,6,.82); border:1px solid rgba(226,183,120,.58);
         border-radius:2px; padding:6px 8px; pointer-events:none;
       }
-      .st-key-room_fullscreen .st-key-room_hotspot_fireplace div[data-testid="stButton"] > button:hover:after { content:"벽난로"; }
-      .st-key-room_fullscreen .st-key-room_hotspot_lp div[data-testid="stButton"] > button:hover:after { content:"레코드 플레이어"; }
-      .st-key-room_fullscreen .st-key-room_hotspot_bookshelf div[data-testid="stButton"] > button:hover:after { content:"서가"; }
+      .st-key-room_fullscreen .st-key-room_hotspot_fireplace div[data-testid="stButton"] > button:hover:after { content:"FIREPLACE"; }
+      .st-key-room_fullscreen .st-key-room_hotspot_lp div[data-testid="stButton"] > button:hover:after { content:"RECORD PLAYER"; }
+      .st-key-room_fullscreen .st-key-room_hotspot_bookshelf div[data-testid="stButton"] > button:hover:after { content:"BOOKSHELF"; }
       .st-key-room_fullscreen .st-key-room_hotspot_checkout div[data-testid="stButton"] > button {
         min-height:34px !important; height:34px !important; width:100% !important;
         background:rgba(15,8,5,.48) !important; color:#d5b58c !important;
@@ -3138,9 +3142,9 @@ def render_room_lobby():
         .st-key-room_fullscreen { height:calc(100vh - 2px) !important; min-height:600px !important; }
         .room-photo-background { background-size:cover !important; background-position:8% center !important; }
         .st-key-room_fullscreen { background-size:cover !important; background-position:8% center !important; }
-        .st-key-room_hotspot_fireplace { left:35% !important; top:63% !important; width:17% !important; height:23% !important; }
-        .st-key-room_hotspot_lp { left:14% !important; top:64.5% !important; width:22% !important; height:15.5% !important; }
-        .st-key-room_hotspot_bookshelf { left:14% !important; top:9% !important; width:21% !important; height:55% !important; }
+        .st-key-room_hotspot_fireplace { left:32% !important; top:63% !important; width:17% !important; height:23% !important; }
+        .st-key-room_hotspot_lp { left:14% !important; top:61.5% !important; width:22% !important; height:15.5% !important; }
+        .st-key-room_hotspot_bookshelf { left:14% !important; top:9% !important; width:17.5% !important; height:50% !important; }
         .room-corner-brand { top:15px; left:15px; font-size:13px; }
         .room-bottom-note { left:15px; bottom:15px; font-size:10px; }
       }
@@ -3274,7 +3278,7 @@ def render_room_door():
     """Show a draggable guest key card; unlock only when it overlaps the reader."""
     st.markdown("""
       <style>
-        [data-testid="stSidebar"], [data-testid="stHeader"] {display:none !important;}
+        [data-testid="stHeader"] {display:none !important;}
         .main .block-container {max-width:920px !important;padding:34px 22px 24px !important;}
         div[data-testid="stButton"] button {background:#2c1b11 !important;color:#e2c49a !important;border:1px solid #a47d50 !important;letter-spacing:3px !important;}
       </style>
@@ -3297,7 +3301,7 @@ def render_fireplace():
 
     st.markdown(
         '<div class="fireplace-container">'
-        '<div class="fireplace-title">벽난로</div>'
+        '<div class="fireplace-title">FIREPLACE</div>'
         '<div class="fireplace-subtitle">벽난로는 투숙객의 휴식을 위해 운영됩니다. 불꽃의 수가 달라져도 직원에게 알리지 마십시오.</div>'
         '</div>',
         unsafe_allow_html=True
@@ -3361,7 +3365,7 @@ button:hover {
 </head>
 <body>
 <div class="row">
-    <button id="fire">벽난로</button>
+    <button id="fire">FIREPLACE</button>
     <button id="rain">RAIN</button>
     <button id="white">WHITE NOISE</button>
     <button id="stop">STOP</button>
@@ -3486,7 +3490,7 @@ function playFire() {
         crack.stop(ctx.currentTime + 0.1);
     }, 700);
 
-    document.getElementById("status").textContent = "벽난로 PLAYING";
+    document.getElementById("status").textContent = "FIREPLACE PLAYING";
 }
 
 document.getElementById("fire").onclick = playFire;
@@ -4158,7 +4162,7 @@ elif st.session_state.page == "my_room":
                 go_room_service()
 
         elif view == "lp":
-            st.markdown('<div class="room-tabs">PLAY THE REGISTERED RECORD</div>', unsafe_allow_html=True)
+            st.markdown('<div class="room-tabs">RECORD PLAYER</div>', unsafe_allow_html=True)
             render_lp_player(st.session_state.current_record)
             nav_left, nav_center, nav_right = st.columns([1,2,1])
             with nav_center:
