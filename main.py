@@ -4253,16 +4253,14 @@ elif st.session_state.page == "my_room":
             </div><div class="library-shelf-caption">PRIVATE ARCHIVE · LIMITED ACCESS</div></div>
             <div class="library-note">열람이 끝난 기록물은 원래 위치에 돌려놓으십시오. 순서가 바뀌어도 직원에게 알릴 필요는 없습니다.</div>
             ''', unsafe_allow_html=True)
-            # 책 8권을 4권씩 두 줄로 고정해 마지막 책만 다음 줄로 밀리지 않게 배치
-            for row_start in (0, 4):
-                book_cols = st.columns(4, gap="small")
-                for offset, (number, color, title) in enumerate(shelf_books[row_start:row_start + 4]):
-                    book_index = row_start + offset
-                    with book_cols[offset]:
-                        if st.button(number, key=f"library_book_{book_index}", help="이 책을 꺼내 펼치기", use_container_width=True):
-                            current_book = st.session_state.get("open_library_book")
-                            st.session_state.open_library_book = None if current_book == book_index else book_index
-                            st.rerun()
+            # 책 1~8권을 한 줄에 가로로 나란히 배치
+            book_cols = st.columns(8, gap="small")
+            for book_index, (number, color, title) in enumerate(shelf_books):
+                with book_cols[book_index]:
+                    if st.button(number, key=f"library_book_{book_index}", help="이 책을 꺼내 펼치기", use_container_width=True):
+                        current_book = st.session_state.get("open_library_book")
+                        st.session_state.open_library_book = None if current_book == book_index else book_index
+                        st.rerun()
             selected_book = st.session_state.get("open_library_book")
             if selected_book is not None and not (0 <= selected_book < len(shelf_books)):
                 st.session_state.open_library_book = None
